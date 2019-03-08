@@ -1,0 +1,11 @@
+image insert
+
+<img src="<%= typeof file != "undefined" ? file : "" %>" class="img-responsive">
+<br />
+
+rendering captions
+<% userEntries.forEach(function(entry){ %>
+  <p class="entry-text">
+     <%=entry.caption%>
+    </p>
+ <% }) %>

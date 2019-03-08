@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+
+<title>Mongo File uploads</title>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 m-auto">
+      <h1 class="text-center display-4 my-4">Mongo File Uploads</h1>
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <div class="form group">
+          <div class="form-group">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="What are you grateful for right now?"></textarea>
+            <br />
+            <div class="custom-file mb-3">
+              <input type="file" name="file" id="file" class="form-control-file" />
+            </div>
+          </div>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-primary btn-block" />
+      </form>
+        <hr />
+        
+        <% if(files){ %>
+          <% files.forEach(function(file) { %>
+            <div class="card card-body mb-3">
+              <% if (file.isImage) { %>
+                <img class="entry-img" src="image/<%= file.filename %>" alt="">
+              <% } else { %>
+                <%= file.filename %>
+                <% } %>
+              <form method="POST" action="/files/<%= file._id %>?_method=DELETE">
+                <button class="btn btn-danger btn-block mt-4">DELETE</button>
+              </form>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p>No files to show!</p>
+          <% } %>
+      </div>
+    </div>
+  </div>
+
+
+<%- include('partials/footer') %>

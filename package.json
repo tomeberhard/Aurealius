@@ -1,0 +1,30 @@
+{
+  "name": "aurealius",
+  "version": "1.0.0",
+  "description": "social gratitude application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Scott Kirker",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.4",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "fs-extra": "^7.0.1",
+    "gridfs-stream": "^1.1.1",
+    "md5": "^2.2.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^5.4.17",
+    "mongoose-findorcreate": "^3.0.0",
+    "multer": "^1.4.1",
+    "multer-gridfs-storage": "^3.2.3",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^5.0.1"
+  }
+}

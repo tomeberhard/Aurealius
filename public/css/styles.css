@@ -1,0 +1,14 @@
+.entry-text {
+text-align: center;
+font-size: 2rem;
+color: #fff;
+background-color: #000;
+}
+
+.entry-img {
+  width: 100%;
+}
+
+img {
+  image-orientation: initial;
+}
