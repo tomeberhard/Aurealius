@@ -7,8 +7,9 @@ background-color: #000;
 
 .entry-img {
   width: 100%;
+  /* transform: rotate(90deg); */
 }
 
-img {
-  image-orientation: initial;
+.capPad {
+  padding-top: 10px;
 }

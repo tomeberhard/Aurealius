@@ -9,7 +9,7 @@
       <form action="/upload" method="POST" enctype="multipart/form-data">
         <div class="form group">
           <div class="form-group">
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="What are you grateful for right now?"></textarea>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="caption" placeholder="What are you grateful for right now?"></textarea>
             <br />
             <div class="custom-file mb-3">
               <input type="file" name="file" id="file" class="form-control-file" />
@@ -19,7 +19,7 @@
         <input type="submit" value="Submit" class="btn btn-primary btn-block" />
       </form>
         <hr />
-        
+
         <% if(files){ %>
           <% files.forEach(function(file) { %>
             <div class="card card-body mb-3">
@@ -28,6 +28,9 @@
               <% } else { %>
                 <%= file.filename %>
                 <% } %>
+                <div class="capPad">
+                  <p class="card-text">CAPTION HERE</p>
+                </div>
               <form method="POST" action="/files/<%= file._id %>?_method=DELETE">
                 <button class="btn btn-danger btn-block mt-4">DELETE</button>
               </form>

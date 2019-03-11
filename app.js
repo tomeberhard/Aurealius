@@ -15,9 +15,11 @@ const findOrCreate = require("mongoose-findorcreate");
 const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
-const methodOverride = require("method-override");
+const methodOverride =  require("method-override");
 const path = require("path");
 const crypto = require("crypto");
+
+const jo = require("jpeg-autorotate");
 
 const app = express();
 
@@ -136,10 +138,7 @@ passport.serializeUser(AurealiusUser.serializeUser());
 passport.deserializeUser(AurealiusUser.deserializeUser());
 
 const entrySchema = new mongoose.Schema({
-  // img: {
-  //   data: Buffer,
-  //   contentType: String
-  // },
+  imageFile: String,
   caption: String,
   // grouping: String,
   userId: String
@@ -152,6 +151,22 @@ const Entry = new mongoose.model("entry", entrySchema);
 //---Get Requests---///
 
 app.get("/index", function(req, res) {
+  // //---iOS jpeg orientation fix---//
+  // const options = {quality: 100};
+  // const filename = req.params.filename
+  // const path = "/image/"+ filename;
+  //
+  // jo.rotate(path, options, (error, buffer, orientation, dimensions, quality) => {
+  //   if (error) {
+  //     console.log('An error occurred when rotating the file: ' + error.message)
+  //     return
+  //   }
+  //   console.log(`Orientation was ${orientation}`)
+  //   console.log(`Dimensions after rotation: ${dimensions.width}x${dimensions.height}`)
+  //   console.log(`Quality: ${quality}`)
+  //   // ...Do whatever you need with the resulting buffer...
+  // })
+
   gfs.files.find().toArray(function(err, files) {
     //-check if files exist-//
     if (!files || files.length === 0) {
@@ -224,6 +239,14 @@ app.get("/image/:filename", function(req, res) {
 
 
 app.post("/upload", upload.single("file"), function(req, res){
+
+  const newEntry = new Entry({
+    imageFile: file.filename,
+    caption: req.body.caption
+    // userId: req.user.id
+    });
+    newEntry.save();
+
   res.redirect("index");
   // res.json({file: req.file});
 });
