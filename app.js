@@ -15,7 +15,7 @@ const findOrCreate = require("mongoose-findorcreate");
 const multer = require("multer");
 const GridFsStorage = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
-const methodOverride =  require("method-override");
+const methodOverride = require("method-override");
 const path = require("path");
 const crypto = require("crypto");
 
@@ -59,7 +59,7 @@ mongoose.set('useCreateIndex', true);
 let gfs;
 
 //--Init Stream--//
-conn.once("open", function () {
+conn.once("open", function() {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads");
 });
@@ -84,7 +84,9 @@ const storage = new GridFsStorage({
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({
+  storage
+});
 
 //--Create local storage engine--//
 // const storage = multer.diskStorage({
@@ -167,22 +169,19 @@ app.get("/index", function(req, res) {
   //   // ...Do whatever you need with the resulting buffer...
   // })
 
-  gfs.files.find().toArray(function(err, files) {
-    //-check if files exist-//
-    if (!files || files.length === 0) {
-      res.render("index", {files: false});
+
+  Entry.find(function(err, foundEntries) {
+    if (err) {
+      console.log(err);
     } else {
-      //-files exist-//
-      files.map(function(file) {
-        if(file.contentType === "image/jpeg" || file.contentType === "image/png") {
-          file.isImage = true;
-        } else {
-          file.isImage = false;
-        }
-      });
-      res.render("index", { files: files });
+      if (foundEntries) {
+        res.render("index", {
+          entries: foundEntries
+        });
+      }
     }
   });
+
 });
 
 //--display all files in json--//
@@ -202,7 +201,9 @@ app.get("/files", function(req, res) {
 
 //--filename specific path, display single file object--//
 app.get("/files/:filename", function(req, res) {
-  gfs.files.findOne({filename: req.params.filename}, function(err, file){
+  gfs.files.findOne({
+    filename: req.params.filename
+  }, function(err, file) {
     if (!file || file.length === 0) {
       return res.status(404).json({
         err: "No File Exist."
@@ -217,14 +218,16 @@ app.get("/files/:filename", function(req, res) {
 
 //--filename specific path--//
 app.get("/image/:filename", function(req, res) {
-  gfs.files.findOne({filename: req.params.filename}, function(err, file){
+  gfs.files.findOne({
+    filename: req.params.filename
+  }, function(err, file) {
     if (!file || file.length === 0) {
       return res.status(404).json({
         err: "No File Exist."
       });
     } else {
       //--Check if file an image file--//
-      if (file.contentType === "image/jpeg" || file.contentType === "image/png"){
+      if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
         //-read output to browser-//
         const readstream = gfs.createReadStream(file.filename);
         readstream.pipe(res);
@@ -238,34 +241,43 @@ app.get("/image/:filename", function(req, res) {
 });
 
 
-app.post("/upload", upload.single("file"), function(req, res){
+app.post("/upload", upload.single("file"), function(req, res) {
 
   const newEntry = new Entry({
-    imageFile: file.filename,
+    imageFile: req.file.filename,
     caption: req.body.caption
     // userId: req.user.id
-    });
-    newEntry.save();
+  });
+  newEntry.save();
 
   res.redirect("index");
-  // res.json({file: req.file});
 });
 
-app.delete("/files/:id", function(req, res) {
-  gfs.remove({_id: req.params.id, root:"uploads"}, function(err, gridStore){
+app.post("/delete", function(req, res) {
+
+  Entry.deleteOne({
+    imageFile: req.body.deleteButton
+  }, function(err) {
     if (err) {
-      return res.status(404).json({ err: err});
+      console.log(err);
+    } else {
+      console.log("Successfully deleted entry.");
+    }
+  });
+
+  gfs.remove({
+    filename: req.body.deleteButton,
+    root: "uploads"
+  }, function(err) {
+    if (err) {
+      return res.status(404).json({
+        err: err
+      });
     } else {
       res.redirect("/index");
     }
   });
 });
-
-
-
-
-
-
 
 
 app.get("/", function(req, res) {
@@ -297,32 +309,20 @@ app.get("/activity", function(req, res) {
 
   res.render("/activity");
 
-//   Entry.find({"caption": {$ne: null}}, function(err, foundEntries){
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       if (foundEntries) {
-//         if (req.isAuthenticated()) {
-//           res.render("activity", {userEntries:foundEntries});
-//         } else {
-//           res.redirect("/login")
-//         }
-//       }
-//     }
-//   });
+  //   Entry.find({"caption": {$ne: null}}, function(err, foundEntries){
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       if (foundEntries) {
+  //         if (req.isAuthenticated()) {
+  //           res.render("activity", {userEntries:foundEntries});
+  //         } else {
+  //           res.redirect("/login")
+  //         }
+  //       }
+  //     }
+  //   });
 });
-//
-// //--minute 33.26 of youtube tutorial--/
-// app.get("/files/:filename", function(req, res) {
-//   gfs.files.find().toArray(function(err, files) {
-//     if (!files || files.length === 0) {
-//       return res.status(404).json({
-//         err: "No files exist."
-//       });
-//     }
-//     return res.json(files);
-//   }
-// )});
 
 //---POST Requests---///
 
@@ -387,45 +387,6 @@ app.post("/activity", function(req, res) {
   //   }
   // });
 });
-
-// app.post("/upload", upload.single("entryImg"), function(req, res) {
-//   // res.json({file: req.file});
-//   res.redirect("/activity");
-//
-//   // upload(req, res, function(err) {
-//   //     if (err) {
-//   //       res.render("activity", {
-//   //         msg: err
-//   //       });
-//   //     } else {
-//   //       if (req.file == undefined) {
-//   //         res.render("activity", {
-//   //           msg: "Error: No File Selected!"
-//   //         });
-//   //       } else {
-//   //         res.render("activity", {
-//   //           msg: "File Uploaded!",
-//   //           file: `uploads/${req.file.filename}`
-//   //         });
-//   //       }
-//   //     }
-//   //   });
-//   });
-
-
-  // Entry.findById(req.user.id, function(err, foundEntry) {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     if (foundEntry) {
-  //       foundEntry.caption = submittedEntry;
-  //       foundEntry.userID = submittingUser;
-  //       foundEntry.save(function() {
-  //         res.redirect("/activity");
-  //       });
-  //     }
-  //   }
-  // });
 
 
 

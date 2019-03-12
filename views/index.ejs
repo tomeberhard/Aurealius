@@ -18,30 +18,26 @@
         </div>
         <input type="submit" value="Submit" class="btn btn-primary btn-block" />
       </form>
-        <hr />
+      <hr />
 
-        <% if(files){ %>
-          <% files.forEach(function(file) { %>
-            <div class="card card-body mb-3">
-              <% if (file.isImage) { %>
-                <img class="entry-img" src="image/<%= file.filename %>" alt="">
-              <% } else { %>
-                <%= file.filename %>
-                <% } %>
-                <div class="capPad">
-                  <p class="card-text">CAPTION HERE</p>
-                </div>
-              <form method="POST" action="/files/<%= file._id %>?_method=DELETE">
-                <button class="btn btn-danger btn-block mt-4">DELETE</button>
-              </form>
-            </div>
-          <% }) %>
-        <% } else { %>
-          <p>No files to show!</p>
-          <% } %>
+      <% if(entries){ %>
+      <% entries.forEach(function(entry) { %>
+      <div class="card card-body mb-3">
+        <img class="entry-img" src="image/<%= entry.imageFile %>" alt="">
+        <div class="capPad">
+          <p class="card-text"><%= entry.caption %></p>
+        </div>
+        <form method="POST" action="/delete">
+          <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
+        </form>
       </div>
+      <% }) %>
+      <% } else { %>
+      <p>No entries to show!</p>
+      <% } %>
     </div>
   </div>
+</div>
 
 
 <%- include('partials/footer') %>
