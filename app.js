@@ -44,16 +44,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 //--Create Mongo Connection--//
-const mongoURI = "mongodb://localhost:27017/aurealiusUsersDB";
-const conn = mongoose.createConnection(mongoURI);
-
 mongoose.connect("mongodb://localhost:27017/aurealiusUsersDB", {
   useNewUrlParser: true
 });
 // //below just to kill depracation warning//
 mongoose.set('useCreateIndex', true);
+
+const mongoURI = "mongodb://localhost:27017/aurealiusUsersDB";
+const conn = mongoose.createConnection(mongoURI);
 
 //--Init GridFs--//
 let gfs;
@@ -170,7 +169,7 @@ app.get("/index", function(req, res) {
   // })
 
 
-  Entry.find(function(err, foundEntries) {
+  Entry.find({}).sort({updatedAt: -1}).exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
     } else {
@@ -243,13 +242,23 @@ app.get("/image/:filename", function(req, res) {
 
 app.post("/upload", upload.single("file"), function(req, res) {
 
-  const newEntry = new Entry({
-    imageFile: req.file.filename,
-    caption: req.body.caption
-    // userId: req.user.id
-  });
-  newEntry.save();
+  function fileExists() {
+    if (typeof req.file === "undefined") {
+      let fileName = "NOTHING TO SEE HERE";
+      return fileName
+    } else {
+      let fileName = req.file.filename;
+      return fileName
+    }
+  }
 
+    const newEntry = new Entry({
+      imageFile: fileExists(),
+      caption: req.body.caption
+      // userId: req.user.id
+    });
+  // }
+  newEntry.save();
   res.redirect("index");
 });
 
