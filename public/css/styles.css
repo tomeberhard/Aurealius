@@ -7,7 +7,7 @@ background-color: #000;
 
 .entry-img {
   width: 100%;
-  /* transform: rotate(90deg); */
+  image-orientation: from-image;
 }
 
 .capPad {

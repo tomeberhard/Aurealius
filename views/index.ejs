@@ -5,7 +5,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
-      <h1 class="text-center display-4 my-4">Mongo File Uploads</h1>
+      <h1 class="text-center display-4 my-4">Activity Page</h1>
       <form action="/upload" method="POST" enctype="multipart/form-data">
         <div class="form group">
           <div class="form-group">
@@ -23,7 +23,7 @@
       <% if(entries){ %>
       <% entries.forEach(function(entry) { %>
       <div class="card card-body mb-3">
-        <img class="entry-img" src="image/<%= entry.imageFile %>" alt="">
+        <img id="file-input" class="entry-img" src="image/<%= entry.imageFile %>" alt="">
         <div class="capPad">
           <p class="card-text"><%= entry.caption %></p>
         </div>
@@ -38,6 +38,5 @@
     </div>
   </div>
 </div>
-
 
 <%- include('partials/footer') %>

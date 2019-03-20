@@ -20,18 +20,20 @@ const path = require("path");
 const crypto = require("crypto");
 
 const jo = require("jpeg-autorotate");
+const fs = require("fs");
 
 const app = express();
 
 app.set("view engine", "ejs");
 
+
+//--Middleware--//
 app.use(express.static("public"));
 
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-//--Middleware--//
 app.use(bodyParser.json());
 app.use(methodOverride("_method"));
 
@@ -152,22 +154,6 @@ const Entry = new mongoose.model("entry", entrySchema);
 //---Get Requests---///
 
 app.get("/index", function(req, res) {
-  // //---iOS jpeg orientation fix---//
-  // const options = {quality: 100};
-  // const filename = req.params.filename
-  // const path = "/image/"+ filename;
-  //
-  // jo.rotate(path, options, (error, buffer, orientation, dimensions, quality) => {
-  //   if (error) {
-  //     console.log('An error occurred when rotating the file: ' + error.message)
-  //     return
-  //   }
-  //   console.log(`Orientation was ${orientation}`)
-  //   console.log(`Dimensions after rotation: ${dimensions.width}x${dimensions.height}`)
-  //   console.log(`Quality: ${quality}`)
-  //   // ...Do whatever you need with the resulting buffer...
-  // })
-
 
   Entry.find({}).sort({updatedAt: -1}).exec(function(err, foundEntries) {
     if (err) {
@@ -180,7 +166,7 @@ app.get("/index", function(req, res) {
       }
     }
   });
-
+  
 });
 
 //--display all files in json--//
@@ -217,7 +203,7 @@ app.get("/files/:filename", function(req, res) {
 
 //--filename specific path--//
 app.get("/image/:filename", function(req, res) {
-  gfs.files.findOne({
+  (gfs.files.findOne({
     filename: req.params.filename
   }, function(err, file) {
     if (!file || file.length === 0) {
@@ -236,8 +222,26 @@ app.get("/image/:filename", function(req, res) {
         });
       }
     }
-  });
+  }));
 });
+// // //---iOS jpeg orientation fix link:https://stackoverflow.com/questions/45546375/wrong-image-orientation-when-uploading-amazon-s3---//
+// const filename = req.params.filename;
+// const aPath = "/image/"+ filename;
+// const options = {};
+
+
+// jo.rotate(aPath, options, function(error, buffer, orientation) {
+//   if (error) {
+//     console.log('An error occurred when rotating the file: ' + error.message)
+//     return
+//   }
+//   console.log("Orientation was: " + orientation);
+//   fs.writeFile("/tmp/output.jpg", buffer, function(err) {
+//     if (err) {
+//       return console.log(err);
+//     }
+//     console.log("The file was saved.")
+//   });
 
 
 app.post("/upload", upload.single("file"), function(req, res) {
