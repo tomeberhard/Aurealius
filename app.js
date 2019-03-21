@@ -19,7 +19,6 @@ const methodOverride = require("method-override");
 const path = require("path");
 const crypto = require("crypto");
 
-const jo = require("jpeg-autorotate");
 const fs = require("fs");
 
 const app = express();
@@ -89,41 +88,6 @@ const upload = multer({
   storage
 });
 
-//--Create local storage engine--//
-// const storage = multer.diskStorage({
-//   destination: "./public/uploads/",
-//   filename: function(req, file, cb) {
-//     cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
-//   }
-// });
-
-//---Initiate Upload ---//
-// const upload = multer({
-//   storage: storage,
-//   limits: {
-//     fileSize: 10000000
-//   },
-//   fileFilter: function(req, file, cb) {
-//     checkFileType(file, cb);
-//   }
-// }).single("entryImg");
-
-//---function checkfiletype---//
-// function checkFileType(file, cb) {
-//   //--Allowed extensions
-//   const fileTypes = /jpeg|jpg|png|gif/;
-//   //--check extensions
-//   const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
-//   //--check mime
-//   const mimeType = fileTypes.test(file.mimetype);
-//
-//   if (mimeType && extName) {
-//     return cb(null, true);
-//   } else {
-//     cb("Error: Images Only")
-//   }
-// }
-
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
@@ -166,7 +130,11 @@ app.get("/index", function(req, res) {
       }
     }
   });
-  
+
+});
+
+app.get("/example", function(req, res) {
+  res.render("example");
 });
 
 //--display all files in json--//
@@ -214,6 +182,7 @@ app.get("/image/:filename", function(req, res) {
       //--Check if file an image file--//
       if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
         //-read output to browser-//
+        res.set("Content-Type", "image/jpeg");
         const readstream = gfs.createReadStream(file.filename);
         readstream.pipe(res);
       } else {
@@ -224,25 +193,6 @@ app.get("/image/:filename", function(req, res) {
     }
   }));
 });
-// // //---iOS jpeg orientation fix link:https://stackoverflow.com/questions/45546375/wrong-image-orientation-when-uploading-amazon-s3---//
-// const filename = req.params.filename;
-// const aPath = "/image/"+ filename;
-// const options = {};
-
-
-// jo.rotate(aPath, options, function(error, buffer, orientation) {
-//   if (error) {
-//     console.log('An error occurred when rotating the file: ' + error.message)
-//     return
-//   }
-//   console.log("Orientation was: " + orientation);
-//   fs.writeFile("/tmp/output.jpg", buffer, function(err) {
-//     if (err) {
-//       return console.log(err);
-//     }
-//     console.log("The file was saved.")
-//   });
-
 
 app.post("/upload", upload.single("file"), function(req, res) {
 
@@ -287,7 +237,7 @@ app.post("/delete", function(req, res) {
         err: err
       });
     } else {
-      res.redirect("/index");
+      res.redirect("index");
     }
   });
 });

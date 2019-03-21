@@ -22,8 +22,8 @@
 
       <% if(entries){ %>
       <% entries.forEach(function(entry) { %>
-      <div class="card card-body mb-3">
-        <img id="file-input" class="entry-img" src="image/<%= entry.imageFile %>" alt="">
+      <div class="card card-body mb-3 cushion">
+        <div class="orientation" image="image/<%= entry.imageFile %>"></div>
         <div class="capPad">
           <p class="card-text"><%= entry.caption %></p>
         </div>

@@ -1,11 +1,20 @@
-image insert
 
-<img src="<%= typeof file != "undefined" ? file : "" %>" class="img-responsive">
-<br />
 
-rendering captions
-<% userEntries.forEach(function(entry){ %>
-  <p class="entry-text">
-     <%=entry.caption%>
-    </p>
- <% }) %>
+<% if(entries){ %>
+  <div class="capPad">
+    <% entries.forEach(function(entry) { %>
+  <p class="card-text"><%= entry.caption %></p>
+</div>
+<form method="POST" action="/delete">
+  <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
+</form>
+</div>
+<% }) %>
+<% } else { %>
+<p>No entries to show!</p>
+<% } %>
+
+
+
+
+<%# <img class="entry-img" id="file-input" src="image/<%= entry.imageFile %>" alt=""> %>

@@ -5,11 +5,14 @@ color: #fff;
 background-color: #000;
 }
 
-.entry-img {
+.orientation canvas {
   width: 100%;
-  image-orientation: from-image;
 }
 
 .capPad {
   padding-top: 10px;
+}
+
+.cushion {
+  margin-bottom: 10px;
 }

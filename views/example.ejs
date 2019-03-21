@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<body>
+
+<div class="image-container" image="http://localhost:3000/image/af37dcc794dda54f412225346012546e.jpg"></div>
+<div class="image-container" image="http://localhost:3000/assets/20140906_091314453_iOS.jpg?lalala"></div>
+<!-- <div class="image-container" image="20140906_091314453_iOS.jpg"></div>
+<div class="image-container" image="20140906_091314453_iOS.jpg"></div>
+<div class="image-container" image="20140906_091314453_iOS.jpg"></div> -->
+
+<script>
+$(function() {
+	$(".image-container").each(function() {
+		var div = $(this);
+		loadImage(
+		        div.attr("image"),
+		        function (img) { div[0].appendChild(img); },
+		        {maxWidth: 600, orientation: true}
+		    );
+
+	});
+
+})
+</script>
+
+</body>
+<script src="/scripts/newloadImage.js"></script>
+
+</html>
