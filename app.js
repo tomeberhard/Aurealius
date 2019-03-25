@@ -107,6 +107,7 @@ passport.deserializeUser(AurealiusUser.deserializeUser());
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
+  grouping: String,
   userId: String
 }, {
   timestamps: true
@@ -125,6 +126,26 @@ app.get("/index", function(req, res) {
       if (foundEntries) {
         if (req.isAuthenticated()) {
           res.render("index", {
+            entries: foundEntries
+          });
+        }
+      }
+    }
+  });
+
+});
+
+app.get("/personal", function(req, res) {
+
+  const currentUser = req.user._id;
+
+  Entry.find({userId: currentUser}).sort({updatedAt: -1}).exec(function(err, foundEntries) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundEntries) {
+        if (req.isAuthenticated()) {
+          res.render("personal", {
             entries: foundEntries
           });
         }
