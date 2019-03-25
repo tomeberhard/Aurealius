@@ -107,7 +107,6 @@ passport.deserializeUser(AurealiusUser.deserializeUser());
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
-  // grouping: String,
   userId: String
 }, {
   timestamps: true
@@ -124,9 +123,11 @@ app.get("/index", function(req, res) {
       console.log(err);
     } else {
       if (foundEntries) {
-        res.render("index", {
-          entries: foundEntries
-        });
+        if (req.isAuthenticated()) {
+          res.render("index", {
+            entries: foundEntries
+          });
+        }
       }
     }
   });
@@ -208,10 +209,9 @@ app.post("/upload", upload.single("file"), function(req, res) {
 
     const newEntry = new Entry({
       imageFile: fileExists(),
-      caption: req.body.caption
-      // userId: req.user.id
+      caption: req.body.caption,
+      userId: req.user.id
     });
-  // }
   newEntry.save();
   res.redirect("index");
 });
@@ -267,6 +267,10 @@ app.get("/login", function(req, res) {
   res.render("login");
 });
 
+app.get("/logout", function(req, res) {
+    req.logout();
+    res.redirect("/");
+});
 
 app.get("/activity", function(req, res) {
 
@@ -305,7 +309,7 @@ app.post("/register", function(req, res) {
   });
 });
 
-app.post("/login", function(req, res) {
+app.post("/", function(req, res) {
 
   const user = new AurealiusUser({
     username: req.body.username,
@@ -318,7 +322,7 @@ app.post("/login", function(req, res) {
       res.redirect("login")
     } else {
       passport.authenticate("local")(req, res, function() {
-        res.redirect("activity");
+        res.redirect("index");
       });
     }
   });
