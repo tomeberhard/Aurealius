@@ -135,17 +135,26 @@ app.get("/index", function(req, res) {
 
 });
 
-app.get("/personal", function(req, res) {
+app.get("/user", function(req, res) {
 
-  const currentUser = req.user._id;
+  const currentUserId = req.user._id;
 
-  Entry.find({userId: currentUser}).sort({updatedAt: -1}).exec(function(err, foundEntries) {
+  if (req.isAuthenticated()) {
+    res.redirect("/user/" + currentUserId);
+  }
+});
+
+app.get("/user/:currentUserId", function(req, res) {
+
+  const userIdentifier = req.params.currentUserId;
+
+  Entry.find({userId: userIdentifier}).sort({updatedAt: -1}).exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
     } else {
       if (foundEntries) {
         if (req.isAuthenticated()) {
-          res.render("personal", {
+          res.render("user", {
             entries: foundEntries
           });
         }
@@ -234,7 +243,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
       userId: req.user.id
     });
   newEntry.save();
-  res.redirect("index");
+  res.redirect("back");
 });
 
 app.post("/delete", function(req, res) {
@@ -258,7 +267,7 @@ app.post("/delete", function(req, res) {
         err: err
       });
     } else {
-      res.redirect("index");
+      res.redirect("user");
     }
   });
 });
@@ -331,6 +340,25 @@ app.post("/register", function(req, res) {
 });
 
 app.post("/", function(req, res) {
+
+  const user = new AurealiusUser({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  req.login(user, function(err) {
+    if (err) {
+      console.log(err);
+      res.redirect("login")
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("index");
+      });
+    }
+  });
+});
+
+app.post("/login", function(req, res) {
 
   const user = new AurealiusUser({
     username: req.body.username,
