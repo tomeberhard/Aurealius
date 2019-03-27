@@ -1,18 +1,38 @@
-$("#flexBtn").click(function() {
-  const btnClicked = $(this);
+// $("#flexBtn").click(function() {
+//   let btnClicked = $(this);
+//
+//   toggleDestination(btnClicked);
+// })
 
-  toggleDestination(btnClicked);
+$(".viewerChoice").click(function(){
+  let btnClicked = $(this);
+
+  userViewChoice(btnClicked);
 })
 
 //---functions---//
 
-function toggleDestination (btnClicked) {
+// function toggleDestination (btnClicked) {
+//
+//   let toggler = $(btnClicked).text();
+//
+//   if (toggler === "Your Gratitude") {
+//     $("#flexBtn").text("Activity Page").attr("href", "/index");
+//   } else {
+//     $("#flexBtn").text("Your Gratitude").attr("href", "/user");
+//   }
+// }
 
-  var toggler = $(btnClicked).text();
+function userViewChoice (btnClicked) {
 
-  if (toggler === "Your Gratitude") {
-    $("#flexBtn").text("Activity Page").attr("href", "/index");
+  let viewSelection = $(btnClicked).attr("id");
+
+  if (viewSelection === "showActvityFeed") {
+    $(".activity").removeClass("invisible");
+    // $(".activity").addClass("disabled");
   } else {
-    $("#flexBtn").text("Your Gratitude").attr("href", "/user");
+    $(".activity").addClass("invisible");
+    // $(".collections").prop("disabled",false);
   }
+
 }

@@ -18,23 +18,42 @@
         </div>
         <input type="submit" value="Submit" class="btn btn-primary btn-block" />
       </form>
-      <hr />
 
-      <% if(entries){ %>
-      <% entries.forEach(function(entry) { %>
-      <div class="card card-body mb-3 cushion">
-        <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
-        <div class="capPad">
-          <p class="card-text"><%= entry.caption %></p>
+      <hr />
+      <!-- note to self, eventually look to the btn-group for nice solution here -->
+      <div class="container">
+        <div class="row">
+          <div class="col-sm m-auto ctr">
+            <button type="button" id="showActvityFeed" class="btn btn-secondary btn-lg btn-block viewerChoice">Activity</button>
+          </div>
+          <div class="col-sm m-auto ctr">
+            <button type="button" id="showCollections" class="btn btn-secondary btn-lg btn-block viewerChoice">Collections</button>
+          </div>
         </div>
-        <form method="POST" action="/delete">
-          <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
-        </form>
+
+
+        <hr />
+
+        <div class="activity">
+          <% if(entries){ %>
+          <% entries.forEach(function(entry) { %>
+          <div class="card card-body mb-3 cushion">
+            <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
+            <div class="capPad">
+              <p class="card-text">
+                <%= entry.caption %>
+              </p>
+            </div>
+            <form method="POST" action="/delete">
+              <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
+            </form>
+          </div>
+          <% }) %>
+          <% } else { %>
+          <p>No entries to show!</p>
+          <% } %>
+        </div>
       </div>
-      <% }) %>
-      <% } else { %>
-      <p>No entries to show!</p>
-      <% } %>
     </div>
   </div>
 </div>
