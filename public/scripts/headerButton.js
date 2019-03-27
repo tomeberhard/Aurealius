@@ -28,10 +28,10 @@ function userViewChoice (btnClicked) {
   let viewSelection = $(btnClicked).attr("id");
 
   if (viewSelection === "showActvityFeed") {
-    $(".activity").removeClass("invisible");
+    $(".activity").removeClass("d-none");
     // $(".activity").addClass("disabled");
   } else {
-    $(".activity").addClass("invisible");
+    $(".activity").addClass("d-none");
     // $(".collections").prop("disabled",false);
   }
 
