@@ -119,7 +119,9 @@ const Entry = new mongoose.model("entry", entrySchema);
 
 app.get("/index", function(req, res) {
 
-  Entry.find({}).sort({updatedAt: -1}).exec(function(err, foundEntries) {
+  Entry.find({}).sort({
+    updatedAt: -1
+  }).exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
     } else {
@@ -148,7 +150,11 @@ app.get("/user/:currentUserId", function(req, res) {
 
   const userIdentifier = req.params.currentUserId;
 
-  Entry.find({userId: userIdentifier}).sort({updatedAt: -1}).exec(function(err, foundEntries) {
+  Entry.find({
+    userId: userIdentifier
+  }).sort({
+    updatedAt: -1
+  }).exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
     } else {
@@ -237,11 +243,12 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
   }
 
-    const newEntry = new Entry({
-      imageFile: fileExists(),
-      caption: req.body.caption,
-      userId: req.user.id
-    });
+  const newEntry = new Entry({
+    imageFile: fileExists(),
+    caption: req.body.caption,
+    grouping:req.body.grouping,
+    userId: req.user.id
+  });
   newEntry.save();
   res.redirect("back");
 });
@@ -298,8 +305,8 @@ app.get("/login", function(req, res) {
 });
 
 app.get("/logout", function(req, res) {
-    req.logout();
-    res.redirect("/");
+  req.logout();
+  res.redirect("/");
 });
 
 app.get("/activity", function(req, res) {
