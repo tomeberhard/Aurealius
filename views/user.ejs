@@ -31,11 +31,11 @@
               <div class="modal-body">
                 <div class="form-group">
                     <label for="collectionSelector">Choose Collection</label>
-                    <textarea class="form-control" name="grouping" placeholder="Add New Collection"></textarea>
-                    <select multiple class="form-control" id="collectionSelector" name="grouping">
-                      <% if(entries){ %>
-                      <% entries.forEach(function(entry) { %>
-                        <option><%= entry.grouping %></option>
+                    <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
+                    <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
+                      <% if(groupings){ %>
+                      <% groupings.forEach(function(userCollectionName) { %>
+                        <option><%= userCollectionName %></option>
                         <% }) %>
                         <% } else { %>
                         <p>No Collections to show!</p>

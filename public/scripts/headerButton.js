@@ -4,6 +4,23 @@
 //   toggleDestination(btnClicked);
 // })
 
+// $(".collectionInputChoice").click(function(){
+//   let btnClicked = $(this);
+//
+//   userCollectionInputChoice(btnClicked);
+// })
+
+$("#collectionTextArea").on("keyup", function(){
+  let textInput = $("#collectionTextArea").val();
+
+  if (textInput != "") {
+    $("#collectionSelector").prop("disabled", true);
+  } else {
+    $("#collectionSelector").prop("disabled", false);
+  }
+
+});
+
 $(".viewerChoice").click(function(){
   let btnClicked = $(this);
 

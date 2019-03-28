@@ -150,6 +150,7 @@ app.get("/user/:currentUserId", function(req, res) {
 
   const userIdentifier = req.params.currentUserId;
 
+  //---Render the entries--//
   Entry.find({
     userId: userIdentifier
   }).sort({
@@ -160,13 +161,36 @@ app.get("/user/:currentUserId", function(req, res) {
     } else {
       if (foundEntries) {
         if (req.isAuthenticated()) {
+
+          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+          // console.log(uniqueGroupings);
+
           res.render("user", {
-            entries: foundEntries
+            entries: foundEntries,
+            groupings: uniqueGroupings
           });
         }
       }
     }
   });
+
+  //---Render the unique Collection names for the submit pop-up--//
+  // Entry.find({
+  //   userId: userIdentifier
+  // })
+  // .distinct(
+  //   "grouping", function(err, groupings){
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       if (groupings) {
+  //         res.send({
+  //           grouping: groupings
+  //           });
+  //       }
+  //     }
+  //   }
+  // );
 
 });
 
@@ -243,10 +267,26 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
   }
 
+  function collectionAllocator() {
+    const userCollectionChoice = req.body.grouping;
+
+    if (userCollectionChoice === "") {
+      let today = new Date();
+      let dd = String(today.getDate());
+      let mm = String(today.getMonth() + 1);
+      let yyyy = today.getFullYear();
+
+      today = mm + '/' + dd + '/' + yyyy;
+      return today;
+    } else {
+      return userCollectionChoice;
+    }
+  }
+
   const newEntry = new Entry({
     imageFile: fileExists(),
     caption: req.body.caption,
-    grouping:req.body.grouping,
+    grouping: collectionAllocator(),
     userId: req.user.id
   });
   newEntry.save();
