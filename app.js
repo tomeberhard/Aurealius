@@ -127,8 +127,12 @@ app.get("/index", function(req, res) {
     } else {
       if (foundEntries) {
         if (req.isAuthenticated()) {
+
+          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+
           res.render("index", {
-            entries: foundEntries
+            entries: foundEntries,
+            groupings: uniqueGroupings
           });
         }
       }
@@ -163,7 +167,6 @@ app.get("/user/:currentUserId", function(req, res) {
         if (req.isAuthenticated()) {
 
           let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
-          // console.log(uniqueGroupings);
 
           res.render("user", {
             entries: foundEntries,

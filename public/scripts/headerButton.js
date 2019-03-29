@@ -1,14 +1,3 @@
-// $("#flexBtn").click(function() {
-//   let btnClicked = $(this);
-//
-//   toggleDestination(btnClicked);
-// })
-
-// $("#collectionSelector").click(function(){
-//   const btnClicked = $(this);
-//
-//   // userCollectionInputChoice(btnClicked);
-// });
 
 $("#collectionTextArea").on("keyup", function(){
   let textInput = $("#collectionTextArea").val();
@@ -21,43 +10,25 @@ $("#collectionTextArea").on("keyup", function(){
 
 });
 
-$("#collectionSelector").click(function(){
-  
+$("#collectionSelector").on("change", function(){
+
   let selectionMade = $("#collectionSelector :selected").text();
 
-  alert(selectionMade);
-})
+  if (selectionMade) {
+    $("#collectionTextArea").attr("name", "");
+  } else {
+    $("#collectionTextArea").attr("name", "grouping");
+  }
 
-
-
-
-
-// $("#saveBtn").submit(function(){
-//
-  // if (textInput === "" && selectionMade =! """ ) {
-  //   $("#collectionTextArea").prop("disabled", false);
-  // }
-
-// });
+});
 
 $(".viewerChoice").click(function(){
   let btnClicked = $(this);
 
   userViewChoice(btnClicked);
-})
+});
 
 //---functions---//
-
-// function toggleDestination (btnClicked) {
-//
-//   let toggler = $(btnClicked).text();
-//
-//   if (toggler === "Your Gratitude") {
-//     $("#flexBtn").text("Activity Page").attr("href", "/index");
-//   } else {
-//     $("#flexBtn").text("Your Gratitude").attr("href", "/user");
-//   }
-// }
 
 function userViewChoice (btnClicked) {
 
@@ -65,10 +36,8 @@ function userViewChoice (btnClicked) {
 
   if (viewSelection === "showActvityFeed") {
     $(".activity").removeClass("d-none");
-    // $(".activity").addClass("disabled");
   } else {
     $(".activity").addClass("d-none");
-    // $(".collections").prop("disabled",false);
   }
 
 }
