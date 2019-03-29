@@ -4,11 +4,11 @@
 //   toggleDestination(btnClicked);
 // })
 
-// $(".collectionInputChoice").click(function(){
-//   let btnClicked = $(this);
+// $("#collectionSelector").click(function(){
+//   const btnClicked = $(this);
 //
-//   userCollectionInputChoice(btnClicked);
-// })
+//   // userCollectionInputChoice(btnClicked);
+// });
 
 $("#collectionTextArea").on("keyup", function(){
   let textInput = $("#collectionTextArea").val();
@@ -20,6 +20,25 @@ $("#collectionTextArea").on("keyup", function(){
   }
 
 });
+
+$("#collectionSelector").click(function(){
+  
+  let selectionMade = $("#collectionSelector :selected").text();
+
+  alert(selectionMade);
+})
+
+
+
+
+
+// $("#saveBtn").submit(function(){
+//
+  // if (textInput === "" && selectionMade =! """ ) {
+  //   $("#collectionTextArea").prop("disabled", false);
+  // }
+
+// });
 
 $(".viewerChoice").click(function(){
   let btnClicked = $(this);
