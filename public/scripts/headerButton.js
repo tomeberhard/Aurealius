@@ -1,6 +1,10 @@
 
 $("#collectionTextArea").on("keyup", function(){
+
   let textInput = $("#collectionTextArea").val();
+
+  $("#collectionTextArea").attr("name", "grouping");
+
 
   if (textInput != "") {
     $("#collectionSelector").prop("disabled", true);
@@ -13,6 +17,8 @@ $("#collectionTextArea").on("keyup", function(){
 $("#collectionSelector").on("change", function(){
 
   let selectionMade = $("#collectionSelector :selected").text();
+
+  console.log(selectionMade);
 
   if (selectionMade) {
     $("#collectionTextArea").attr("name", "");
