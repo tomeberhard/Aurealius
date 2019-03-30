@@ -1,10 +1,9 @@
-
+//---User collection pop-up field controls---//
 $("#collectionTextArea").on("keyup", function(){
 
   let textInput = $("#collectionTextArea").val();
 
   $("#collectionTextArea").attr("name", "grouping");
-
 
   if (textInput != "") {
     $("#collectionSelector").prop("disabled", true);
@@ -28,6 +27,13 @@ $("#collectionSelector").on("change", function(){
 
 });
 
+//---defaults user page choice to show actvity feed, not collections---//
+// $(".viewerChoice").on("load", function() {
+//   $(".activity").removeClass("d-none");
+//   $(".userCollections").addClass("d-none");
+// });
+
+//---user page view selection---//
 $(".viewerChoice").click(function(){
   let btnClicked = $(this);
 
@@ -42,8 +48,10 @@ function userViewChoice (btnClicked) {
 
   if (viewSelection === "showActvityFeed") {
     $(".activity").removeClass("d-none");
+    $(".userCollections").addClass("d-none");
   } else {
     $(".activity").addClass("d-none");
+    $(".userCollections").removeClass("d-none");
   }
 
 }

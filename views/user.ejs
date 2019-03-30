@@ -86,6 +86,23 @@
           <p>No entries to show!</p>
           <% } %>
         </div>
+
+        <div class="userCollections d-none">
+          <% if(groupings){ %>
+          <% groupings.forEach(function(userCollectionName) { %>
+          <div class="card card-body mb-3 text-center cushion">
+            <div class="capPad">
+              <h3 class="card-text">
+                <%= userCollectionName %>
+              </h3>
+            </div>
+          </div>
+          <% }) %>
+          <% } else { %>
+          <p>No Collections to show!</p>
+          <% } %>
+        </div>
+
       </div>
     </div>
   </div>
