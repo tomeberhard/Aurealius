@@ -115,6 +115,7 @@ const entrySchema = new mongoose.Schema({
 
 const Entry = new mongoose.model("entry", entrySchema);
 
+
 //---Get Requests---///
 
 app.get("/index", function(req, res) {
@@ -176,30 +177,51 @@ app.get("/user/:currentUserId", function(req, res) {
       }
     }
   });
+});
 
-  //---Render the unique Collection names for the submit pop-up--//
-  // Entry.find({
-  //   userId: userIdentifier
-  // })
-  // .distinct(
-  //   "grouping", function(err, groupings){
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       if (groupings) {
-  //         res.send({
-  //           grouping: groupings
-  //           });
-  //       }
-  //     }
-  //   }
-  // );
+app.post("/chosenCollection", function(req, res) {
+
+  const collectionChosen = req.body.userCollectionChosen;
+
+  if (req.isAuthenticated()) {
+    const currentUserId = req.user._id;
+
+    res.redirect("/user/" + currentUserId + "/collections/" + collectionChosen);
+  }
 
 });
 
-app.get("/example", function(req, res) {
-  res.render("example");
+app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
+
+  const userIdentifier = req.params.currentUserId;
+  const grouping = req.params.grouping;
+
+  //---Render the entries--//
+  Entry.find({
+    userId: userIdentifier,
+    grouping: grouping
+  }).sort({
+    updatedAt: -1
+  }).exec(function(err, foundEntries) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundEntries) {
+        if (req.isAuthenticated()) {
+
+          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+          // console.log(foundEntries);
+
+          res.render("usercollection", {
+            entries: foundEntries,
+            groupings: uniqueGroupings
+          });
+        }
+      }
+    }
+  });
 });
+
 
 //--display all files in json--//
 app.get("/files", function(req, res) {
@@ -256,6 +278,91 @@ app.get("/image/:filename", function(req, res) {
       }
     }
   }));
+});
+
+app.get("/", function(req, res) {
+  res.render("home");
+});
+
+app.get("/about", function(req, res) {
+  res.render("about");
+});
+
+app.get("/privacy", function(req, res) {
+  res.render("privacy");
+});
+
+app.get("/terms", function(req, res) {
+  res.render("terms");
+});
+
+app.get("/register", function(req, res) {
+  res.render("register");
+});
+
+app.get("/login", function(req, res) {
+  res.render("login");
+});
+
+app.get("/logout", function(req, res) {
+  req.logout();
+  res.redirect("/");
+});
+
+//---POST Requests---///
+
+app.post("/register", function(req, res) {
+
+  AurealiusUser.register({
+    username: req.body.username
+  }, req.body.password, function(err, user) {
+    if (err) {
+      console.log(err);
+      res.redirect("/register");
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("/index");
+      });
+    }
+  });
+});
+
+app.post("/", function(req, res) {
+
+  const user = new AurealiusUser({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  req.login(user, function(err) {
+    if (err) {
+      console.log(err);
+      res.redirect("login")
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("index");
+      });
+    }
+  });
+});
+
+app.post("/login", function(req, res) {
+
+  const user = new AurealiusUser({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  req.login(user, function(err) {
+    if (err) {
+      console.log(err);
+      res.redirect("login")
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("index");
+      });
+    }
+  });
 });
 
 app.post("/upload", upload.single("file"), function(req, res) {
@@ -321,140 +428,6 @@ app.post("/delete", function(req, res) {
     }
   });
 });
-
-
-app.get("/", function(req, res) {
-  res.render("home");
-});
-
-app.get("/about", function(req, res) {
-  res.render("about");
-});
-
-app.get("/privacy", function(req, res) {
-  res.render("privacy");
-});
-
-app.get("/terms", function(req, res) {
-  res.render("terms");
-});
-
-app.get("/register", function(req, res) {
-  res.render("register");
-});
-
-app.get("/login", function(req, res) {
-  res.render("login");
-});
-
-app.get("/logout", function(req, res) {
-  req.logout();
-  res.redirect("/");
-});
-
-app.get("/activity", function(req, res) {
-
-  res.render("/activity");
-
-  //   Entry.find({"caption": {$ne: null}}, function(err, foundEntries){
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       if (foundEntries) {
-  //         if (req.isAuthenticated()) {
-  //           res.render("activity", {userEntries:foundEntries});
-  //         } else {
-  //           res.redirect("/login")
-  //         }
-  //       }
-  //     }
-  //   });
-});
-
-//---POST Requests---///
-
-app.post("/register", function(req, res) {
-
-  AurealiusUser.register({
-    username: req.body.username
-  }, req.body.password, function(err, user) {
-    if (err) {
-      console.log(err);
-      res.redirect("/register");
-    } else {
-      passport.authenticate("local")(req, res, function() {
-        res.redirect("/index");
-      });
-    }
-  });
-});
-
-app.post("/", function(req, res) {
-
-  const user = new AurealiusUser({
-    username: req.body.username,
-    password: req.body.password
-  });
-
-  req.login(user, function(err) {
-    if (err) {
-      console.log(err);
-      res.redirect("login")
-    } else {
-      passport.authenticate("local")(req, res, function() {
-        res.redirect("index");
-      });
-    }
-  });
-});
-
-app.post("/login", function(req, res) {
-
-  const user = new AurealiusUser({
-    username: req.body.username,
-    password: req.body.password
-  });
-
-  req.login(user, function(err) {
-    if (err) {
-      console.log(err);
-      res.redirect("login")
-    } else {
-      passport.authenticate("local")(req, res, function() {
-        res.redirect("index");
-      });
-    }
-  });
-});
-
-app.post("/activity", function(req, res) {
-
-  const entry = new Entry({
-    caption: req.body.entryCaption,
-    userId: req.user.id
-  });
-
-  entry.save();
-  res.redirect("activity");
-
-  // upload(req, res, function(err) {
-  //   if (err) {
-  //     res.render("activity", {
-  //       msg: err
-  //     });
-  //   } else {
-  //     if (req.file == undefined) {
-  //       res.render("activity", {
-  //         msg: "Error: No File Selected!"
-  //       });
-  //     } else {
-  //       res.render("activity");
-  //     }
-  //   }
-  // });
-});
-
-
 
 
 

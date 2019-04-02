@@ -1,12 +1,12 @@
-<%- include('partials/headerLoggedInUser') %>
+<%- include('partials/headerLoggedInMain') %>
 
 
-<title>Your Gratitude</title>
+<title>Aurealius</title>
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
-      <h1 class="text-center display-4 my-4">Your Gratitude</h1>
-      <form action="/upload" method="POST" id="saveBtn" enctype="multipart/form-data">
+      <h1 class="text-center display-4 my-4">Collection Page</h1>
+      <form action="/upload" method="POST" enctype="multipart/form-data">
         <div class="form-group">
           <textarea class="form-control" rows="3" name="caption" placeholder="What are you grateful for right now?"></textarea>
           <br />
@@ -14,7 +14,7 @@
             <input type="file" name="file" id="file" class="form-control-file" />
           </div>
         </div>
-        <!-- <input type="submit" value="Submit" class="btn btn-primary btn-block" /> -->
+
         <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#collectionModal">
           Submit
         </button>
@@ -51,61 +51,20 @@
           </div>
         </div>
       </form>
-
       <hr />
-      <!-- note to self, eventually look to the btn-group for nice solution here -->
-      <div class="container">
-        <div class="row">
-          <div class="col-sm m-auto ctr">
-            <button type="button" id="showActvityFeed" class="btn btn-secondary btn-lg btn-block viewerChoice">Activity</button>
-          </div>
-          <div class="col-sm m-auto ctr">
-            <button type="button" id="showCollections" class="btn btn-secondary btn-lg btn-block viewerChoice">Collections</button>
-          </div>
-        </div>
 
-
-        <hr />
-
-        <div class="activity">
-          <% if(entries){ %>
-          <% entries.forEach(function(entry) { %>
-          <div class="card card-body mb-3 cushion">
-            <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
-            <div class="capPad">
-              <p class="card-text">
-                <%= entry.caption %>
-              </p>
-            </div>
-            <form method="POST" action="/delete">
-              <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
-            </form>
-          </div>
-          <% }) %>
-          <% } else { %>
-          <p>No entries to show!</p>
-          <% } %>
-        </div>
-
-        <div class="userCollections d-none">
-          <% if(groupings){ %>
-          <% groupings.forEach(function(userCollectionName) { %>
-            <form method="POST" action="/chosenCollection">
-            <div class="card card-body mb-3 text-center cushion">
-              <div class="capPad">
-                <button class="card-text" onchange="this.form.submit()">
-                  <%= userCollectionName %>
-                </button>
-                <input type="hidden" name="userCollectionChosen" value="<%= userCollectionName %>"></input>
-              </div>
-            </div>
-            <% }) %>
-            <% } else { %>
-            <p>No Collections to show!</p>
-            <% } %>
-          </form>
+      <% if(entries){ %>
+      <% entries.forEach(function(entry) { %>
+      <div class="card card-body mb-3 cushion">
+        <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
+        <div class="capPad">
+          <p class="card-text"><%= entry.caption %></p>
         </div>
       </div>
+      <% }) %>
+      <% } else { %>
+      <p>No entries to show!</p>
+      <% } %>
     </div>
   </div>
 </div>

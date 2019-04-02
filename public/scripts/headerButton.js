@@ -1,3 +1,6 @@
+//---get collectin name from link---//
+
+
 //---User collection pop-up field controls---//
 $("#collectionTextArea").on("keyup", function(){
 
@@ -26,12 +29,6 @@ $("#collectionSelector").on("change", function(){
   }
 
 });
-
-//---defaults user page choice to show actvity feed, not collections---//
-// $(".viewerChoice").on("load", function() {
-//   $(".activity").removeClass("d-none");
-//   $(".userCollections").addClass("d-none");
-// });
 
 //---user page view selection---//
 $(".viewerChoice").click(function(){
