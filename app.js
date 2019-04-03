@@ -115,6 +115,16 @@ const entrySchema = new mongoose.Schema({
 
 const Entry = new mongoose.model("entry", entrySchema);
 
+const groupSchema = new mongoose.Schema({
+  name: String,
+  entries: [entrySchema],
+  userId: String
+}, {
+  timestamps: true
+});
+
+const Grouping = new mongoose.model("grouping", groupSchema);
+
 
 //---Get Requests---///
 
@@ -393,13 +403,43 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
   }
 
+  const currentUser = req.user.id;
+
   const newEntry = new Entry({
     imageFile: fileExists(),
     caption: req.body.caption,
     grouping: collectionAllocator(),
-    userId: req.user.id
+    userId: currentUser
   });
-  newEntry.save();
+
+    newEntry.save();
+
+  Grouping.find({name: collectionAllocator(), userId: currentUser}, function(err, groupingNames) {
+    if (err) {
+      consoloe.log(err);
+    } else {
+      if(groupingNames) {
+        Grouping.update(
+          {name: collectionAllocator(), userId: currentUser},
+          {$push: {entries: newEntry } }, function (err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully added entry to existing grouping.");
+            }
+          }
+        );
+        } else {
+        const newGrouping = new Grouping({
+          name: collectionAllocator(),
+          entries: [{newEntry}] ,
+          userId: currentUser
+        });
+        newGrouping.save();
+      }
+    }
+  });
+
   res.redirect("back");
 });
 
