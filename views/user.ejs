@@ -71,7 +71,14 @@
           <% if(entries){ %>
           <% entries.forEach(function(entry) { %>
           <div class="card card-body mb-3 cushion">
-            <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
+
+            <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
+              <% var hide = "" %>
+            <% } else { %>
+              <% var hide = "/image/" + entry.imageFile  } %>
+
+            <div class="orientation" image="<%= hide %>"></div>
+
             <div class="capPad">
               <p class="card-text">
                 <%= entry.caption %>
@@ -93,10 +100,9 @@
             <form method="POST" action="/chosenCollection">
             <div class="card card-body mb-3 text-center cushion">
               <div class="capPad">
-                <button class="card-text" onchange="this.form.submit()">
+                <button class="card-text" name="userCollectionChosen" value="<%= userCollectionName %>" onchange="this.form.submit()">
                   <%= userCollectionName %>
                 </button>
-                <input type="hidden" name="userCollectionChosen" value="<%= userCollectionName %>"></input>
               </div>
             </div>
             <% }) %>

@@ -220,7 +220,6 @@ app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
         if (req.isAuthenticated()) {
 
           let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
-          // console.log(foundEntries);
 
           res.render("usercollection", {
             entries: foundEntries,
@@ -412,13 +411,11 @@ app.post("/upload", upload.single("file"), function(req, res) {
     userId: currentUser
   });
 
-    newEntry.save();
-
   Grouping.find({name: collectionAllocator(), userId: currentUser}, function(err, groupingNames) {
     if (err) {
       consoloe.log(err);
     } else {
-      if(groupingNames) {
+      if(groupingNames != "") {
         Grouping.update(
           {name: collectionAllocator(), userId: currentUser},
           {$push: {entries: newEntry } }, function (err, success) {
@@ -432,14 +429,14 @@ app.post("/upload", upload.single("file"), function(req, res) {
         } else {
         const newGrouping = new Grouping({
           name: collectionAllocator(),
-          entries: [{newEntry}] ,
+          entries: newEntry,
           userId: currentUser
         });
         newGrouping.save();
       }
     }
   });
-
+  newEntry.save();
   res.redirect("back");
 });
 
@@ -468,7 +465,6 @@ app.post("/delete", function(req, res) {
     }
   });
 });
-
 
 
 //---SERVER---///
