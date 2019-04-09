@@ -1,11 +1,69 @@
 <%- include('partials/headerLoggedInUser') %>
 
-
 <title>Your Gratitude</title>
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
-      <h1 class="text-center display-4 my-4">Your Gratitude</h1>
+
+      <div class="userBio">
+        <div class="userImageContainer">
+          <% var userImage = "/image/" + userInfo[0].bioImageFile %>
+          <div class="userImage orientation" image="<%= userImage %>"></div>
+        </div>
+        <div class="userInfo">
+          <h4 class="text-center display-4"><%=userInfo[0].firstName + " " + userInfo[0].lastName %></h4>
+          <form action="/userUpload" method="POST" enctype="multipart/form-data">
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#userInfoModal">
+              Edit
+            </button>
+            <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Edit Your Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col">
+                            <div class="userImagePreviewContainer">
+                              <div class="userImagePreview orientation" image="<%= userImage %>"></div>
+                            </div>
+                            <div class="custom-file mb-3">
+                              <input type="file" name="file" id="bioFile" class="form-control-file" />
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <label for="editProfileName">Username</label>
+                            <input class="form-control" name="userProfileName" id="editProfileName" placeholder="<%= userInfo[0].profileName %>"></input>
+                            <label for="editFistName">First Name</label>
+                            <input class="form-control" name="userFName" id="editFirstName" placeholder="<%= userInfo[0].firstName %>"></input>
+                            <label for="editFistName">Last Name</label>
+                            <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userInfo[0].lastName %>"></input>
+                            <!-- <label for="editUserEmail">Email</label>
+                            <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
+                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button"  value="Reset Email"</input>
+                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button"  value="Reset Password"</input>
+                            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account"</input>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <form action="/upload" method="POST" id="saveBtn" enctype="multipart/form-data">
         <div class="form-group">
           <textarea class="form-control" rows="3" name="caption" placeholder="What are you grateful for right now?"></textarea>
@@ -14,7 +72,6 @@
             <input type="file" name="file" id="file" class="form-control-file" />
           </div>
         </div>
-        <!-- <input type="submit" value="Submit" class="btn btn-primary btn-block" /> -->
         <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#collectionModal">
           Submit
         </button>

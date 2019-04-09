@@ -58,7 +58,7 @@ const conn = mongoose.createConnection(mongoURI);
 //--Init GridFs--//
 let gfs;
 
-//--Init Stream--//
+//---Init Stream---//
 conn.once("open", function() {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads");
@@ -88,12 +88,32 @@ const upload = multer({
   storage
 });
 
+//---Mongo Moongoose Models---//
+const entrySchema = new mongoose.Schema({
+  imageFile: String,
+  caption: String,
+  grouping: String,
+  userId: String
+  }, {
+  timestamps: true
+  }
+);
+
+const Entry = new mongoose.model("entry", entrySchema);
+
 const userSchema = new mongoose.Schema({
-  email: String,
-  password: String,
+  userName: String,
+  profileName: String,
+  firstName: String,
+  lastName: String,
+  bioImageFile: String,
   googleId: String,
-  facebookId: String
-});
+  facebookId: String,
+  entries: [entrySchema]
+  },{
+  timestamps: true
+  }
+);
 
 userSchema.plugin(passportLocalMongoose);
 
@@ -103,17 +123,6 @@ passport.use(AurealiusUser.createStrategy());
 
 passport.serializeUser(AurealiusUser.serializeUser());
 passport.deserializeUser(AurealiusUser.deserializeUser());
-
-const entrySchema = new mongoose.Schema({
-  imageFile: String,
-  caption: String,
-  grouping: String,
-  userId: String
-}, {
-  timestamps: true
-});
-
-const Entry = new mongoose.model("entry", entrySchema);
 
 const groupSchema = new mongoose.Schema({
   name: String,
@@ -179,26 +188,21 @@ app.get("/user/:currentUserId", function(req, res) {
 
           let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
 
-          res.render("user", {
-            entries: foundEntries,
-            groupings: uniqueGroupings
+          AurealiusUser.find({_id: userIdentifier}).exec(function(err, userData) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.render("user", {
+                entries: foundEntries,
+                groupings: uniqueGroupings,
+                userInfo: userData
+              });
+            }
           });
         }
       }
     }
   });
-});
-
-app.post("/chosenCollection", function(req, res) {
-
-  const collectionChosen = req.body.userCollectionChosen;
-
-  if (req.isAuthenticated()) {
-    const currentUserId = req.user._id;
-
-    res.redirect("/user/" + currentUserId + "/collections/" + collectionChosen);
-  }
-
 });
 
 app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
@@ -322,8 +326,18 @@ app.get("/logout", function(req, res) {
 
 app.post("/register", function(req, res) {
 
+  const registeredFName = req.body.fName;
+  const registeredLName = req.body.lName;
+  const slicedLName = registeredLName.slice(0,1);
+  const timeStamp = Date.now();
+  const createdProfileName = registeredFName + slicedLName + timeStamp;
+
   AurealiusUser.register({
-    username: req.body.username
+    username: req.body.username,
+    firstName: registeredFName,
+    lastName: registeredLName,
+    profileName: createdProfileName,
+    bioImageFile: "defaulticon.png"
   }, req.body.password, function(err, user) {
     if (err) {
       console.log(err);
@@ -340,7 +354,7 @@ app.post("/", function(req, res) {
 
   const user = new AurealiusUser({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
   });
 
   req.login(user, function(err) {
@@ -359,7 +373,7 @@ app.post("/login", function(req, res) {
 
   const user = new AurealiusUser({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
   });
 
   req.login(user, function(err) {
@@ -415,7 +429,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
     if (err) {
       consoloe.log(err);
     } else {
-      if(groupingNames != "") {
+      if(groupingNames !== "") {
         Grouping.update(
           {name: collectionAllocator(), userId: currentUser},
           {$push: {entries: newEntry } }, function (err, success) {
@@ -436,8 +450,168 @@ app.post("/upload", upload.single("file"), function(req, res) {
       }
     }
   });
+  AurealiusUser.update(
+    {_id: currentUser},
+    {$push: {entries: newEntry } }, function (err, success) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Successfully added entry to aurealiusUsersDB.");
+      }
+    }
+  );
   newEntry.save();
   res.redirect("back");
+});
+
+app.post("/userUpload", upload.single("file"), function(req, res){
+
+function userFileExists() {
+  if (typeof req.file === "undefined") {
+    let userfileName = "";
+    return userfileName
+  } else {
+    let userfileName = req.file.filename;
+    return userfileName
+  }
+}
+
+const newImgFile = userFileExists();
+const currentUId = req.body.userProfileName;
+const currentUserFirstName = req.body.userFName;
+const currentUserLastName = req.body.userLName;
+
+AurealiusUser.find({_id:req.user.id}, function(err, foundUser) {
+  if(err) {
+    console.log(err);
+  } else {
+    if (newImgFile === "") {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {bioImageFile: foundUser[0].bioImageFile},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Kept existing user profile picture.");
+          }
+        }
+      );
+    } else {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {bioImageFile: newImgFile},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully updated profile picture.");
+          }
+        }
+      );
+    }
+  }
+});
+
+AurealiusUser.find({_id:req.user.id}, function(err, foundUser) {
+  if(err) {
+    console.log(err);
+  } else {
+    if (currentUId === "") {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {profileName: foundUser[0].profileName},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Kept existing user profile name.");
+          }
+        }
+      );
+    } else {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {profileName: currentUId},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully updated profile name.");
+          }
+        }
+      );
+    }
+  }
+});
+
+AurealiusUser.find({_id:req.user.id}, function(err, foundUser) {
+  if(err) {
+    console.log(err);
+  } else {
+    if (currentUserFirstName === "") {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {firstName: foundUser[0].firstName},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Kept existing user first name.");
+          }
+        }
+      );
+    } else {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {firstName: currentUserFirstName},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully updated user first name.");
+
+          }
+        }
+      );
+    }
+  }
+});
+
+AurealiusUser.find({_id:req.user.id}, function(err, foundUser) {
+  if(err) {
+    console.log(err);
+  } else {
+    if (currentUserFirstName === "") {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {lastName: foundUser[0].lastName},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Kept existing user last name.");
+          }
+        }
+      );
+    } else {
+      AurealiusUser.updateOne(
+        {_id: req.user.id},
+        {lastName: currentUserLastName},
+        function(err, success) {
+          if(err) {
+            console.log(err);
+          } else {
+            console.log("Successfully updated user last name.");
+          }
+        }
+      );
+    }
+  }
+});
+
+res.redirect("user");
+
 });
 
 app.post("/delete", function(req, res) {
@@ -466,6 +640,17 @@ app.post("/delete", function(req, res) {
   });
 });
 
+app.post("/chosenCollection", function(req, res) {
+
+  const collectionChosen = req.body.userCollectionChosen;
+
+  if (req.isAuthenticated()) {
+    const currentUserId = req.user._id;
+
+    res.redirect("/user/" + currentUserId + "/collections/" + collectionChosen);
+  }
+
+});
 
 //---SERVER---///
 
