@@ -4,14 +4,20 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
-
       <div class="userBio">
         <div class="userImageContainer">
+
+          <% if( userInfo[0].bioImageFile = "/assets/defaultusericon.png") { %>
+          <% var userImage = userInfo[0].bioImageFile %>
+          <% } else { %>
           <% var userImage = "/image/" + userInfo[0].bioImageFile %>
+          <% } %>
           <div class="userImage orientation" image="<%= userImage %>"></div>
         </div>
         <div class="userInfo">
-          <h4 class="text-center display-4"><%=userInfo[0].firstName + " " + userInfo[0].lastName %></h4>
+          <h4 class="text-center display-4">
+            <%=userInfo[0].firstName + " " + userInfo[0].lastName %>
+          </h4>
           <form action="/userUpload" method="POST" enctype="multipart/form-data">
             <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#userInfoModal">
               Edit
@@ -46,20 +52,15 @@
                             <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userInfo[0].lastName %>"></input>
                             <!-- <label for="editUserEmail">Email</label>
                             <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
-                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button"  value="Reset Email"</input>
-                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button"  value="Reset Password"</input>
-                            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account"</input>
+                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input> <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password"
+                              </input> <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input> </div> </div> </div> </div> <div class="modal-footer">
+                            <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>
+                    </div>
                   </div>
-                  <div class="modal-footer">
-                    <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </form>
         </div>
       </div>
@@ -87,18 +88,20 @@
               </div>
               <div class="modal-body">
                 <div class="form-group">
-                    <label for="collectionSelector">Choose Collection</label>
-                    <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
-                    <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
-                      <% if(groupings){ %>
-                      <% groupings.forEach(function(userCollectionName) { %>
-                        <option><%= userCollectionName %></option>
-                        <% }) %>
-                        <% } else { %>
-                        <p>No Collections to show!</p>
-                        <% } %>
-                      </select>
-                    </div>
+                  <label for="collectionSelector">Choose Collection</label>
+                  <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
+                  <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
+                    <% if(groupingData){ %>
+                    <% groupingData.forEach(function(userCollectionName) { %>
+                    <option>
+                      <%= userCollectionName.name %>
+                    </option>
+                    <% }) %>
+                    <% } else { %>
+                    <p>No Collections to show!</p>
+                    <% } %>
+                  </select>
+                </div>
               </div>
               <div class="modal-footer">
                 <input type="submit" value="Save" class="btn btn-primary btn-block" />
@@ -121,7 +124,6 @@
           </div>
         </div>
 
-
         <hr />
 
         <div class="activity">
@@ -130,9 +132,9 @@
           <div class="card card-body mb-3 cushion">
 
             <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
-              <% var hide = "" %>
+            <% var hide = "" %>
             <% } else { %>
-              <% var hide = "/image/" + entry.imageFile  } %>
+            <% var hide = "/image/" + entry.imageFile  } %>
 
             <div class="orientation" image="<%= hide %>"></div>
 
@@ -152,20 +154,21 @@
         </div>
 
         <div class="userCollections d-none">
-          <% if(groupings){ %>
-          <% groupings.forEach(function(userCollectionName) { %>
-            <form method="POST" action="/chosenCollection">
+          <% if(groupingData){ %>
+          <% groupingData.forEach(function(userCollection) { %>
+          <form method="POST" action="/chosenCollection">
             <div class="card card-body mb-3 text-center cushion">
-              <div class="capPad">
-                <button class="card-text" name="userCollectionChosen" value="<%= userCollectionName %>" onchange="this.form.submit()">
-                  <%= userCollectionName %>
-                </button>
+              <div class="collectionBackStop">
+                <div class="orientation collectionImg" image="/image/<%= userCollection.image %>""></div>
+                <button class=" collectionButton" name="userCollectionChosen" value="<%= userCollection.name %>" onchange="this.form.submit()">
+                  <%= userCollection.name %>
+                  </button>
+                </div>
               </div>
-            </div>
-            <% }) %>
-            <% } else { %>
-            <p>No Collections to show!</p>
-            <% } %>
+              <% }) %>
+              <% } else { %>
+              <p>No Collections to show!</p>
+              <% } %>
           </form>
         </div>
       </div>

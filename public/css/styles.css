@@ -1,3 +1,6 @@
+i {
+  size:3rem;
+}
 .entry-text {
 text-align: center;
 font-size: 2rem;
@@ -62,4 +65,56 @@ background-color: #000;
 
 .header-form-button {
   margin-right: 10px;
+}
+
+.collectionHeading {
+  position: relative;
+}
+
+.collectionHeadingEdit {
+  position: absolute;
+  top:30%;
+  bottom:70%;
+  right:0;
+}
+
+.collectionSocialBar {
+  /* position: relative; */
+}
+
+.collectionSocials {
+  word-spacing: .75rem;
+}
+
+.collectionDelete {
+  position: absolute;
+  right:3%;
+}
+
+.collectionBackStop {
+  position: relative;
+  padding-bottom: 75%;
+  height:0;
+  width: 75%;
+  margin: auto;
+  overflow: hidden;
+}
+
+.collectionImg {
+  position:absolute;
+  left:-25px;
+  margin: auto;
+  width: 135%;
+}
+
+.collectionButton {
+  position:absolute;
+  height: 100%;
+  width:100%;
+  font-size: 2rem;
+  color: white;
+  background-color: rgba(128,128,128,.5);
+  border-width: 0;
+  left:0;
+  top:0;
 }

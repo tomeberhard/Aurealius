@@ -30,18 +30,20 @@
               </div>
               <div class="modal-body">
                 <div class="form-group">
-                    <label for="collectionSelector">Choose Collection</label>
-                    <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
-                    <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
-                      <% if(groupings){ %>
-                      <% groupings.forEach(function(userCollectionName) { %>
-                        <option><%= userCollectionName %></option>
-                        <% }) %>
-                        <% } else { %>
-                        <p>No Collections to show!</p>
-                        <% } %>
-                      </select>
-                    </div>
+                  <label for="collectionSelector">Choose Collection</label>
+                  <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
+                  <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
+                    <% if(groupings){ %>
+                    <% groupings.forEach(function(userCollectionName) { %>
+                    <option>
+                      <%= userCollectionName %>
+                    </option>
+                    <% }) %>
+                    <% } else { %>
+                    <p>No Collections to show!</p>
+                    <% } %>
+                  </select>
+                </div>
               </div>
               <div class="modal-footer">
                 <input type="submit" value="Save" class="btn btn-primary btn-block" />
@@ -58,13 +60,15 @@
       <div class="card card-body mb-3 cushion">
 
         <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
-          <% var hide = "" %>
+        <% var hide = "" %>
         <% } else { %>
-          <% var hide = "/image/" + entry.imageFile  } %>
+        <% var hide = "/image/" + entry.imageFile  } %>
 
         <div class="orientation" image="<%= hide %>"></div>
         <div class="capPad">
-          <p class="card-text"><%= entry.caption %></p>
+          <p class="card-text">
+            <%= entry.caption %>
+          </p>
         </div>
       </div>
       <% }) %>

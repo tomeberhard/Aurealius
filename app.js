@@ -188,14 +188,72 @@ app.get("/user/:currentUserId", function(req, res) {
 
           let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
 
-          AurealiusUser.find({_id: userIdentifier}).exec(function(err, userData) {
+          Grouping.find({
+            userId: userIdentifier
+          }, function(err, foundGroupings) {
             if (err) {
               console.log(err);
             } else {
-              res.render("user", {
-                entries: foundEntries,
-                groupings: uniqueGroupings,
-                userInfo: userData
+              let uniqueGroupingEntries = [...new Set(foundGroupings.map(item => item.entries))];
+
+              uniqueGroupingEntries.reverse();
+
+              // console.log(uniqueGroupingEntries[1][0].imageFile);
+
+              let groupEntryImages = [];
+
+              if (uniqueGroupingEntries) {
+                uniqueGroupingEntries.forEach(function(uGEntry) {
+                  groupEntryImages.push(uGEntry[uGEntry.length-1].imageFile);
+                });
+              }
+
+              let groupingsArray = [];
+
+              if(uniqueGroupings) {
+
+                uniqueGroupings.forEach(function(cName) {
+
+                  let groupingsObjectData = new Object();
+                  groupingsObjectData.name = cName;
+                  groupingsObjectData.image = "";
+
+                  groupingsArray.push(groupingsObjectData);
+                });
+
+                var i;
+                for (i=0; i< groupingsArray.length; i++) {
+                  groupingsArray[i].image = groupEntryImages[i];
+                };
+
+              }
+
+              // console.log(groupingsArray);
+              //
+              // let columns = uniqueGroupings;
+              // let rows = groupEntryImages;
+              //
+              // var newarray = [],
+              // groupingInfo;
+              //
+              // for(var y = 0; y < rows.length; y++){
+              //   groupingInfo = {};
+              //   for(var i = 0; i < columns.length; i++){
+              //     groupingInfo[columns[i]] = rows[i];
+              //   }
+              //   newarray.push(groupingInfo);
+              // }
+
+              AurealiusUser.find({_id: userIdentifier}, function(err, userData) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  res.render("user", {
+                    entries: foundEntries,
+                    groupingData: groupingsArray,
+                    userInfo: userData
+                  });
+                }
               });
             }
           });
@@ -337,7 +395,7 @@ app.post("/register", function(req, res) {
     firstName: registeredFName,
     lastName: registeredLName,
     profileName: createdProfileName,
-    bioImageFile: "defaulticon.png"
+    bioImageFile: "/assets/defaultusericon.png"
   }, req.body.password, function(err, user) {
     if (err) {
       console.log(err);
@@ -429,7 +487,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
     if (err) {
       consoloe.log(err);
     } else {
-      if(groupingNames !== "") {
+      if(groupingNames != "") {
         Grouping.update(
           {name: collectionAllocator(), userId: currentUser},
           {$push: {entries: newEntry } }, function (err, success) {

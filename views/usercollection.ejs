@@ -5,7 +5,31 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
-      <h1 class="text-center display-4 my-4"><%= entries[0].grouping %></h1>
+      <div class="collectionHeading">
+        <h1 class="text-center display-4 my-4">
+          <%= entries[0].grouping %>
+        </h1>
+        <div class="collectionHeadingEdit">
+          <i class="fas fa-edit fa-2x"></i>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="collectionSocialBar">
+        <span class=collectionSocials>
+          <i class="fab fa-facebook fa-2x"></i>
+          <i class="fab fa-instagram fa-2x"></i>
+          <i class="fab fa-twitter fa-2x"></i>
+          <i class="fas fa-external-link-alt fa-2x"></i>
+        </span>
+        <span class=collectionDelete>
+          <i class="fas fa-trash fa-2x"></i>
+        </span>
+      </div>
+
+      <hr />
+
       <form action="/upload" method="POST" enctype="multipart/form-data">
         <div class="form-group">
           <textarea class="form-control" rows="3" name="caption" placeholder="Add a new gratitude entry to this collection..."></textarea>
@@ -14,22 +38,27 @@
             <input type="file" name="file" id="file" class="form-control-file" />
           </div>
         </div>
-        <input type="hidden" value="<%= entries[0].grouping %>" name="grouping"/>
-        <button type="submit" class="btn btn-primary btn-block" >
+        <input type="hidden" value="<%= entries[0].grouping %>" name="grouping" />
+        <button type="submit" class="btn btn-primary btn-block">
           Save
         </button>
       </form>
 
-    <hr />
+      <hr />
 
-    <% if(entries){ %>
-    <% entries.forEach(function(entry) { %>
-    <div class="card card-body mb-3 cushion">
-      <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
-      <div class="capPad">
-        <p class="card-text"><%= entry.caption %></p>
+      <% if(entries){ %>
+      <% entries.forEach(function(entry) { %>
+      <div class="card card-body mb-3 cushion">
+        <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
+        <div class="capPad">
+          <p class="card-text">
+            <%= entry.caption %>
+          </p>
+        </div>
+        <form method="POST" action="/delete">
+          <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
+        </form>
       </div>
-    </div>
       <% }) %>
       <% } else { %>
       <p>No entries to show!</p>
