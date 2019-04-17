@@ -66,9 +66,30 @@
 
         <div class="orientation" image="<%= hide %>"></div>
         <div class="capPad">
-          <p class="card-text">
-            <%= entry.caption %>
-          </p>
+          <div>
+            <div class="uNFavIcnContainer">
+              <div>
+                <h5><%= entry.userProfile %></h5>
+              </div>
+              <div class="favIcn">
+                <i class="far fa-heart fa-2x"></i>
+                <!-- <i class="fas far-heart fa-2x"></i> -->
+              </div>
+            </div>
+          </div>
+          <div>
+            <span class="aFSMIcons">
+              <i class="fab fa-facebook"></i>
+              <i class="fab fa-instagram"></i>
+              <i class="fab fa-twitter"></i>
+              <i class="fas fa-external-link-alt"></i>
+            </span>
+          </div>
+          <div>
+            <p class="card-text">
+              <%= entry.caption %>
+            </p>
+          </div>
         </div>
       </div>
       <% }) %>

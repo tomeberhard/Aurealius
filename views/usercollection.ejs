@@ -7,6 +7,7 @@
     <div class="col-md-6 m-auto">
       <div class="collectionHeading">
         <h1 class="text-center display-4 my-4">
+          <% if(entries){ %>
           <%= entries[0].grouping %>
         </h1>
         <div class="collectionHeadingEdit">
@@ -16,14 +17,14 @@
 
       <hr />
 
-      <div class="collectionSocialBar">
-        <span class=collectionSocials>
+      <div class="">
+        <span class="collectionSocials">
           <i class="fab fa-facebook fa-2x"></i>
           <i class="fab fa-instagram fa-2x"></i>
           <i class="fab fa-twitter fa-2x"></i>
           <i class="fas fa-external-link-alt fa-2x"></i>
         </span>
-        <span class=collectionDelete>
+        <span class="collectionDelete">
           <i class="fas fa-trash fa-2x"></i>
         </span>
       </div>
@@ -46,7 +47,6 @@
 
       <hr />
 
-      <% if(entries){ %>
       <% entries.forEach(function(entry) { %>
       <div class="card card-body mb-3 cushion">
         <div class="orientation" image="/image/<%= entry.imageFile %>"></div>

@@ -1,6 +1,5 @@
-i {
-  size:3rem;
-}
+/* -----------------------activity feed cards------------------------------- */
+
 .entry-text {
 text-align: center;
 font-size: 2rem;
@@ -8,9 +7,25 @@ color: #fff;
 background-color: #000;
 }
 
+.uNFavIcnContainer {
+  position: relative;
+}
+
+.favIcn {
+  position: absolute;
+  top: 0;
+  right:2%;
+}
+
+.aFSMIcons {
+word-spacing: .25rem
+}
+
 .orientation canvas {
   width: 100%;
 }
+
+/* -----------------------user profile edit------------------------------- */
 
 .form-padding {
   padding-top:5%;
@@ -23,7 +38,6 @@ background-color: #000;
 
 .userBio {
   text-align: center;
-
 }
 
 .userImageContainer {
@@ -79,16 +93,42 @@ background-color: #000;
 }
 
 .collectionSocialBar {
-  /* position: relative; */
+  width:75%;
+  margin: auto;
+  text-align: left;
+  position: relative;
+  border-style: solid;
+  border-width: 1px;
+  border-color: lightgray;
 }
 
 .collectionSocials {
   word-spacing: .75rem;
+  font-size: 1.5rem;
+  margin-left: 1%;
+}
+
+.usercollectionDelete {
+  position: absolute;
+  right:1%;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.cltDContainer {
+  position: absolute;
+  right:1%;
+  top: 50%;
+  transform: translateY(-50%);
+  /* vertical-align: middle; */
 }
 
 .collectionDelete {
-  position: absolute;
-  right:3%;
+  /* background-color: none; */
+  /* position: absolute; */
+  /* top: 50%;
+  bottom: 50%;
+  right:0; */
 }
 
 .collectionBackStop {
@@ -114,7 +154,9 @@ background-color: #000;
   font-size: 2rem;
   color: white;
   background-color: rgba(128,128,128,.5);
-  border-width: 0;
+  border-width: 1px;
+  border-color: lightgray;
+  border-style: solid;
   left:0;
   top:0;
 }
