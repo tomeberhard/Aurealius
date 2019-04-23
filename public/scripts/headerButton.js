@@ -1,5 +1,23 @@
-//---get collectin name from link---//
+//-------------------image preview------------------------------------------//
+  var loadFile = function(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+      var output = document.getElementById("bioImagePreview");
+      output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+    $("#bioImagePreview").removeClass("d-none");
+    $("#bioImage").addClass("d-none");
+  };
 
+
+//---close image preview when user presses "close" button---//
+var abortPreview = function(event){
+    $("#userBioForm")[0].reset();
+    $("#bioImagePreview").attr("src", "");
+    $("#bioImagePreview").addClass("d-none");
+    $("#bioImage").removeClass("d-none");
+};
 
 //---User collection pop-up field controls---//
 $("#collectionTextArea").on("keyup", function(){

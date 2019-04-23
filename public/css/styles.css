@@ -44,6 +44,7 @@ word-spacing: .25rem
   padding-top: 25px;
   padding-bottom: 25px;
 }
+
 .userImage {
   height: 200px;
   width:200px;
@@ -58,7 +59,7 @@ word-spacing: .25rem
   margin-bottom: 1.5rem;
 }
 
-.userImagePreview {
+.userImageframe{
   height:150px;
   width: 150px;
   border-style: solid;
@@ -67,6 +68,11 @@ word-spacing: .25rem
   overflow: hidden;
   margin: auto;
   margin-bottom: 15%;
+}
+
+/* -------------------CANT GET THIS TO WORK--------------------------------- */
+.userImagePreview.orientation canvas {
+  width: 150%;
 }
 
 .capPad {

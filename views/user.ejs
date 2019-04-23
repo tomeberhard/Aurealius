@@ -18,7 +18,7 @@
           <h4 class="text-center display-4">
             <%=userInfo[0].firstName + " " + userInfo[0].lastName %>
           </h4>
-          <form action="/userUpload" method="POST" enctype="multipart/form-data">
+          <form action="/userUpload" method="POST" id="userBioForm" enctype="multipart/form-data">
             <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#userInfoModal">
               <i class="fas fa-edit"></i> Edit
             </button>
@@ -37,10 +37,13 @@
                         <div class="row">
                           <div class="col">
                             <div class="userImagePreviewContainer">
-                              <div class="userImagePreview orientation" image="<%= userImage %>"></div>
+                              <div class="userImageframe">
+                                <div class="userImagePreview orientation" id="bioImage" image="<%= userImage %>"></div>
+                                <img id="bioImagePreview" class="userImagePreview d-none"/>
+                              </div>
                             </div>
                             <div class="custom-file mb-3">
-                              <input type="file" name="file" id="bioFile" class="form-control-file" />
+                              <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
                             </div>
                           </div>
                           <div class="col-6">
@@ -52,15 +55,21 @@
                             <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userInfo[0].lastName %>"></input>
                             <!-- <label for="editUserEmail">Email</label>
                             <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
-                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input> <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password"
-                              </input> <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input> </div> </div> </div> </div> <div class="modal-footer">
-                            <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
+                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password" </input>
+                            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div class="modal-footer">
+                      <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                      <button type="button" class="btn btn-secondary" id="userProfileEditClose" onclick="abortPreview(event)" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
+                </div>
+              </div>
+            </div>
           </form>
         </div>
       </div>
