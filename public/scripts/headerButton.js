@@ -55,18 +55,45 @@ $(".viewerChoice").click(function(){
   userViewChoice(btnClicked);
 });
 
+//---favorite-unfavorite options---//
+// $("#favUnfav").click(function(){
+//   let btnClicked = $(this);
+//
+//   favoriteUnFavorite(btnClicked);
+// });
+
 //---functions---//
 
 function userViewChoice (btnClicked) {
 
   let viewSelection = $(btnClicked).attr("id");
+  // alert("hello");
 
   if (viewSelection === "showActvityFeed") {
     $(".activity").removeClass("d-none");
+    $(".favoritesActvity").addClass("d-none");
     $(".userCollections").addClass("d-none");
   } else {
-    $(".activity").addClass("d-none");
-    $(".userCollections").removeClass("d-none");
+    if (viewSelection === "showCollections") {
+      $(".activity").addClass("d-none");
+      $(".favoritesActvity").addClass("d-none");
+      $(".userCollections").removeClass("d-none");
+    } else {
+      $(".activity").addClass("d-none");
+      $(".favoritesActvity").removeClass("d-none");
+      $(".userCollections").addClass("d-none");
+    }
   }
-
 }
+
+// function favoriteUnFavorite (btnClicked) {
+//
+//   if ($("#unFav").hasClass("d-none")){
+//     $("#fav").addClass("d-none");
+//     $("#unFav").removeClass("d-none");
+//   } else {
+//     $("#fav").removeClass("d-none");
+//     $("#unFav").addClass("d-none");
+//   }
+//
+// }

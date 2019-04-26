@@ -122,14 +122,13 @@
       </form>
 
       <hr />
-      <!-- note to self, eventually look to the btn-group for nice solution here -->
+
       <div class="container">
         <div class="row">
-          <div class="col-sm m-auto ctr">
-            <button type="button" id="showActvityFeed" class="btn btn-secondary btn-lg btn-block viewerChoice">Activity</button>
-          </div>
-          <div class="col-sm m-auto ctr">
-            <button type="button" id="showCollections" class="btn btn-secondary btn-lg btn-block viewerChoice">Collections</button>
+          <div class="btn-group col-sm m-auto ctr" role="group" aria-label="">
+            <button type="button" id="showActvityFeed" class="btn btn-outline-secondary viewerChoice userBtnBar">Activity</button>
+            <button type="button" id="showFavsActvityFeed" class="btn btn-outline-secondary viewerChoice userBtnBar">Favorites</button>
+            <button type="button" id="showCollections" class="btn btn-outline-secondary viewerChoice userBtnBar">Collections</button>
           </div>
         </div>
 
@@ -146,35 +145,108 @@
             <% var hide = "/image/" + entry.imageFile  } %>
 
             <div class="orientation" image="<%= hide %>"></div>
-
             <div class="capPad">
               <div>
                 <div class="uNFavIcnContainer">
-                  <div class="favIcn">
-                    <i class="far fa-heart fa-2x"></i>
-                    <!-- <i class="fas far-heart fa-2x"></i> -->
-                  </div>
+                  <span class="aFSMIcons">
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fas fa-external-link-alt"></i>
+                  </span>
+                  <span>
+                    <form method="POST" action="/favorite">
+                      <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
+
+                        <% var favs = JSON.stringify(entry.favoriteUsers) %>
+                        <% if (favs.includes(userInfo[0]._id)) { %>
+                        <% var faved = "" %>
+                        <% var notFaved = "d-none" %>
+                        <% } else { %>
+                        <% var faved = "d-none" %>
+                        <% var notFaved = "" %>
+                        <% } %>
+
+                        <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
+                        <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+                      </button>
+                    </form>
+                  </span>
                 </div>
-              </div>
-              <div>
-                <span class="aFSMIcons">
-                  <i class="fab fa-facebook"></i>
-                  <i class="fab fa-instagram"></i>
-                  <i class="fab fa-twitter"></i>
-                  <i class="fas fa-external-link-alt"></i>
-                </span>
               </div>
               <p class="card-text">
                 <%= entry.caption %>
               </p>
             </div>
-            <form method="POST" action="/delete">
-              <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
-            </form>
+            <div>
+              <form method="POST" action="/delete">
+                <button class="deleteIcn" value="<%= entry.imageFile %>" name="deleteButton">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
           </div>
           <% }) %>
           <% } else { %>
           <p>No entries to show!</p>
+          <% } %>
+        </div>
+
+        <div class="favoritesActvity d-none">
+          <% if(entries){ %>
+          <% entries.forEach(function(entry) { %>
+          <div class="card card-body mb-3 cushion">
+
+            <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
+            <% var hide = "" %>
+            <% } else { %>
+            <% var hide = "/image/" + entry.imageFile  } %>
+
+            <div class="orientation" image="<%= hide %>"></div>
+            <div class="capPad">
+              <div>
+                <div class="uNFavIcnContainer">
+                  <span class="aFSMIcons">
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fas fa-external-link-alt"></i>
+                  </span>
+                  <span>
+                    <form method="POST" action="/favorite">
+                      <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
+
+                        <% var favs = JSON.stringify(entry.favoriteUsers) %>
+                        <% if (favs.includes(userInfo[0]._id)) { %>
+                        <% var faved = "" %>
+                        <% var notFaved = "d-none" %>
+                        <% } else { %>
+                        <% var faved = "d-none" %>
+                        <% var notFaved = "" %>
+                        <% } %>
+
+                        <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
+                        <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+                      </button>
+                    </form>
+                  </span>
+                </div>
+              </div>
+              <p class="card-text">
+                <%= entry.caption %>
+              </p>
+            </div>
+            <div>
+              <form method="POST" action="/delete">
+                <button class="deleteIcn" value="<%= entry.imageFile %>" name="deleteButton">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+          <% }) %>
+          <% } else { %>
+          <p>No favorites to show!</p>
           <% } %>
         </div>
 
@@ -197,10 +269,9 @@
                     <i class="fab fa-twitter"></i>
                     <i class="fas fa-external-link-alt"></i>
                   </span>
-      <!-- NEED TO GET THIS WORKING  -->
                   <span class="cltDContainer">
                     <form method="POST" action="/deleteCollection">
-                      <button class="collectionDelete" value="<%= userCollection.name %>" name="deleteCollectionButton">
+                      <button class="deleteIcn" value="<%= userCollection.name %>" name="deleteCollectionButton">
                         <i class="fas fa-trash"></i>
                       </button>
                     </form>

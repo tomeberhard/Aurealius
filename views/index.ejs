@@ -68,13 +68,27 @@
         <div class="capPad">
           <div>
             <div class="uNFavIcnContainer">
-              <div>
+              <span>
                 <h5><%= entry.userProfile %></h5>
-              </div>
-              <div class="favIcn">
-                <i class="far fa-heart fa-2x"></i>
-                <!-- <i class="fas far-heart fa-2x"></i> -->
-              </div>
+              </span>
+              <span>
+                <form method="POST" action="/favorite">
+                  <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
+
+                    <% var favs = JSON.stringify(entry.favoriteUsers) %>
+                    <% if (favs.includes(userData._id)) { %>
+                    <% var faved = "" %>
+                    <% var notFaved = "d-none" %>
+                    <% } else { %>
+                    <% var faved = "d-none" %>
+                    <% var notFaved = "" %>
+                    <% } %>
+
+                    <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
+                    <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+                  </button>
+                </form>
+              </span>
             </div>
           </div>
           <div>

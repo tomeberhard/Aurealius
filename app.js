@@ -25,8 +25,7 @@ const app = express();
 
 app.set("view engine", "ejs");
 
-
-//--Middleware--//
+//-----------------------Middleware-----------------------------------//
 app.use(express.static("public"));
 
 app.use(bodyParser.urlencoded({
@@ -45,7 +44,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-//--Create Mongo Connection--//
+//-------------------Create Mongo Connection--------------------------//
 mongoose.connect("mongodb://localhost:27017/aurealiusUsersDB", {
   useNewUrlParser: true
 });
@@ -55,16 +54,16 @@ mongoose.set('useCreateIndex', true);
 const mongoURI = "mongodb://localhost:27017/aurealiusUsersDB";
 const conn = mongoose.createConnection(mongoURI);
 
-//--Init GridFs--//
+//--------------------Init GridFs--------------------------------------//
 let gfs;
 
-//---Init Stream---//
+//--------------------Init Stream--------------------------------------//
 conn.once("open", function() {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads");
 });
 
-//--Create storage engine--//
+//--------------------Create storage engine----------------------------//
 const storage = new GridFsStorage({
   url: mongoURI,
   file: function(req, file) {
@@ -88,7 +87,7 @@ const upload = multer({
   storage
 });
 
-//---Mongo Moongoose Models---//
+//---------------------Mongo Moongoose Models--------------------------//
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
@@ -96,6 +95,7 @@ const entrySchema = new mongoose.Schema({
   userId: String,
   // profileName: [userSchema],
   userProfile: String,
+  favoriteUsers: Array
 }, {
   timestamps: true
 });
@@ -110,7 +110,10 @@ const userSchema = new mongoose.Schema({
   bioImageFile: String,
   googleId: String,
   facebookId: String,
-  entries: [entrySchema]
+  entries: [entrySchema],
+  favorites: [entrySchema],
+  followers: Array,
+  following: Array
 }, {
   timestamps: true
 });
@@ -135,7 +138,7 @@ const groupSchema = new mongoose.Schema({
 const Grouping = new mongoose.model("grouping", groupSchema);
 
 
-//---Get Requests---///
+//-------------------Get Requests-----------------------------------------///
 
 app.get("/index", function(req, res) {
 
@@ -148,11 +151,14 @@ app.get("/index", function(req, res) {
       if (foundEntries) {
         if (req.isAuthenticated()) {
 
+          let userInfo = req.user;
+
           let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
 
           res.render("index", {
             entries: foundEntries,
-            groupings: uniqueGroupings
+            groupings: uniqueGroupings,
+            userData: userInfo
           });
         }
       }
@@ -172,656 +178,791 @@ app.get("/user", function(req, res) {
 
 app.get("/user/:currentUserId", function(req, res) {
 
-      const userIdentifier = req.params.currentUserId;
+  const userIdentifier = req.params.currentUserId;
 
-      //---Render the entries--//
-      Entry.find({
-        userId: userIdentifier
-      }).sort({
-        updatedAt: -1
-      }).exec(function(err, foundEntries) {
+  //---Render the entries--//
+  Entry.find({
+    userId: userIdentifier
+  }).sort({
+    updatedAt: -1
+  }).exec(function(err, foundEntries) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundEntries) {
+        if (req.isAuthenticated()) {
+
+          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+
+          Grouping.find({
+            entries: {
+              $all: [{
+                $elemMatch: {
+                  userId: userIdentifier
+                }
+              }]
+            }
+          }).exec(function(err, foundGroupings) {
+            if (err) {
+              console.log(err);
+            } else {
+              let uniqueGroupingEntries = [...new Set(foundGroupings.map(item => item.entries))];
+
+              uniqueGroupingEntries.reverse();
+
+              // console.log(uniqueGroupingEntries[1][0].imageFile);
+
+              let groupEntryImages = [];
+
+              if (uniqueGroupingEntries) {
+                uniqueGroupingEntries.forEach(function(uGEntry) {
+                  groupEntryImages.push(uGEntry[uGEntry.length - 1].imageFile);
+                });
+              }
+
+              let groupingsArray = [];
+
+              if (uniqueGroupings) {
+
+                uniqueGroupings.forEach(function(cName) {
+
+                  let groupingsObjectData = new Object();
+                  groupingsObjectData.name = cName;
+                  groupingsObjectData.image = "";
+
+                  groupingsArray.push(groupingsObjectData);
+                });
+
+                var i;
+                for (i = 0; i < groupingsArray.length; i++) {
+                  groupingsArray[i].image = groupEntryImages[i];
+                };
+
+              }
+
+              AurealiusUser.find({
+                _id: userIdentifier
+              }, function(err, userData) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  res.render("user", {
+                    entries: foundEntries,
+                    groupingData: groupingsArray,
+                    userInfo: userData
+                  });
+                }
+              });
+            }
+          });
+        }
+      }
+    }
+  });
+});
+
+app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
+
+  const userIdentifier = req.params.currentUserId;
+  const grouping = req.params.grouping;
+
+  //---Render the entries--//
+  Entry.find({
+    userId: userIdentifier,
+    grouping: grouping
+  }).sort({
+    updatedAt: -1
+  }).exec(function(err, foundEntries) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundEntries) {
+        if (req.isAuthenticated()) {
+
+          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+
+          res.render("usercollection", {
+            entries: foundEntries,
+            groupings: uniqueGroupings
+          });
+        }
+      }
+    }
+  });
+});
+
+
+//--------------------display all files in json-----------------------------//
+app.get("/files", function(req, res) {
+  gfs.files.find().toArray(function(err, files) {
+    //-check if files exist-//
+    if (!files || files.length === 0) {
+      return res.status(404).json({
+        err: "No Files Exist."
+      });
+    } else {
+      //-files exist-//
+      return res.json(files);
+    }
+  });
+});
+
+//--filename specific path, display single file object----------------------//
+app.get("/files/:filename", function(req, res) {
+  gfs.files.findOne({
+    filename: req.params.filename
+  }, function(err, file) {
+    if (!file || file.length === 0) {
+      return res.status(404).json({
+        err: "No File Exist."
+      });
+    } else {
+      //-file exist-//
+      return res.json(file);
+    }
+  })
+
+});
+
+//---------------filename specific path------------------------------------//
+app.get("/image/:filename", function(req, res) {
+  (gfs.files.findOne({
+    filename: req.params.filename
+  }, function(err, file) {
+    if (!file || file.length === 0) {
+      return res.status(404).json({
+        err: "No File Exist."
+      });
+    } else {
+      //--Check if file an image file--//
+      if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
+        //-read output to browser-//
+        res.set("Content-Type", "image/jpeg");
+        const readstream = gfs.createReadStream(file.filename);
+        readstream.pipe(res);
+      } else {
+        res.status(404).json({
+          err: "Not an Image."
+        });
+      }
+    }
+  }));
+});
+
+app.get("/", function(req, res) {
+  res.render("home");
+});
+
+app.get("/about", function(req, res) {
+  res.render("about");
+});
+
+app.get("/privacy", function(req, res) {
+  res.render("privacy");
+});
+
+app.get("/terms", function(req, res) {
+  res.render("terms");
+});
+
+app.get("/register", function(req, res) {
+  res.render("register");
+});
+
+app.get("/login", function(req, res) {
+  res.render("login");
+});
+
+app.get("/logout", function(req, res) {
+  req.logout();
+  res.redirect("/");
+});
+
+//------------------------POST Requests--------------------------------///
+
+app.post("/register", function(req, res) {
+
+  const registeredFName = req.body.fName;
+  const registeredLName = req.body.lName;
+  const slicedLName = registeredLName.slice(0, 1);
+  const timeStamp = Date.now();
+  const createdProfileName = registeredFName + slicedLName + timeStamp;
+
+  AurealiusUser.register({
+    username: req.body.username,
+    firstName: registeredFName,
+    lastName: registeredLName,
+    profileName: createdProfileName,
+    bioImageFile: "/assets/defaultusericon.png"
+  }, req.body.password, function(err, user) {
+    if (err) {
+      console.log(err);
+      res.redirect("/register");
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("/index");
+      });
+    }
+  });
+});
+
+app.post("/", function(req, res) {
+
+  const user = new AurealiusUser({
+    username: req.body.username,
+    password: req.body.password,
+  });
+
+  req.login(user, function(err) {
+    if (err) {
+      console.log(err);
+      res.redirect("login")
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("index");
+      });
+    }
+  });
+});
+
+app.post("/login", function(req, res) {
+
+  const user = new AurealiusUser({
+    username: req.body.username,
+    password: req.body.password,
+  });
+
+  req.login(user, function(err) {
+    if (err) {
+      console.log(err);
+      res.redirect("login")
+    } else {
+      passport.authenticate("local")(req, res, function() {
+        res.redirect("index");
+      });
+    }
+  });
+});
+
+app.post("/upload", upload.single("file"), function(req, res) {
+
+  function fileExists() {
+    if (typeof req.file === "undefined") {
+      let fileName = "NOTHING TO SEE HERE";
+      return fileName
+    } else {
+      let fileName = req.file.filename;
+      return fileName
+    }
+  }
+
+  function collectionAllocator() {
+    const userCollectionChoice = req.body.grouping;
+
+    if (userCollectionChoice === "") {
+      let today = new Date();
+      let dd = String(today.getDate());
+      let mm = String(today.getMonth());
+      let yyyy = today.getFullYear();
+
+      const month = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug",
+        "Sept", "Oct", "Nov", "Dec"
+      ]
+
+      today = month[mm] + " " + dd + ", " + yyyy;
+      return today;
+    } else {
+      return userCollectionChoice;
+    }
+  }
+
+  const currentUser = req.user.id;
+  const currentUserProfile = req.user.profileName;
+
+  const newEntry = new Entry({
+    imageFile: fileExists(),
+    caption: req.body.caption,
+    grouping: collectionAllocator(),
+    userId: currentUser,
+    userProfile: currentUserProfile
+  });
+
+  Grouping.find({
+    name: collectionAllocator()
+    // userId: currentUser
+  }, function(err, groupingNames) {
+    if (err) {
+      consoloe.log(err);
+    } else {
+      if (groupingNames != "") {
+        Grouping.update({
+          name: collectionAllocator()
+          // userId: currentUser
+        }, {
+          $push: {
+            entries: newEntry
+          }
+        }, function(err, success) {
           if (err) {
             console.log(err);
           } else {
-            if (foundEntries) {
-              if (req.isAuthenticated()) {
+            console.log("Successfully added entry to existing grouping.");
+          }
+        });
+      } else {
+        const newGrouping = new Grouping({
+          name: collectionAllocator(),
+          entries: newEntry
+          // userId: currentUser
+        });
+        newGrouping.save();
+      }
+    }
+  });
 
-                let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+  AurealiusUser.update({
+    _id: currentUser
+  }, {
+    $push: {
+      entries: newEntry
+    }
+  }, function(err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully added entry to aurealiusUsersDB.");
+    }
+  });
+  newEntry.save();
+  res.redirect("back");
+});
 
-                Grouping.find({
-                    entries: {
-                      $all: [{
-                        $elemMatch: {
-                          userId: userIdentifier
-                        }
-                      }]
-                    }
-                  }).exec(function(err, foundGroupings) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      let uniqueGroupingEntries = [...new Set(foundGroupings.map(item => item.entries))];
+app.post("/userUpload", upload.single("file"), function(req, res) {
 
-                      uniqueGroupingEntries.reverse();
+  function userFileExists() {
+    if (typeof req.file === "undefined") {
+      let userfileName = "";
+      return userfileName
+    } else {
+      let userfileName = req.file.filename;
+      return userfileName
+    }
+  }
 
-                      // console.log(uniqueGroupingEntries[1][0].imageFile);
+  const newImgFile = userFileExists();
+  const currentUId = req.body.userProfileName;
+  const currentUserFirstName = req.body.userFName;
+  const currentUserLastName = req.body.userLName;
 
-                      let groupEntryImages = [];
-
-                      if (uniqueGroupingEntries) {
-                        uniqueGroupingEntries.forEach(function(uGEntry) {
-                          groupEntryImages.push(uGEntry[uGEntry.length - 1].imageFile);
-                        });
-                      }
-
-                      let groupingsArray = [];
-
-                      if (uniqueGroupings) {
-
-                        uniqueGroupings.forEach(function(cName) {
-
-                          let groupingsObjectData = new Object();
-                          groupingsObjectData.name = cName;
-                          groupingsObjectData.image = "";
-
-                          groupingsArray.push(groupingsObjectData);
-                        });
-
-                        var i;
-                        for (i = 0; i < groupingsArray.length; i++) {
-                          groupingsArray[i].image = groupEntryImages[i];
-                        };
-
-                      }
-
-                      // console.log(groupingsArray);
-                      //
-                      // let columns = uniqueGroupings;
-                      // let rows = groupEntryImages;
-                      //
-                      // var newarray = [],
-                      // groupingInfo;
-                      //
-                      // for(var y = 0; y < rows.length; y++){
-                      //   groupingInfo = {};
-                      //   for(var i = 0; i < columns.length; i++){
-                      //     groupingInfo[columns[i]] = rows[i];
-                      //   }
-                      //   newarray.push(groupingInfo);
-                      // }
-
-                      AurealiusUser.find({
-                        _id: userIdentifier
-                      }, function(err, userData) {
-                        if (err) {
-                          console.log(err);
-                        } else {
-                          res.render("user", {
-                            entries: foundEntries,
-                            groupingData: groupingsArray,
-                            userInfo: userData
-                          });
-                        }
-                      });
-                    }
-                  });
-                }
-              }
-            }
-          });
-      });
-
-    app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
-
-      const userIdentifier = req.params.currentUserId;
-      const grouping = req.params.grouping;
-
-      //---Render the entries--//
-      Entry.find({
-        userId: userIdentifier,
-        grouping: grouping
-      }).sort({
-        updatedAt: -1
-      }).exec(function(err, foundEntries) {
-        if (err) {
-          console.log(err);
-        } else {
-          if (foundEntries) {
-            if (req.isAuthenticated()) {
-
-              let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
-
-              res.render("usercollection", {
-                entries: foundEntries,
-                groupings: uniqueGroupings
-              });
+  AurealiusUser.find({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (newImgFile === "") {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            bioImageFile: foundUser[0].bioImageFile
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Kept existing user profile picture.");
             }
           }
-        }
-      });
-    });
-
-
-    //--------------------display all files in json-----------------------------//
-    app.get("/files", function(req, res) {
-      gfs.files.find().toArray(function(err, files) {
-        //-check if files exist-//
-        if (!files || files.length === 0) {
-          return res.status(404).json({
-            err: "No Files Exist."
-          });
-        } else {
-          //-files exist-//
-          return res.json(files);
-        }
-      });
-    });
-
-    //--filename specific path, display single file object--//
-    app.get("/files/:filename", function(req, res) {
-      gfs.files.findOne({
-        filename: req.params.filename
-      }, function(err, file) {
-        if (!file || file.length === 0) {
-          return res.status(404).json({
-            err: "No File Exist."
-          });
-        } else {
-          //-file exist-//
-          return res.json(file);
-        }
-      })
-
-    });
-
-    //--filename specific path--//
-    app.get("/image/:filename", function(req, res) {
-      (gfs.files.findOne({
-        filename: req.params.filename
-      }, function(err, file) {
-        if (!file || file.length === 0) {
-          return res.status(404).json({
-            err: "No File Exist."
-          });
-        } else {
-          //--Check if file an image file--//
-          if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
-            //-read output to browser-//
-            res.set("Content-Type", "image/jpeg");
-            const readstream = gfs.createReadStream(file.filename);
-            readstream.pipe(res);
-          } else {
-            res.status(404).json({
-              err: "Not an Image."
-            });
+        );
+      } else {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            bioImageFile: newImgFile
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully updated profile picture.");
+            }
           }
-        }
-      }));
-    });
+        );
+      }
+    }
+  });
 
-    app.get("/", function(req, res) {
-      res.render("home");
-    });
+  AurealiusUser.find({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (currentUId === "") {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            profileName: foundUser[0].profileName
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Kept existing user profile name.");
+            }
+          }
+        );
+      } else {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            profileName: currentUId
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully updated profile name.");
+            }
+          }
+        );
+      }
+    }
+  });
 
-    app.get("/about", function(req, res) {
-      res.render("about");
-    });
+  AurealiusUser.find({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (currentUserFirstName === "") {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            firstName: foundUser[0].firstName
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Kept existing user first name.");
+            }
+          }
+        );
+      } else {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            firstName: currentUserFirstName
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully updated user first name.");
+            }
+          }
+        );
+      }
+    }
+  });
 
-    app.get("/privacy", function(req, res) {
-      res.render("privacy");
-    });
+  AurealiusUser.find({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (currentUserFirstName === "") {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            lastName: foundUser[0].lastName
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Kept existing user last name.");
+            }
+          }
+        );
+      } else {
+        AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            lastName: currentUserLastName
+          },
+          function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully updated user last name.");
+            }
+          }
+        );
+      }
+    }
+  });
 
-    app.get("/terms", function(req, res) {
-      res.render("terms");
-    });
+  res.redirect("user");
 
-    app.get("/register", function(req, res) {
-      res.render("register");
-    });
+});
 
-    app.get("/login", function(req, res) {
-      res.render("login");
-    });
+app.post("/favorite", function(req, res) {
 
-    app.get("/logout", function(req, res) {
-      req.logout();
-      res.redirect("/");
-    });
+  console.log(typeof req.body.favoriteButton);
+  console.log(req.body.favoriteButton);
 
-    //------------------------POST Requests-----------------------------------///
+//-----------------NEED TO GET THE USER FAVORITES PUSH WORKING---------------////
+  Entry.find({
+    _id: req.body.favoriteButton
+  }, function(err, foundEntry) {
 
-    app.post("/register", function(req, res) {
-
-      const registeredFName = req.body.fName;
-      const registeredLName = req.body.lName;
-      const slicedLName = registeredLName.slice(0, 1);
-      const timeStamp = Date.now();
-      const createdProfileName = registeredFName + slicedLName + timeStamp;
-
-      AurealiusUser.register({
-        username: req.body.username,
-        firstName: registeredFName,
-        lastName: registeredLName,
-        profileName: createdProfileName,
-        bioImageFile: "/assets/defaultusericon.png"
-      }, req.body.password, function(err, user) {
-        if (err) {
-          console.log(err);
-          res.redirect("/register");
-        } else {
-          passport.authenticate("local")(req, res, function() {
-            res.redirect("/index");
-          });
-        }
-      });
-    });
-
-    app.post("/", function(req, res) {
-
-      const user = new AurealiusUser({
-        username: req.body.username,
-        password: req.body.password,
-      });
-
-      req.login(user, function(err) {
-        if (err) {
-          console.log(err);
-          res.redirect("login")
-        } else {
-          passport.authenticate("local")(req, res, function() {
-            res.redirect("index");
-          });
-        }
-      });
-    });
-
-    app.post("/login", function(req, res) {
-
-      const user = new AurealiusUser({
-        username: req.body.username,
-        password: req.body.password,
-      });
-
-      req.login(user, function(err) {
-        if (err) {
-          console.log(err);
-          res.redirect("login")
-        } else {
-          passport.authenticate("local")(req, res, function() {
-            res.redirect("index");
-          });
-        }
-      });
-    });
-
-    app.post("/upload", upload.single("file"), function(req, res) {
-
-      function fileExists() {
-        if (typeof req.file === "undefined") {
-          let fileName = "NOTHING TO SEE HERE";
-          return fileName
-        } else {
-          let fileName = req.file.filename;
-          return fileName
+    AurealiusUser.find({
+      _id: req.user.id,
+      favorites: {$all: {
+        _id: req.body.favoriteButton
         }
       }
-
-      function collectionAllocator() {
-        const userCollectionChoice = req.body.grouping;
-
-        if (userCollectionChoice === "") {
-          let today = new Date();
-          let dd = String(today.getDate());
-          let mm = String(today.getMonth());
-          let yyyy = today.getFullYear();
-
-          const month = ["Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug",
-            "Sept", "Oct", "Nov", "Dec"
-          ]
-
-          today = month[mm] + " " + dd + ", " + yyyy;
-          return today;
-        } else {
-          return userCollectionChoice;
-        }
-      }
-
-      const currentUser = req.user.id;
-      const currentUserProfile = req.user.profileName;
-
-      const newEntry = new Entry({
-        imageFile: fileExists(),
-        caption: req.body.caption,
-        grouping: collectionAllocator(),
-        userId: currentUser,
-        userProfile: currentUserProfile
-      });
-
-      Grouping.find({
-        name: collectionAllocator()
-        // userId: currentUser
-      }, function(err, groupingNames) {
-        if (err) {
-          consoloe.log(err);
-        } else {
-          if (groupingNames != "") {
-            Grouping.update({
-              name: collectionAllocator()
-              // userId: currentUser
-            }, {
-              $push: {
-                entries: newEntry
+    }, function(err, userWfav){
+      if (err) {
+        console.log(err);
+      } else {
+        if (userWfav) {
+          AurealiusUser.updateOne({
+            _id: req.user.id
+          },
+            {$pull: {
+              favorites: foundEntry
               }
-            }, function(err, success) {
+            }, function(err, success){
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully removed entry from favorites.")
+            }
+          });
+        } else {
+          AurealiusUser.updateOne({
+            _id: req.user.id
+          },
+            {$push: {
+              favorites: foundEntry
+              }
+            },function(err, success){
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully added entry to favorites.")
+            }
+          });
+        }
+      }
+    })
+
+  });
+
+  // AurealiusUser.find({
+  //   _id: req.user.id,
+  //   favorites: {$all: {
+  //     _id: req.body.favoriteButton
+  //     }
+  //   }
+  // }, function(err, foundFavs) {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     if (foundFavs) {
+  //       AurealiusUser.updateOne({
+  //           favorites: {
+  //             _id: req.body.favoriteButton._id
+  //           },
+  //         }, {
+  //           $pull: {
+  //             favorites: req.body.favoriteButton
+  //           }
+  //         },
+  //           function(err, success) {
+  //             if (err) {
+  //               console.log(err);
+  //             } else {
+  //               console.log("Successfully removed from user favorite entries.");
+  //             }
+  //           }
+  //         );
+  //       console.log(foundFavs);
+  //       } else {
+  //         AurealiusUser.updateOne({
+  //           _id: req.user.id
+  //           }, {
+  //             $push: {
+  //               favorites: req.body.favoriteButton
+  //             }
+  //           },
+  //             function(err, success) {
+  //               if (err) {
+  //                 console.log(err);
+  //               } else {
+  //                 console.log("Successfully added to user favorite entries.");
+  //               }
+  //             }
+  //         );
+  //       }
+  //     }
+  //   }
+  // );
+
+  Entry.findOne({
+    _id: req.body.favoriteButton,
+    favoriteUsers: {$all: [req.user.id]},
+  }, function(err, foundFavUser) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundFavUser) {
+        Entry.updateOne({
+            _id: req.body.favoriteButton
+          }, {
+            $pull: {
+              favoriteUsers: req.user.id
+            }
+          },
+            function(err, success) {
               if (err) {
                 console.log(err);
               } else {
-                console.log("Successfully added entry to existing grouping.");
+                console.log("Successfully unfavorited entry.");
               }
-            });
-          } else {
-            const newGrouping = new Grouping({
-              name: collectionAllocator(),
-              entries: newEntry
-              // userId: currentUser
-            });
-            newGrouping.save();
+            }
+          );
+        } else {
+          Entry.updateOne({
+              _id: req.body.favoriteButton
+            }, {
+              $push: {
+                favoriteUsers: req.user.id
+              }
+            },
+              function(err, success) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Successfully favorited entry.");
+                }
+              }
+            );
           }
-        }
-      });
-
-      AurealiusUser.update({
-        _id: currentUser
-      }, {
-        $push: {
-          entries: newEntry
-        }
-      }, function(err, success) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Successfully added entry to aurealiusUsersDB.");
-        }
-      });
-      newEntry.save();
-      res.redirect("back");
-    });
-
-    app.post("/userUpload", upload.single("file"), function(req, res) {
-
-      function userFileExists() {
-        if (typeof req.file === "undefined") {
-          let userfileName = "";
-          return userfileName
-        } else {
-          let userfileName = req.file.filename;
-          return userfileName
         }
       }
+    );
 
-      const newImgFile = userFileExists();
-      const currentUId = req.body.userProfileName;
-      const currentUserFirstName = req.body.userFName;
-      const currentUserLastName = req.body.userLName;
+  res.redirect("back");
 
-      AurealiusUser.find({
-        _id: req.user.id
-      }, function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
-          if (newImgFile === "") {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                bioImageFile: foundUser[0].bioImageFile
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Kept existing user profile picture.");
-                }
-              }
-            );
-          } else {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                bioImageFile: newImgFile
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Successfully updated profile picture.");
-                }
-              }
-            );
-          }
-        }
-      });
+});
 
-      AurealiusUser.find({
-        _id: req.user.id
-      }, function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
-          if (currentUId === "") {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                profileName: foundUser[0].profileName
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Kept existing user profile name.");
-                }
-              }
-            );
-          } else {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                profileName: currentUId
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Successfully updated profile name.");
-                }
-              }
-            );
-          }
-        }
-      });
+app.post("/delete", function(req, res) {
 
-      AurealiusUser.find({
-        _id: req.user.id
-      }, function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
-          if (currentUserFirstName === "") {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                firstName: foundUser[0].firstName
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Kept existing user first name.");
-                }
-              }
-            );
-          } else {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                firstName: currentUserFirstName
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Successfully updated user first name.");
-
-                }
-              }
-            );
-          }
-        }
-      });
-
-      AurealiusUser.find({
-        _id: req.user.id
-      }, function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
-          if (currentUserFirstName === "") {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                lastName: foundUser[0].lastName
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Kept existing user last name.");
-                }
-              }
-            );
-          } else {
-            AurealiusUser.updateOne({
-                _id: req.user.id
-              }, {
-                lastName: currentUserLastName
-              },
-              function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Successfully updated user last name.");
-                }
-              }
-            );
-          }
-        }
-      });
-
-      res.redirect("user");
-
-    });
-
-    app.post("/delete", function(req, res) {
-
-      Entry.deleteOne({
-        imageFile: req.body.deleteButton
-      }, function(err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Successfully deleted entry.");
-        }
-      });
-
-      gfs.remove({
-        filename: req.body.deleteButton,
-        root: "uploads"
-      }, function(err) {
-        if (err) {
-          return res.status(404).json({
-            err: err
-          });
-        } else {
-          res.redirect("user");
-        }
-      });
-    });
-
-    app.post("/deleteCollection", function(req, res) {
-
-      Entry.find({
-        userId: req.user.id,
-        grouping: req.body.deleteCollectionButton
-      }, function(err, foundEntries) {
-        if (err) {
-          console.log(err);
-        } else {
-
-          let groupingImageFiles = [...new Set(foundEntries.map(item => item.imageFile))];
-
-          var i;
-          for (i = 0; i < groupingImageFiles.length; i++) {
-            gfs.remove({
-              filename: groupingImageFiles[i],
-              root: "uploads"
-            }, function(err) {
-              if (err) {
-                return res.status(404).json({
-                  err: err
-                });
-              } else {
-                console.log("Successfully deleted grouping image file.")
-              }
-            });
-          }
-        }
-      });
-
-      Entry.deleteMany({
-        userId: req.user.id,
-        grouping: req.body.deleteCollectionButton
-      }, function(err) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Successfully deleted all entries in grouping.");
-        }
-      });
-
-      // Grouping.deleteMany({userId: req.user.Id,
-      //   grouping: req.body.deleteCollectionButton
-      // }, function(err) {
-      //   if (err) {
-      //     console.log(err);
-      //   } else {
-      //     console.log("Successfully deleted all entries in group.");
-      //   }
-      // });
-
-      res.redirect("user");
-
-    });
-
-    app.post("/chosenCollection", function(req, res) {
-
-      const collectionChosen = req.body.userCollectionChosen;
-
-      if (req.isAuthenticated()) {
-        const currentUserId = req.user._id;
-
-        res.redirect("/user/" + currentUserId + "/collections/" + collectionChosen);
-      }
-
-    });
-
-    //---SERVER---///
-
-    let port = process.env.PORT;
-
-    if (port == null || port == "") {
-      port = 3000;
+  Entry.deleteOne({
+    imageFile: req.body.deleteButton
+  }, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully deleted entry.");
     }
+  });
 
-    app.listen(port, function() {
-      console.log("Server started successfully.");
+  gfs.remove({
+    filename: req.body.deleteButton,
+    root: "uploads"
+  }, function(err) {
+    if (err) {
+      return res.status(404).json({
+        err: err
+      });
+    } else {
+      res.redirect("user");
+    }
+  });
+});
+
+app.post("/deleteCollection", function(req, res) {
+
+  Entry.find({
+    userId: req.user.id,
+    grouping: req.body.deleteCollectionButton
+    }, function(err, foundEntries) {
+      if (err) {
+        console.log(err);
+      } else {
+
+        let groupingImageFiles = [...new Set(foundEntries.map(item => item.imageFile))];
+
+        var i;
+        for (i = 0; i < groupingImageFiles.length; i++) {
+          gfs.remove({
+            filename: groupingImageFiles[i],
+            root: "uploads"
+          }, function(err) {
+            if (err) {
+              return res.status(404).json({
+                err: err
+              });
+            } else {
+              console.log("Successfully deleted grouping image file.")
+            }
+          });
+        }
+      }
     });
+
+  Entry.deleteMany({
+    userId: req.user.id,
+    grouping: req.body.deleteCollectionButton
+  }, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully deleted all entries in grouping.");
+    }
+  });
+
+    // Grouping.deleteMany({userId: req.user.Id,
+    //   grouping: req.body.deleteCollectionButton
+    // }, function(err) {
+    //   if (err) {
+    //     console.log(err);
+    //   } else {
+    //     console.log("Successfully deleted all entries in group.");
+    //   }
+    // });
+
+  res.redirect("user");
+
+});
+
+      app.post("/chosenCollection", function(req, res) {
+
+        const collectionChosen = req.body.userCollectionChosen;
+
+        if (req.isAuthenticated()) {
+          const currentUserId = req.user._id;
+
+          res.redirect("/user/" + currentUserId + "/collections/" + collectionChosen);
+        }
+
+      });
+
+      //---SERVER---///
+
+      let port = process.env.PORT;
+
+      if (port == null || port == "") {
+        port = 3000;
+      }
+
+      app.listen(port, function() {
+        console.log("Server started successfully.");
+      });
