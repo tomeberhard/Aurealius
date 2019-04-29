@@ -193,52 +193,46 @@
         </div>
 
         <div class="favoritesActvity d-none">
-          <% if(entries){ %>
-          <% entries.forEach(function(entry) { %>
+          <% if(userInfo[0].favorites.length > 0){ %>
+          <% userInfo[0].favorites.forEach(function(favorite) { %>
           <div class="card card-body mb-3 cushion">
 
-            <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
+            <% if (favorite.imageFile === "NOTHING TO SEE HERE") { %>
             <% var hide = "" %>
             <% } else { %>
-            <% var hide = "/image/" + entry.imageFile  } %>
+            <% var hide = "/image/" + favorite.imageFile  } %>
 
             <div class="orientation" image="<%= hide %>"></div>
             <div class="capPad">
               <div>
                 <div class="uNFavIcnContainer">
-                  <span class="aFSMIcons">
-                    <i class="fab fa-facebook"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-twitter"></i>
-                    <i class="fas fa-external-link-alt"></i>
+                  <span>
+                    <h5><%= favorite.userProfile %></h5>
                   </span>
                   <span>
                     <form method="POST" action="/favorite">
-                      <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
-
-                        <% var favs = JSON.stringify(entry.favoriteUsers) %>
-                        <% if (favs.includes(userInfo[0]._id)) { %>
-                        <% var faved = "" %>
-                        <% var notFaved = "d-none" %>
-                        <% } else { %>
-                        <% var faved = "d-none" %>
-                        <% var notFaved = "" %>
-                        <% } %>
-
-                        <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
-                        <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+                      <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= favorite._id %>">
+                        <i id="Fav" class="fas fa-heart fa-2x"></i>
                       </button>
                     </form>
                   </span>
                 </div>
               </div>
+              <div>
+                <span class="aFSMIcons">
+                  <i class="fab fa-facebook"></i>
+                  <i class="fab fa-instagram"></i>
+                  <i class="fab fa-twitter"></i>
+                  <i class="fas fa-external-link-alt"></i>
+                </span>
+              </div>
               <p class="card-text">
-                <%= entry.caption %>
+                <%= favorite.caption %>
               </p>
             </div>
             <div>
               <form method="POST" action="/delete">
-                <button class="deleteIcn" value="<%= entry.imageFile %>" name="deleteButton">
+                <button class="deleteIcn" value="<%= favorite.imageFile %>" name="deleteButton">
                   <i class="fas fa-trash"></i>
                 </button>
               </form>

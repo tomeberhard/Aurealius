@@ -712,8 +712,8 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
 
 app.post("/favorite", function(req, res) {
 
-  console.log(typeof req.body.favoriteButton);
-  console.log(req.body.favoriteButton);
+  // console.log(typeof req.body.favoriteButton);
+  // console.log(req.body.favoriteButton);
 
 //-----------------NEED TO GET THE USER FAVORITES PUSH WORKING---------------////
   Entry.find({
@@ -722,20 +722,22 @@ app.post("/favorite", function(req, res) {
 
     AurealiusUser.find({
       _id: req.user.id,
-      favorites: {$all: {
-        _id: req.body.favoriteButton
+      favorites: {$elemMatch: {
+        _id:foundEntry[0]._id
         }
       }
     }, function(err, userWfav){
       if (err) {
         console.log(err);
       } else {
-        if (userWfav) {
+        if (userWfav.length != 0) {
+          // console.log(userWfav);
+
           AurealiusUser.updateOne({
             _id: req.user.id
           },
             {$pull: {
-              favorites: foundEntry
+              favorites: {_id: foundEntry[0]._id}
               }
             }, function(err, success){
             if (err) {
@@ -760,59 +762,8 @@ app.post("/favorite", function(req, res) {
           });
         }
       }
-    })
-
+    });
   });
-
-  // AurealiusUser.find({
-  //   _id: req.user.id,
-  //   favorites: {$all: {
-  //     _id: req.body.favoriteButton
-  //     }
-  //   }
-  // }, function(err, foundFavs) {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     if (foundFavs) {
-  //       AurealiusUser.updateOne({
-  //           favorites: {
-  //             _id: req.body.favoriteButton._id
-  //           },
-  //         }, {
-  //           $pull: {
-  //             favorites: req.body.favoriteButton
-  //           }
-  //         },
-  //           function(err, success) {
-  //             if (err) {
-  //               console.log(err);
-  //             } else {
-  //               console.log("Successfully removed from user favorite entries.");
-  //             }
-  //           }
-  //         );
-  //       console.log(foundFavs);
-  //       } else {
-  //         AurealiusUser.updateOne({
-  //           _id: req.user.id
-  //           }, {
-  //             $push: {
-  //               favorites: req.body.favoriteButton
-  //             }
-  //           },
-  //             function(err, success) {
-  //               if (err) {
-  //                 console.log(err);
-  //               } else {
-  //                 console.log("Successfully added to user favorite entries.");
-  //               }
-  //             }
-  //         );
-  //       }
-  //     }
-  //   }
-  // );
 
   Entry.findOne({
     _id: req.body.favoriteButton,
