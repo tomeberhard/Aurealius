@@ -38,6 +38,13 @@
           <div class="custom-file mb-3">
             <input type="file" name="file" id="file" class="form-control-file" />
           </div>
+          <div class="privacyToggle">
+            <p>Keep Private?</p>
+            <label class="switch">
+              <input type="checkbox" name="status" checked value="private">
+              <span class="slider round"></span>
+            </label>
+          </div>
         </div>
         <input type="hidden" value="<%= entries[0].grouping %>" name="grouping" />
         <button type="submit" class="btn btn-primary btn-block">

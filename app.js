@@ -95,7 +95,8 @@ const entrySchema = new mongoose.Schema({
   userId: String,
   // profileName: [userSchema],
   userProfile: String,
-  favoriteUsers: Array
+  favoriteUsers: Array,
+  viewStatus: String
 }, {
   timestamps: true
 });
@@ -142,8 +143,8 @@ const Grouping = new mongoose.model("grouping", groupSchema);
 
 app.get("/index", function(req, res) {
 
-  Entry.find({}).sort({
-    updatedAt: -1
+  Entry.find({viewStatus:"public"}).sort({
+    createdAt: -1
   }).exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
@@ -152,19 +153,34 @@ app.get("/index", function(req, res) {
         if (req.isAuthenticated()) {
 
           let userInfo = req.user;
+          let identifier = JSON.stringify(userInfo._id).replace(/"/g,"");
 
-          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+          Grouping.find({
+            entries: {
+              $all: [{
+                $elemMatch: {
+                  userId: identifier
+                }
+              }]
+            }
+          }).exec(function(err, foundGroupings) {
+            if (err) {
+              console.log(err);
+            } else {
 
-          res.render("index", {
-            entries: foundEntries,
-            groupings: uniqueGroupings,
-            userData: userInfo
+            let uniqueGroupings = [...new Set(foundGroupings.map(item => item.name))];
+
+            res.render("index", {
+              entries: foundEntries,
+              groupings: uniqueGroupings,
+              userData: userInfo
+              });
+            }
           });
         }
       }
     }
   });
-
 });
 
 app.get("/user", function(req, res) {
@@ -184,7 +200,7 @@ app.get("/user/:currentUserId", function(req, res) {
   Entry.find({
     userId: userIdentifier
   }).sort({
-    updatedAt: -1
+    createdAt: -1
   }).exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
@@ -271,7 +287,7 @@ app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
     userId: userIdentifier,
     grouping: grouping
   }).sort({
-    updatedAt: -1
+    createdAt: -1
   }).exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
@@ -391,8 +407,8 @@ app.post("/register", function(req, res) {
   const registeredFName = req.body.fName;
   const registeredLName = req.body.lName;
   const slicedLName = registeredLName.slice(0, 1);
-  const date = Date.now();
-  const timestamp = date.slice(0,4);
+  const dateNow = Date.now();
+  const timeStamp = JSON.stringify(dateNow).slice(0,4);
   const createdProfileName = registeredFName + slicedLName + timeStamp;
 
   AurealiusUser.register({
@@ -486,12 +502,24 @@ app.post("/upload", upload.single("file"), function(req, res) {
   const currentUser = req.user.id;
   const currentUserProfile = req.user.profileName;
 
+  function statusAssignment() {
+    const pubPri = req.body.status;
+
+    if (pubPri === "private") {
+      return pubPri;
+    } else {
+      let entryStatus = "public";
+      return entryStatus;
+    }
+  }
+
   const newEntry = new Entry({
     imageFile: fileExists(),
     caption: req.body.caption,
     grouping: collectionAllocator(),
     userId: currentUser,
-    userProfile: currentUserProfile
+    userProfile: currentUserProfile,
+    viewStatus: statusAssignment()
   });
 
   Grouping.find({
