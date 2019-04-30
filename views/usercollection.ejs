@@ -48,15 +48,51 @@
       <hr />
 
       <% entries.forEach(function(entry) { %>
-      <div class="card card-body mb-3 cushion">
-        <div class="orientation" image="/image/<%= entry.imageFile %>"></div>
-        <div class="capPad">
+        <div class="card card-body mb-3 cushion">
+
+          <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
+          <% var hide = "" %>
+          <% } else { %>
+          <% var hide = "/image/" + entry.imageFile  } %>
+
+          <div class="orientation" image="<%= hide %>"></div>
+          <div class="capPad">
+            <div>
+              <div class="uNFavIcnContainer">
+                <span class="aFSMIcons">
+                  <i class="fab fa-facebook"></i>
+                  <i class="fab fa-instagram"></i>
+                  <i class="fab fa-twitter"></i>
+                  <i class="fas fa-external-link-alt"></i>
+                </span>
+                <span>
+                  <form method="POST" action="/favorite">
+                    <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
+
+                      <% var favs = JSON.stringify(entry.favoriteUsers) %>
+                      <% if (favs.includes(userInfo[0]._id)) { %>
+                      <% var faved = "" %>
+                      <% var notFaved = "d-none" %>
+                      <% } else { %>
+                      <% var faved = "d-none" %>
+                      <% var notFaved = "" %>
+                      <% } %>
+
+                      <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
+                      <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+                    </button>
+                  </form>
+                </span>
+              </div>
+            </div>
           <p class="card-text">
             <%= entry.caption %>
           </p>
         </div>
         <form method="POST" action="/delete">
-          <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
+          <button class="deleteIcn" value="<%= entry.imageFile %>" name="deleteButton">
+            <i class="fas fa-trash"></i>
+          </button>
         </form>
       </div>
       <% }) %>

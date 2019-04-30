@@ -230,7 +230,16 @@
                 <%= favorite.caption %>
               </p>
             </div>
-            <div>
+
+            <% var yours = JSON.stringify(userInfo[0]._id) %>
+            <% var posTheirs = JSON.stringify(favorite.userId) %>
+            <% if (yours === posTheirs) { %>
+            <% var show = "" %>
+            <% } else { %>
+            <% var show = "d-none" %>
+            <% } %>
+
+            <div class=" <%= show %>">
               <form method="POST" action="/delete">
                 <button class="deleteIcn" value="<%= favorite.imageFile %>" name="deleteButton">
                   <i class="fas fa-trash"></i>

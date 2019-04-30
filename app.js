@@ -279,11 +279,17 @@ app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
       if (foundEntries) {
         if (req.isAuthenticated()) {
 
-          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
-
-          res.render("usercollection", {
-            entries: foundEntries,
-            groupings: uniqueGroupings
+          AurealiusUser.find({
+            _id: userIdentifier
+          }, function(err, userData) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.render("usercollection", {
+                entries: foundEntries,
+                userInfo: userData
+              });
+            }
           });
         }
       }
@@ -385,7 +391,8 @@ app.post("/register", function(req, res) {
   const registeredFName = req.body.fName;
   const registeredLName = req.body.lName;
   const slicedLName = registeredLName.slice(0, 1);
-  const timeStamp = Date.now();
+  const date = Date.now();
+  const timestamp = date.slice(0,4);
   const createdProfileName = registeredFName + slicedLName + timeStamp;
 
   AurealiusUser.register({
