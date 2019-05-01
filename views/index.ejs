@@ -16,10 +16,12 @@
         </div>
         <div class="privacyToggle">
           <p>Keep Private?</p>
-          <label class="switch">
-            <input type="checkbox" name="status" checked value="private">
-            <span class="slider round"></span>
-          </label>
+          <div class="toggleCotainer">
+            <label class="switch">
+              <input type="checkbox" name="status" checked value="private">
+              <span class="slider round"></span>
+            </label>
+          </div>
         </div>
         <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#collectionModal">
           Submit
@@ -109,6 +111,13 @@
             <p class="card-text">
               <%= entry.caption %>
             </p>
+          </div>
+          <div>
+            <form method="POST" action="/report">
+              <button class="report" value="<%= entry._id %>" name="reportButton">
+                <i class="fas fa-exclamation-circle"></i>
+              </button>
+            </form>
           </div>
         </div>
       </div>

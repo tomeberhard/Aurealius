@@ -23,6 +23,8 @@
   bottom: 0;
   background-color: #ccc;
   -webkit-transition: .4s;
+  -moz-transition: .4s;
+  -o-transition: .4s;
   transition: .4s;
 }
 
@@ -35,6 +37,8 @@
   bottom: 4px;
   background-color: white;
   -webkit-transition: .4s;
+  -moz-transition: .4s;
+  -o-transition: .4s;
   transition: .4s;
 }
 
@@ -48,6 +52,8 @@ input:focus + .slider {
 
 input:checked + .slider:before {
   -webkit-transform: translateX(26px);
+  -moz-transform: translateX(26px);
+  -o-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
@@ -60,6 +66,20 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+
+/* -----------------------privacy toggle------------------------------- */
+.privacyToggle {
+  position: relative;
+}
+
+.toggleCotainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+
 
 /* -----------------------user page view choice------------------------------- */
 .userBtnBar {
@@ -95,6 +115,16 @@ word-spacing: .25rem
 
 .orientation canvas {
   width: 100%;
+}
+
+.report {
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+}
+
+.report:hover {
+  color: red;
 }
 
 /* -----------------------user profile edit------------------------------- */
