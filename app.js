@@ -141,9 +141,11 @@ const groupSchema = new mongoose.Schema({
 const Grouping = new mongoose.model("grouping", groupSchema);
 
 const reportSchema = new mongoose.Schema({
-  reportingIds: String,
+  reportingId: String,
   entryId: String,
   status: String,
+  ruleBroken: String,
+  comments: String
 }, {
   timestamps: true
 });
@@ -882,7 +884,7 @@ app.post("/report", function(req, res) {
         }
       });
 
-      AurealiusUser.find({
+      AurealiusUser.findOne({
         _id: req.user.id
       },
       function(err, foundUser) {
@@ -891,12 +893,12 @@ app.post("/report", function(req, res) {
         } else {
 
           function reportTracker() {
-            if (foundUser[0].reports === undefined) {
+            if (foundUser.reports === undefined) {
               let reportings = 0;
               let updatedReportings = ++reportings;
               return updatedReportings;
             } else {
-              let reportings = foundUser[0].reports;
+              let reportings = foundUser.reports;
               let updatedReportings = ++reportings
               return updatedReportings;
             }
@@ -915,37 +917,18 @@ app.post("/report", function(req, res) {
           });
 
           const newReport = new Report({
-            reportingIds: foundUser[0]._id,
+            reportingId: foundUser._id,
             entryId: foundEntry[0]._id,
-            status: "Pending"
+            status: "Pending",
+            ruleBroken: req.body.rule,
+            comments: req.body.reportComments
           });
           newReport.save();
           console.log("Successfully added new reporting.")
         }
       });
-
-
     }
   });
-
-  // Report.find({
-//   entryId: foundEntry[0]._id
-// }, function(err, foundReport) {
-//   if (err) {
-//     console.log(err);
-//   } else {
-// if (foundReport.length > 0) {
-//   Report.updateOne({
-//     _id: foundReport[0]._id
-//   }, {
-//     status: "Pending",
-//     $push: {
-//       reportingUsers: foundUser[0]._id,
-//     }
-//   }, function(err, success) {
-//     console.log("Successfully changed status of existing reporting.")
-//   });
-// } else {
 
   res.redirect("back");
 
