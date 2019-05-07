@@ -1,26 +1,45 @@
+//-------------------entry form input expand--------------------------------//
+document.addEventListener("click", function(event) {
+
+  if (event.target.closest(".entry-form")) {
+    $(".accordianTA").addClass("expandTA")
+    setTimeout(function() {
+      $(".expandable").removeClass("d-none");
+    }, 300);
+
+  } else {
+    $("#accordianTA").removeClass("expandTA")
+    setTimeout(function() {
+      $(".expandable").addClass("d-none");
+    }, 300);
+  }
+
+});
+
+
 //-------------------image preview------------------------------------------//
-  var loadFile = function(event) {
-    var reader = new FileReader();
-    reader.onload = function(){
-      var output = document.getElementById("bioImagePreview");
-      output.src = reader.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
-    $("#bioImagePreview").removeClass("d-none");
-    $("#bioImage").addClass("d-none");
+var loadFile = function(event) {
+  var reader = new FileReader();
+  reader.onload = function() {
+    var output = document.getElementById("bioImagePreview");
+    output.src = reader.result;
   };
+  reader.readAsDataURL(event.target.files[0]);
+  $("#bioImagePreview").removeClass("d-none");
+  $("#bioImage").addClass("d-none");
+};
 
 
 //---close image preview when user presses "close" button---//
-var abortPreview = function(event){
-    $("#userBioForm")[0].reset();
-    $("#bioImagePreview").attr("src", "");
-    $("#bioImagePreview").addClass("d-none");
-    $("#bioImage").removeClass("d-none");
+var abortPreview = function(event) {
+  $("#userBioForm")[0].reset();
+  $("#bioImagePreview").attr("src", "");
+  $("#bioImagePreview").addClass("d-none");
+  $("#bioImage").removeClass("d-none");
 };
 
 //---User collection pop-up field controls---//
-$("#collectionTextArea").on("keyup", function(){
+$("#collectionTextArea").on("keyup", function() {
 
   let textInput = $("#collectionTextArea").val();
 
@@ -34,7 +53,7 @@ $("#collectionTextArea").on("keyup", function(){
 
 });
 
-$("#collectionSelector").on("change", function(){
+$("#collectionSelector").on("change", function() {
 
   let selectionMade = $("#collectionSelector :selected").text();
 
@@ -49,7 +68,7 @@ $("#collectionSelector").on("change", function(){
 });
 
 //---user page view selection---//
-$(".viewerChoice").click(function(){
+$(".viewerChoice").click(function() {
   let btnClicked = $(this);
 
   userViewChoice(btnClicked);
@@ -64,10 +83,9 @@ $(".viewerChoice").click(function(){
 
 //---functions---//
 
-function userViewChoice (btnClicked) {
+function userViewChoice(btnClicked) {
 
   let viewSelection = $(btnClicked).attr("id");
-  // alert("hello");
 
   if (viewSelection === "showActvityFeed") {
     $(".activity").removeClass("d-none");
@@ -85,6 +103,27 @@ function userViewChoice (btnClicked) {
     }
   }
 }
+
+
+//--------------------------expand card flip--------------------------------//
+
+$(".expndCrdBtn").click(function() {
+  let getId = $(this).children().attr("id");
+  let getIdClass = $("#" + getId).attr("class");
+  // alert(getIdClass);
+
+
+  $("#" + getId).click(function(){
+    $("#" + getId).addCLass("fa-rotate-180");
+  });
+
+});
+
+// function cardexpand(btnClicked) {
+//
+//   let expandCollapse = $(btnClicked).addClass("rotateExpnd");
+//
+// }
 
 // function favoriteUnFavorite (btnClicked) {
 //

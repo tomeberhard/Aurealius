@@ -763,6 +763,92 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
 
 });
 
+app.post("/follow", function(req, res) {
+
+  const fllw = req.body.followButton;
+
+  AurealiusUser.findOne({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+    } else {
+
+      if (foundUser.following.includes(fllw) === false) {
+        AurealiusUser.updateOne({
+          _id: req.user.id
+        }, {
+          $push: {
+            following: fllw
+          }
+        }, function(err, success) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Successfully added user to following.")
+          }
+        });
+      } else {
+        AurealiusUser.updateOne({
+          _id: req.user.id
+        }, {
+          $pull: {
+            following: fllw
+          }
+        }, function(err, success) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Successfully removed user from following.")
+          }
+        });
+      }
+    }
+  });
+
+  AurealiusUser.findOne({
+    _id: fllw
+  }, function(err, foundUser) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundUser.followers.includes(req.user.id) === false) {
+        AurealiusUser.updateOne({
+          _id: fllw
+        }, {
+          $push: {
+            followers: req.user.id
+          }
+        }, function(err, success) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Successfully added user to followers.")
+          }
+        });
+      } else {
+        AurealiusUser.updateOne({
+          _id: fllw
+        }, {
+          $pull: {
+            followers: req.user.id
+          }
+        }, function(err, success) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("Successfully removed user from followers.")
+          }
+        });
+      }
+    }
+  });
+
+  res.redirect("back");
+
+});
+
+
 app.post("/favorite", function(req, res) {
 
   Entry.find({
@@ -885,48 +971,48 @@ app.post("/report", function(req, res) {
       });
 
       AurealiusUser.findOne({
-        _id: req.user.id
-      },
-      function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
+          _id: req.user.id
+        },
+        function(err, foundUser) {
+          if (err) {
+            console.log(err);
+          } else {
 
-          function reportTracker() {
-            if (foundUser.reports === undefined) {
-              let reportings = 0;
-              let updatedReportings = ++reportings;
-              return updatedReportings;
-            } else {
-              let reportings = foundUser.reports;
-              let updatedReportings = ++reportings
-              return updatedReportings;
+            function reportTracker() {
+              if (foundUser.reports === undefined) {
+                let reportings = 0;
+                let updatedReportings = ++reportings;
+                return updatedReportings;
+              } else {
+                let reportings = foundUser.reports;
+                let updatedReportings = ++reportings
+                return updatedReportings;
+              }
             }
+
+            AurealiusUser.updateOne({
+              _id: req.user.id
+            }, {
+              reports: reportTracker()
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully updated number of reportings.");
+              }
+            });
+
+            const newReport = new Report({
+              reportingId: foundUser._id,
+              entryId: foundEntry[0]._id,
+              status: "Pending",
+              ruleBroken: req.body.rule,
+              comments: req.body.reportComments
+            });
+            newReport.save();
+            console.log("Successfully added new reporting.")
           }
-
-          AurealiusUser.updateOne({
-            _id: req.user.id
-          }, {
-            reports: reportTracker()
-          }, function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Successfully updated number of reportings.");
-            }
-          });
-
-          const newReport = new Report({
-            reportingId: foundUser._id,
-            entryId: foundEntry[0]._id,
-            status: "Pending",
-            ruleBroken: req.body.rule,
-            comments: req.body.reportComments
-          });
-          newReport.save();
-          console.log("Successfully added new reporting.")
-        }
-      });
+        });
     }
   });
 

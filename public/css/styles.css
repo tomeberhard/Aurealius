@@ -1,3 +1,15 @@
+/* -----------------------expand entry form------------------------------- */
+.expandTA textarea {
+    height: 8em;
+    padding: 3px;
+    /* transition: all 0.5s ease; */
+}
+
+/* -----------------------expand cards------------------------------- */
+.rotate {
+  transform:rotate(180deg);
+}
+
 /* -----------------------entry privacy choice togglechoice------------------------------- */
 .switch {
   position: relative;
@@ -98,27 +110,99 @@ background-color: #000;
 
 .uNFavIcnContainer {
   position: relative;
+  height: 40px;
+  padding-bottom: 50px;
+}
+
+.profileFllwUnFllw {
+  width: 88%;
+  height: 30px;
+  left:0;
+  top: 0;
+}
+
+.userProfName {
+  display: inline-block;
+}
+
+.flwUnflw {
+  padding-left: 2%;
+  display: inline-block;
+}
+
+.favShare {
+  width: 22%;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+
+.shareBtnContainer {
+  display: inline-block;
+}
+
+.shareBtn {
+  background: none;
+  border: none;
+  color: darkgray;
+}
+
+.shareBtn:hover {
+  color: black;
+}
+
+.shareBtn:focus {
+  outline: 0;
+}
+
+.favBtnContainer {
+  display: inline-block;
 }
 
 .favBtn {
-  position: absolute;
-  top: 0;
-  right:2%;
   background: none;
   border: none;
   color: red;
 }
 
+.aFSMIconContainer {
+  text-align: right;
+  height: 40px;
+}
+
 .aFSMIcons {
-word-spacing: .25rem
+word-spacing: 1.00rem;
+padding: 1%;
+font-size: 1.5rem;
 }
 
 .orientation canvas {
   width: 100%;
 }
 
+.expndCrdContainer {
+  text-align: center;
+}
+
+.expndCrdBtn {
+  background: none;
+  border: none;
+  color: darkgray;
+}
+
+.expndCrdBtn:hover {
+  color: black;
+}
+
+.expndCrdBtn:focus {
+  outline: 0;
+}
+
 .report {
   font-size: 1.25rem;
+  padding-top: 15px;
   background: none;
   border: none;
 }

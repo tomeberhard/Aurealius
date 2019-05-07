@@ -1,9 +1,17 @@
-<%- include('partials/headerLoggedInUser') %>
+<%- include('partials/headerLoggedIn') %>
 
 <title>Your Gratitude</title>
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
+      <ul class="nav nav-tabs nav-fill">
+        <li class="nav-item">
+          <a class="nav-link" href="/index">Everyone's Gratitude</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="/user">Your Gratitude</a>
+        </li>
+      </ul>
       <div class="userBio">
         <div class="userImageContainer">
 
@@ -75,21 +83,23 @@
       </div>
 
       <form action="/upload" method="POST" id="saveBtn" enctype="multipart/form-data">
-        <div class="form-group">
-          <textarea class="form-control" rows="3" name="caption" placeholder="What are you grateful for right now?"></textarea>
+        <div class="form-group entry-form"">
+          <textarea class="form-control accordianTA" rows="3" name="caption" placeholder="What are you grateful for right now?"></textarea>
           <br />
-          <div class="custom-file mb-3">
+          <div class="custom-file mb-3 expandable d-none">
             <input type="file" name="file" id="file" class="form-control-file" />
           </div>
-          <div class="privacyToggle">
+          <div class="privacyToggle expandable d-none">
             <p>Keep Private?</p>
-            <label class="switch">
-              <input type="checkbox" name="status" checked value="private">
-              <span class="slider round"></span>
-            </label>
+            <div class="toggleCotainer">
+              <label class="switch">
+                <input type="checkbox" name="status" checked value="private">
+                <span class="slider round"></span>
+              </label>
+            </div>
           </div>
         </div>
-        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#collectionModal">
+        <button type="button" class="btn btn-primary btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
           Submit
         </button>
 

@@ -1,29 +1,37 @@
-<%- include('partials/headerLoggedInMain') %>
+<%- include('partials/headerLoggedIn') %>
 
 
 <title>Aurealius</title>
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
-      <h1 class="text-center display-4 my-4">Activity Page</h1>
+      <ul class="nav nav-tabs nav-fill">
+        <li class="nav-item">
+          <a class="nav-link active" href="/index">Everyone's Gratitude</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/user">Your Gratitude</a>
+        </li>
+      </ul>
+      <br />
       <form action="/upload" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-          <textarea class="form-control" rows="3" name="caption" placeholder="What are you grateful for right now?"></textarea>
+        <div class="form-group entry-form">
+          <textarea class="form-control accordianTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
           <br />
-          <div class="custom-file mb-3">
+          <div class="custom-file mb-3 expandable d-none">
             <input type="file" name="file" id="file" class="form-control-file" />
           </div>
-        </div>
-        <div class="privacyToggle">
-          <p>Keep Private?</p>
-          <div class="toggleCotainer">
-            <label class="switch">
-              <input type="checkbox" name="status" checked value="private">
-              <span class="slider round"></span>
-            </label>
+          <div class="privacyToggle expandable d-none">
+            <p>Keep Private?</p>
+            <div class="toggleCotainer">
+              <label class="switch">
+                <input type="checkbox" name="status" checked value="private">
+                <span class="slider round"></span>
+              </label>
+            </div>
           </div>
         </div>
-        <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#collectionModal">
+        <button type="button" class="btn btn-primary btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
           Submit
         </button>
 
@@ -74,12 +82,43 @@
 
         <div class="orientation" image="<%= hide %>"></div>
         <div class="capPad">
-          <div>
-            <div class="uNFavIcnContainer">
-              <span>
+          <div class="uNFavIcnContainer">
+            <div class="profileFllwUnFllw">
+              <div class="userProfName">
                 <h5><%= entry.userProfile %></h5>
-              </span>
-              <span>
+              </div>
+
+              <% if (entry.userProfile === userData.profileName) { %>
+                <% var hide = "d-none" %>
+              <% } else { %>
+              <% var hide = "" %>
+              <% } %>
+
+              <% if (userData.following.includes(entry.userId)) { %>
+                <% var folUnfol = "Unfollow" %>
+              <% } else { %>
+                <% var folUnfol = "Follow" %>
+              <% } %>
+
+              <div class="flwUnflw <%= hide %>">
+                <form method="POST" action="/follow">
+                  <button class="followBtn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>"><%= folUnfol %></button>
+                </form>
+              </div>
+
+            </div>
+
+            <div class="favShare">
+              <div class="shareBtnContainer">
+
+                <% var collapseShareID = "a" + JSON.stringify(entry._id).replace(/"/g, "") %>
+
+                <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
+                  <i class="fas fa-share fa-2x"></i>
+                </button>
+              </div>
+
+              <div class="favBtnContainer">
                 <form method="POST" action="/favorite">
                   <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
 
@@ -96,11 +135,11 @@
                     <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
                   </button>
                 </form>
-              </span>
+              </div>
             </div>
           </div>
-          <div>
-            <span class="aFSMIcons">
+          <div class="aFSMIconContainer collapse" id="<%= collapseShareID %>">
+            <span class="aFSMIcons border rounded">
               <i class="fab fa-facebook"></i>
               <i class="fab fa-instagram"></i>
               <i class="fab fa-twitter"></i>
@@ -112,7 +151,17 @@
               <%= entry.caption %>
             </p>
           </div>
-          <div>
+
+          <% var collapseExpandID = "b" + collapseShareID %>
+          <% var collapseExpandIconID = "c" + collapseExpandID %>
+
+          <div class="expndCrdContainer">
+            <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
+              <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
+            </button>
+          </div>
+
+          <div class="collapse" id="<%= collapseExpandID %>">
             <form method="POST" action="/report">
               <button type="button" class="report" data-toggle="modal" data-target="#reportModal">
                 <i class="fas fa-exclamation-circle"></i>
@@ -161,7 +210,6 @@
                   </div>
                 </div>
               </div>
-
 
             </form>
           </div>
