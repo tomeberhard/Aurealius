@@ -114,7 +114,7 @@ $(".expndCrdBtn").click(function() {
 
 
   $("#" + getId).click(function(){
-    $("#" + getId).addCLass("fa-rotate-180");
+    $("#" + getId).toggleCLass("fa-rotate-180");
   });
 
 });
