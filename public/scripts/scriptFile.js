@@ -2,13 +2,14 @@
 document.addEventListener("click", function(event) {
 
   if (event.target.closest(".entry-form")) {
-    $(".accordianTA").addClass("expandTA")
+    $("textarea.expandTA").animate({ height: "10em" }, 500)
+
     setTimeout(function() {
       $(".expandable").removeClass("d-none");
     }, 300);
 
   } else {
-    $("#accordianTA").removeClass("expandTA")
+    $("textarea.expandTA").animate({ height: "4em" }, 500)
     setTimeout(function() {
       $(".expandable").addClass("d-none");
     }, 300);

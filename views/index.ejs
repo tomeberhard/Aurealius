@@ -8,20 +8,23 @@
       <div class="entryContainer entryFormCard">
         <form action="/upload" method="POST" enctype="multipart/form-data">
           <div class="form-group entry-form">
-            <textarea class="form-control accordianTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
-            <br />
-            <div class="custom-file mb-3 expandable d-none">
-              <input type="file" name="file" id="file" class="form-control-file" />
-            </div>
-            <div class="privacyToggle expandable d-none">
-              <p>Keep Private?</p>
+            <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
+            <!-- <br /> -->
+            <div class="upldToggleContainer expandable d-none">
+              <div class="custom-file mb-3 upldToggleContainerWidth">
+                <input type="file" name="file" id="file" class="" />
+              </div>
               <div class="toggleCotainer">
-                <label class="switch">
-                  <input type="checkbox" name="status" checked value="private">
-                  <span class="slider round"></span>
-                </label>
+                <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-height="20" data-width="90" checked value="private">
               </div>
             </div>
+
+            <!-- <div class="privacyToggle expandable d-none">
+              <p>Keep Private?</p>
+              <!-- <label class="switch">
+                <input type="checkbox" name="status" checked value="private">
+                <span class="slider round"></span>
+              </label> -->
           </div>
           <button type="button" class="btn btn-primary btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
             Submit
