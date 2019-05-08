@@ -5,104 +5,104 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 m-auto">
-      <ul class="nav nav-tabs nav-fill">
-        <li class="nav-item">
-          <a class="nav-link active" href="/index">Everyone's Gratitude</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/user">Your Gratitude</a>
-        </li>
-      </ul>
-      <br />
-      <form action="/upload" method="POST" enctype="multipart/form-data">
-        <div class="form-group entry-form">
-          <textarea class="form-control accordianTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
-          <br />
-          <div class="custom-file mb-3 expandable d-none">
-            <input type="file" name="file" id="file" class="form-control-file" />
-          </div>
-          <div class="privacyToggle expandable d-none">
-            <p>Keep Private?</p>
-            <div class="toggleCotainer">
-              <label class="switch">
-                <input type="checkbox" name="status" checked value="private">
-                <span class="slider round"></span>
-              </label>
+      <div class="entryContainer entryFormCard">
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+          <div class="form-group entry-form">
+            <textarea class="form-control accordianTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
+            <br />
+            <div class="custom-file mb-3 expandable d-none">
+              <input type="file" name="file" id="file" class="form-control-file" />
+            </div>
+            <div class="privacyToggle expandable d-none">
+              <p>Keep Private?</p>
+              <div class="toggleCotainer">
+                <label class="switch">
+                  <input type="checkbox" name="status" checked value="private">
+                  <span class="slider round"></span>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
-        <button type="button" class="btn btn-primary btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
-          Submit
-        </button>
+          <button type="button" class="btn btn-primary btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
+            Submit
+          </button>
 
-        <div class="modal" id="collectionModal" tabindex="-1" role="dialog">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Choose Your Collection</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="form-group">
-                  <label for="collectionSelector">Choose Collection</label>
-                  <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
-                  <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
-                    <% if(groupings){ %>
-                    <% groupings.forEach(function(userCollectionName) { %>
-                    <option>
-                      <%= userCollectionName %>
-                    </option>
-                    <% }) %>
-                    <% } else { %>
-                    <p>No Collections to show!</p>
-                    <% } %>
-                  </select>
+          <div class="modal" id="collectionModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Choose Your Collection</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="collectionSelector">Choose Collection</label>
+                    <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
+                    <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
+                      <% if(groupings){ %>
+                      <% groupings.forEach(function(userCollectionName) { %>
+                      <option>
+                        <%= userCollectionName %>
+                      </option>
+                      <% }) %>
+                      <% } else { %>
+                      <p>No Collections to show!</p>
+                      <% } %>
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
               </div>
-              <div class="modal-footer">
-                <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+
+      </div>
       <hr />
 
       <% if(entries){ %>
       <% entries.forEach(function(entry) { %>
-      <div class="card card-body mb-3 cushion">
 
         <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
         <% var hide = "" %>
+        <% var cardClass = "cardWOImg" %>
         <% } else { %>
-        <% var hide = "/image/" + entry.imageFile  } %>
+        <% var hide = "/image/" + entry.imageFile %>
+        <% var cardClass = "cardWImg" %>
+        <% } %>
 
+      <div class="card card-body mb-3 cushion <%= cardClass %>">
         <div class="orientation" image="<%= hide %>"></div>
         <div class="capPad">
           <div class="uNFavIcnContainer">
             <div class="profileFllwUnFllw">
               <div class="userProfName">
-                <h5><%= entry.userProfile %></h5>
+                <h5 class="bigger">
+                  <%= entry.userProfile %>
+                </h5>
               </div>
 
               <% if (entry.userProfile === userData.profileName) { %>
-                <% var hide = "d-none" %>
+              <% var hide = "d-none" %>
               <% } else { %>
               <% var hide = "" %>
               <% } %>
 
               <% if (userData.following.includes(entry.userId)) { %>
-                <% var folUnfol = "Unfollow" %>
+              <% var folUnfol = "Unfollow" %>
               <% } else { %>
-                <% var folUnfol = "Follow" %>
+              <% var folUnfol = "Follow" %>
               <% } %>
 
               <div class="flwUnflw <%= hide %>">
                 <form method="POST" action="/follow">
-                  <button class="followBtn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>"><%= folUnfol %></button>
+                  <button class="followBtn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>">
+                    <%= folUnfol %></button>
                 </form>
               </div>
 
@@ -146,7 +146,7 @@
               <i class="fas fa-external-link-alt"></i>
             </span>
           </div>
-          <div>
+          <div class="captionContainer">
             <p class="card-text">
               <%= entry.caption %>
             </p>
@@ -204,7 +204,7 @@
                       </div>
                     </div>
                     <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary btn-block" value="<%= entry._id %>" name="reportButton" >Submit</button>
+                      <button type="submit" class="btn btn-primary btn-block" value="<%= entry._id %>" name="reportButton">Submit</button>
                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                   </div>

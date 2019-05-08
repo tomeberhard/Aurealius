@@ -16,6 +16,14 @@ document.addEventListener("click", function(event) {
 
 });
 
+//--------------------------expand card flip--------------------------------//
+
+$(".expndCrdBtn").click(function() {
+  let getId = $(this).children().attr("id");
+  let getIdClass = $("#" + getId).attr("class");
+  $("#" + getId).toggleClass("fa-rotate-180");
+
+});
 
 //-------------------image preview------------------------------------------//
 var loadFile = function(event) {
@@ -105,25 +113,7 @@ function userViewChoice(btnClicked) {
 }
 
 
-//--------------------------expand card flip--------------------------------//
 
-$(".expndCrdBtn").click(function() {
-  let getId = $(this).children().attr("id");
-  let getIdClass = $("#" + getId).attr("class");
-  // alert(getIdClass);
-
-
-  $("#" + getId).click(function(){
-    $("#" + getId).toggleCLass("fa-rotate-180");
-  });
-
-});
-
-// function cardexpand(btnClicked) {
-//
-//   let expandCollapse = $(btnClicked).addClass("rotateExpnd");
-//
-// }
 
 // function favoriteUnFavorite (btnClicked) {
 //

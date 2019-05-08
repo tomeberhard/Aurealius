@@ -273,7 +273,7 @@ app.get("/user/:currentUserId", function(req, res) {
 
               }
 
-              AurealiusUser.find({
+              AurealiusUser.findOne({
                 _id: userIdentifier
               }, function(err, userData) {
                 if (err) {

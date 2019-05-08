@@ -1,13 +1,152 @@
+body {
+  background-image: url(/assets/21967402-beige-background-paper-or-canvas-texture.jpg);
+  /* background-size: contain; */
+  /* background-repeat:no-repeat; */
+/* background-color: #f3ecd3; */
+}
+
+
+h1,h2,h3,h4,h5 {
+  font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
+
+p {
+  font-family: 'IM Fell Great Primer', serif;
+}
+
+.container {
+  margin-top: 100px;
+  z-index: 2;
+  }
+
+.entryFormCard {
+  background-color: #fafcfd;
+}
+
+.form-control {
+  font-size: 1.2rem;
+  font-family: 'IM Fell Great Primer', serif;
+}
+
+.entryContainer {
+  padding: 2%;
+  border-radius: .25rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.cardWImg {
+  /* background-color: #f3f9fb; */
+  background-color: #fafcfd;
+}
+
+.cardWOImg {
+  /* background-color: #f3f9fb; */
+  /* background-image: url(https://previews.123rf.com/images/bpuhanic/bpuhanic1409/bpuhanic140900013/32044670-old-handmade-rice-paper-texture-for-background.jpg); */
+    background-image: url(/assets/lightpaperfibers_@2X.png);
+    /* background-image: url(/assets/polaroid_@2X.png); */
+}
+
+.captionContainer {
+font-size: 1.35rem;
+/* font-family: 'Permanent Marker', cursive; */
+/* font-family: 'Kalam', cursive; */
+font-family: 'IM Fell Great Primer', serif;
+}
+
+.btn-primary {
+  color: #474f85;
+  background-color: #51e3d4;
+  border-color: #474f85;
+  font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
+
+.btn-primary:hover {
+  color: white;
+  background-color: #474f85;
+  border-color: #51e3d4;
+}
+
+.custom-file {
+  font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
+
+.header {
+  position: fixed;
+  height: 75px;
+  width: 100%;
+  top:0;
+  /* background-color: #474f85; */
+  background: rgb(35,39,66);
+  background: linear-gradient(0deg, rgba(49,55,93,1) 0%, rgba(71,79,133,1) 86%, rgba(35,39,66,1) 100%);
+  z-index:1;
+  font-family: 'Fira Sans Extra Condensed', sans-serif;
+}
+
+.headerlinks {
+  position: absolute;
+  bottom: 0;
+}
+
+.lftlinks {
+  height:100%;
+  line-height:59px;
+  left: 5%;
+  vertical-align: bottom;
+}
+
+.rghtlinks {
+  height:100%;
+  line-height:59px;
+  right: 5%;
+  vertical-align: bottom;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+    vertical-align: bottom;
+}
+
+nav li {
+  float: left;
+}
+
+nav li a {
+  display: block;
+  font-size: 1.35rem;
+  color: #f3f9fb;
+  text-align: center;
+  padding-top: 14px;
+  padding-left:16px;
+  padding-right: 16px;
+  text-decoration: none;
+  border-width: 5px;
+}
+
+nav li:hover {
+border-bottom-style: solid;
+border-bottom-color: #51e3d4;
+border-bottom-width: 2px;
+}
+
+nav a:hover {
+  color: #51e3d4;
+  text-decoration: none;
+}
+
+
+
 /* -----------------------expand entry form------------------------------- */
 .expandTA textarea {
     height: 8em;
     padding: 3px;
     /* transition: all 0.5s ease; */
-}
-
-/* -----------------------expand cards------------------------------- */
-.rotate {
-  transform:rotate(180deg);
 }
 
 /* -----------------------entry privacy choice togglechoice------------------------------- */
@@ -92,7 +231,6 @@ input:checked + .slider:before {
 }
 
 
-
 /* -----------------------user page view choice------------------------------- */
 .userBtnBar {
   border-width: 1px;
@@ -125,13 +263,17 @@ background-color: #000;
   display: inline-block;
 }
 
+.bigger {
+  font-size: 1.5rem;
+}
+
 .flwUnflw {
   padding-left: 2%;
   display: inline-block;
 }
 
 .favShare {
-  width: 22%;
+  width: 35%;
   height: 30px;
   position: absolute;
   top: 0;
@@ -150,7 +292,7 @@ background-color: #000;
 }
 
 .shareBtn:hover {
-  color: black;
+  color: #474f85;
 }
 
 .shareBtn:focus {
@@ -201,7 +343,7 @@ font-size: 1.5rem;
 }
 
 .report {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   padding-top: 15px;
   background: none;
   border: none;

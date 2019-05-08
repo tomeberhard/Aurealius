@@ -15,16 +15,16 @@
       <div class="userBio">
         <div class="userImageContainer">
 
-          <% if(userInfo[0].bioImageFile === "/assets/defaultusericon.png") { %>
-          <% var userImage = userInfo[0].bioImageFile %>
+          <% if(userInfo.bioImageFile === "/assets/defaultusericon.png") { %>
+          <% var userImage = userInfo.bioImageFile %>
           <% } else { %>
-          <% var userImage = "/image/" + userInfo[0].bioImageFile %>
+          <% var userImage = "/image/" + userInfo.bioImageFile %>
           <% } %>
           <div class="userImage orientation" image="<%= userImage %>"></div>
         </div>
         <div class="userInfo">
           <h4 class="text-center display-4">
-            <%=userInfo[0].firstName + " " + userInfo[0].lastName %>
+            <%=userInfo.firstName + " " + userInfo.lastName %>
           </h4>
           <form action="/userUpload" method="POST" id="userBioForm" enctype="multipart/form-data">
             <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#userInfoModal">
@@ -56,11 +56,11 @@
                           </div>
                           <div class="col-6">
                             <label for="editProfileName">Username</label>
-                            <input class="form-control" name="userProfileName" id="editProfileName" placeholder="<%= userInfo[0].profileName %>"></input>
+                            <input class="form-control" name="userProfileName" id="editProfileName" placeholder="<%= userInfo.profileName %>"></input>
                             <label for="editFistName">First Name</label>
-                            <input class="form-control" name="userFName" id="editFirstName" placeholder="<%= userInfo[0].firstName %>"></input>
+                            <input class="form-control" name="userFName" id="editFirstName" placeholder="<%= userInfo.firstName %>"></input>
                             <label for="editFistName">Last Name</label>
-                            <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userInfo[0].lastName %>"></input>
+                            <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userInfo.lastName %>"></input>
                             <!-- <label for="editUserEmail">Email</label>
                             <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
                             <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
@@ -176,7 +176,7 @@
                       <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
 
                         <% var favs = JSON.stringify(entry.favoriteUsers) %>
-                        <% if (favs.includes(userInfo[0]._id)) { %>
+                        <% if (favs.includes(userInfo._id)) { %>
                         <% var faved = "" %>
                         <% var notFaved = "d-none" %>
                         <% } else { %>
@@ -210,8 +210,8 @@
         </div>
 
         <div class="favoritesActvity d-none">
-          <% if(userInfo[0].favorites.length > 0){ %>
-          <% userInfo[0].favorites.forEach(function(favorite) { %>
+          <% if(userInfo.favorites.length > 0){ %>
+          <% userInfo.favorites.forEach(function(favorite) { %>
           <div class="card card-body mb-3 cushion">
 
             <% if (favorite.imageFile === "NOTHING TO SEE HERE") { %>
@@ -248,7 +248,7 @@
               </p>
             </div>
 
-            <% var yours = JSON.stringify(userInfo[0]._id) %>
+            <% var yours = JSON.stringify(userInfo._id) %>
             <% var posTheirs = JSON.stringify(favorite.userId) %>
             <% if (yours === posTheirs) { %>
             <% var show = "" %>
