@@ -1,75 +1,68 @@
 <%- include('partials/headerLoggedIn') %>
 
-
 <title>Aurealius</title>
-<div class="container">
-  <div class="row">
-    <div class="col-md-6 m-auto">
-      <div class="entryContainer entryFormCard">
-        <form action="/upload" method="POST" enctype="multipart/form-data">
-          <div class="form-group entry-form">
-            <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
-            <!-- <br /> -->
-            <div class="upldToggleContainer expandable d-none">
-              <div class="custom-file mb-3 upldToggleContainerWidth">
-                <input type="file" name="file" id="file" class="" />
-              </div>
-              <div class="toggleCotainer">
-                <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-height="20" data-width="90" checked value="private">
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 m-auto">
+        <div class="entryContainer entryFormCard">
+          <form action="/upload" method="POST" enctype="multipart/form-data">
+            <div class="form-group entry-form">
+              <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
+              <!-- <br /> -->
+              <div class="upldToggleContainer expandable d-none">
+                <div class="custom-file mb-3 upldToggleContainerWidth">
+                  <input type="file" name="file" id="file" class="" />
+                </div>
+                <div class="toggleCotainer">
+                  <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-height="20" data-width="90" checked value="private">
+                </div>
               </div>
             </div>
+            <button type="button" class="btn btn-primary btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
+              Submit
+            </button>
 
-            <!-- <div class="privacyToggle expandable d-none">
-              <p>Keep Private?</p>
-              <!-- <label class="switch">
-                <input type="checkbox" name="status" checked value="private">
-                <span class="slider round"></span>
-              </label> -->
-          </div>
-          <button type="button" class="btn btn-primary btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
-            Submit
-          </button>
-
-          <div class="modal" id="collectionModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Choose Your Collection</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label for="collectionSelector">Choose Collection</label>
-                    <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
-                    <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
-                      <% if(groupings){ %>
-                      <% groupings.forEach(function(userCollectionName) { %>
-                      <option>
-                        <%= userCollectionName %>
-                      </option>
-                      <% }) %>
-                      <% } else { %>
-                      <p>No Collections to show!</p>
-                      <% } %>
-                    </select>
+            <div class="modal" id="collectionModal" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Choose Your Collection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <label for="collectionSelector">Choose Collection</label>
+                      <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
+                      <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
+                        <% if(groupings){ %>
+                        <% groupings.forEach(function(userCollectionName) { %>
+                        <option>
+                          <%= userCollectionName %>
+                        </option>
+                        <% }) %>
+                        <% } else { %>
+                        <p>No Collections to show!</p>
+                        <% } %>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                   </div>
                 </div>
-                <div class="modal-footer">
-                  <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
               </div>
             </div>
-          </div>
-        </form>
+          </form>
 
-      </div>
-      <hr />
+        </div>
+        <hr />
 
-      <% if(entries){ %>
-      <% entries.forEach(function(entry) { %>
+        <% if(entries){ %>
+        <% entries.forEach(function(entry) { %>
 
         <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
         <% var hide = "" %>
@@ -79,151 +72,153 @@
         <% var cardClass = "cardWImg" %>
         <% } %>
 
-      <div class="card card-body mb-3 cushion <%= cardClass %>">
-        <div class="orientation" image="<%= hide %>"></div>
-        <div class="capPad">
-          <div class="uNFavIcnContainer">
-            <div class="profileFllwUnFllw">
-              <div class="userProfName">
-                <h5 class="bigger">
-                  <%= entry.userProfile %>
-                </h5>
+        <div class="card card-body mb-3 cushion <%= cardClass %>">
+          <div class="orientation" image="<%= hide %>"></div>
+          <div class="capPad">
+            <div class="uNFavIcnContainer">
+              <div class="profileFllwUnFllw">
+                <div class="userProfName">
+                  <h5 class="bigger">
+                    <%= entry.userProfile %>
+                  </h5>
+                </div>
+
+                <% if (entry.userProfile === userData.profileName) { %>
+                <% var hide = "d-none" %>
+                <% } else { %>
+                <% var hide = "" %>
+                <% } %>
+
+                <% if (userData.following.includes(entry.userId)) { %>
+                <% var folUnfol = "Unfollow" %>
+                <% } else { %>
+                <% var folUnfol = "Follow" %>
+                <% } %>
+
+                <div class="flwUnflw <%= hide %>">
+                  <form method="POST" action="/follow">
+                    <button class="followBtn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>">
+                      <%= folUnfol %></button>
+                  </form>
+                </div>
+
               </div>
 
-              <% if (entry.userProfile === userData.profileName) { %>
-              <% var hide = "d-none" %>
-              <% } else { %>
-              <% var hide = "" %>
-              <% } %>
+              <div class="favShare">
+                <div class="shareBtnContainer">
 
-              <% if (userData.following.includes(entry.userId)) { %>
-              <% var folUnfol = "Unfollow" %>
-              <% } else { %>
-              <% var folUnfol = "Follow" %>
-              <% } %>
+                  <% var collapseShareID = "a" + JSON.stringify(entry._id).replace(/"/g, "") %>
 
-              <div class="flwUnflw <%= hide %>">
-                <form method="POST" action="/follow">
-                  <button class="followBtn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>">
-                    <%= folUnfol %></button>
-                </form>
-              </div>
-
-            </div>
-
-            <div class="favShare">
-              <div class="shareBtnContainer">
-
-                <% var collapseShareID = "a" + JSON.stringify(entry._id).replace(/"/g, "") %>
-
-                <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
-                  <i class="fas fa-share fa-2x"></i>
-                </button>
-              </div>
-
-              <div class="favBtnContainer">
-                <form method="POST" action="/favorite">
-                  <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
-
-                    <% var favs = JSON.stringify(entry.favoriteUsers) %>
-                    <% if (favs.includes(userData._id)) { %>
-                    <% var faved = "" %>
-                    <% var notFaved = "d-none" %>
-                    <% } else { %>
-                    <% var faved = "d-none" %>
-                    <% var notFaved = "" %>
-                    <% } %>
-
-                    <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
-                    <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+                  <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
+                    <i class="fas fa-share fa-2x"></i>
                   </button>
-                </form>
+                </div>
+
+                <div class="favBtnContainer">
+                  <form method="POST" action="/favorite">
+                    <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
+
+                      <% var favs = JSON.stringify(entry.favoriteUsers) %>
+                      <% if (favs.includes(userData._id)) { %>
+                      <% var faved = "" %>
+                      <% var notFaved = "d-none" %>
+                      <% } else { %>
+                      <% var faved = "d-none" %>
+                      <% var notFaved = "" %>
+                      <% } %>
+
+                      <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
+                      <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="aFSMIconContainer collapse" id="<%= collapseShareID %>">
-            <span class="aFSMIcons border rounded">
-              <i class="fab fa-facebook"></i>
-              <i class="fab fa-instagram"></i>
-              <i class="fab fa-twitter"></i>
-              <i class="fas fa-external-link-alt"></i>
-            </span>
-          </div>
-          <div class="captionContainer">
-            <p class="card-text">
-              <%= entry.caption %>
-            </p>
-          </div>
+            <div class="aFSMIconContainer collapse" id="<%= collapseShareID %>">
+              <span class="aFSMIcons border rounded">
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fas fa-external-link-alt"></i>
+              </span>
+            </div>
+            <div class="captionContainer">
+              <p class="card-text">
+                <%= entry.caption %>
+              </p>
+            </div>
 
-          <% var collapseExpandID = "b" + collapseShareID %>
-          <% var collapseExpandIconID = "c" + collapseExpandID %>
+            <% var collapseExpandID = "b" + collapseShareID %>
+            <% var collapseExpandIconID = "c" + collapseExpandID %>
 
-          <div class="expndCrdContainer">
-            <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
-              <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
-            </button>
-          </div>
-
-          <div class="collapse" id="<%= collapseExpandID %>">
-            <form method="POST" action="/report">
-              <button type="button" class="report" data-toggle="modal" data-target="#reportModal">
-                <i class="fas fa-exclamation-circle"></i>
+            <div class="expndCrdContainer">
+              <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
+                <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
               </button>
+            </div>
 
-              <div class="modal" id="reportModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Report Entry</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <label for="reportRuleSelector">Which Rule Does this Entry Break?</label>
-                        <div class="form-check" id="reportRuleSelector">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector1" value="Entry must be based in gratitude" checked>
-                          <label class="form-check-label" for="reportRuleSelector1">
-                            Entry must be based in gratitude
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector2" value="Gratitude cannot be at expense of the well-being of another">
-                          <label class="form-check-label" for="reportRuleSelector2">
-                            Gratitude cannot be at expense of the well-being of another
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector3" value="No politics">
-                          <label class="form-check-label" for="reportRuleSelector3">
-                            No politics
-                          </label>
-                        </div>
+            <div class="collapse" id="<%= collapseExpandID %>">
+              <form method="POST" action="/report">
+                <button type="button" class="report" data-toggle="modal" data-target="#reportModal">
+                  <i class="fas fa-exclamation-circle"></i>
+                </button>
 
-                        <br />
-
-                        <textarea class="form-control" rows="3" name="reportComments" placeholder="Comments"></textarea>
+                <div class="modal" id="reportModal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Report Entry</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
                       </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary btn-block" value="<%= entry._id %>" name="reportButton">Submit</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <label for="reportRuleSelector">Which Rule Does this Entry Break?</label>
+                          <div class="form-check" id="reportRuleSelector">
+                            <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector1" value="Entry must be based in gratitude" checked>
+                            <label class="form-check-label" for="reportRuleSelector1">
+                              Entry must be based in gratitude
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector2" value="Gratitude cannot be at expense of the well-being of another">
+                            <label class="form-check-label" for="reportRuleSelector2">
+                              Gratitude cannot be at expense of the well-being of another
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector3" value="No politics">
+                            <label class="form-check-label" for="reportRuleSelector3">
+                              No politics
+                            </label>
+                          </div>
+
+                          <br />
+
+                          <textarea class="form-control" rows="3" name="reportComments" placeholder="Comments"></textarea>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-block" value="<%= entry._id %>" name="reportButton">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-            </form>
+              </form>
+            </div>
           </div>
         </div>
+        <% }) %>
+        <% } else { %>
+        <p>No entries to show!</p>
+        <% } %>
       </div>
-      <% }) %>
-      <% } else { %>
-      <p>No entries to show!</p>
-      <% } %>
     </div>
   </div>
-</div>
+<!-- </div> -->
+
 
 <%- include('partials/footer') %>

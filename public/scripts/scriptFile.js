@@ -76,7 +76,7 @@ $("#collectionSelector").on("change", function() {
 
 });
 
-//---user page view selection---//
+//---------------------------------user page view selection------------------//
 $(".viewerChoice").click(function() {
   let btnClicked = $(this);
 
@@ -112,9 +112,6 @@ function userViewChoice(btnClicked) {
     }
   }
 }
-
-
-
 
 // function favoriteUnFavorite (btnClicked) {
 //
