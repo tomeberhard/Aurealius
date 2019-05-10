@@ -26,6 +26,15 @@ $(".expndCrdBtn").click(function() {
 
 });
 
+//-----------------expand user column follow flip---------------------------//
+
+$(".expndFollowerBtn").click(function() {
+  let getId = $(this).children().attr("id");
+  let getIdClass = $("#" + getId).attr("class");
+  $("#" + getId).toggleClass("fa-rotate-90");
+
+});
+
 //-------------------image preview------------------------------------------//
 var loadFile = function(event) {
   var reader = new FileReader();

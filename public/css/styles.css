@@ -228,6 +228,22 @@ background-color: #000;
   display: inline-block;
 }
 
+.followBtn {
+  color: darkgray;
+  border-style: solid;
+  border-color: darkgray;
+  border-width: 1px;
+  padding:.15rem .5rem;
+}
+
+.followBtn:hover {
+  color: white;
+  border-style: solid;
+  border-color: #51e3d4;
+  background-color:#474f85;
+  border-width: 1px;
+}
+
 .bigger {
   font-size: 1.5rem;
 }
@@ -235,6 +251,7 @@ background-color: #000;
 .flwUnflw {
   padding-left: 2%;
   display: inline-block;
+  vertical-align: top;
 }
 
 .favShare {
@@ -300,7 +317,7 @@ font-size: 1.5rem;
 }
 
 .expndCrdBtn:hover {
-  color: black;
+  color: #474f85;
 }
 
 .expndCrdBtn:focus {
@@ -316,6 +333,100 @@ font-size: 1.5rem;
 
 .report:hover {
   color: red;
+}
+
+/* -----------------------user column  edit------------------------------- */
+.userContainer {
+  width: 250px;
+}
+
+.userInfo {
+  background-color: #fafcfd;
+  padding: 2%;
+  border-radius: .25rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.profileInfo {
+  text-align: center;
+}
+
+.userProfilePic {
+  height: 200px;
+  width:200px;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: auto;
+}
+
+.followContainer {
+  background-color: #fafcfd;
+  padding: 2%;
+  border-radius: .25rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.followLinkBox {
+  display: flex;
+  align-items: center;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 1px;
+  border-radius: .25rem;
+  padding:.25rem .25rem;
+}
+
+.followingPrvw {
+  width: 30px;
+  height: 30px;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.vertCtrAlign {
+  margin: auto 0 auto 0;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.settingsIcn {
+  color: darkgray;
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+}
+
+.settingsIcn:hover {
+  color: #474f85;
+}
+
+.settingsIcn:focus {
+  outline: 0;
+}
+
+.expndFollowerBtn {
+  background: none;
+  border: none;
+  color: darkgray;
+}
+
+.expndFollowerBtn:hover {
+  color: #474f85;
+}
+
+.expndFollowerBtn:focus {
+  outline: 0;
+}
+
+.fixIt{
+  position:fixed;
 }
 
 /* -----------------------user profile edit------------------------------- */
