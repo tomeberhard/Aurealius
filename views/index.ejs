@@ -5,19 +5,19 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-3 center-block">
-      <div class="userContainer fixIt">
+    <div class="col-sm-3 center-block">
+      <div class="userContainer">
+
+        <div class="profilePicContainer">
+          <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
+          <% var userImage = userData.bioImageFile %>
+          <% } else { %>
+          <% var userImage = "/image/" + userData.bioImageFile %>
+          <% } %>
+          <div class="userProfilePic orientation" image="<%= userImage %>"></div>
+        </div>
+        <br />
         <div class="userInfo">
-          <div class="profilePicContainer">
-
-            <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
-            <% var userImage = userData.bioImageFile %>
-            <% } else { %>
-            <% var userImage = "/image/" + userData.bioImageFile %>
-            <% } %>
-
-            <div class="userProfilePic orientation" image="<%= userImage %>"></div>
-          </div>
           <div class="profileInfo">
             <h2>
               <%= userData.profileName %>
@@ -63,15 +63,21 @@
                               <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userData.lastName %>"></input>
                               <!-- <label for="editUserEmail">Email</label>
                                 <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
-                              <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input> <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password"
-                                </input> <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input> </div> </div> </div> </div> <div class="modal-footer">
-                              <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                              <button type="button" class="btn btn-secondary" id="userProfileEditClose" onclick="abortPreview(event)" data-dismiss="modal">Close</button>
+                              <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
+                              <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password"</input>
+                              <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div class="modal-footer">
+                      <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                      <button type="button" class="btn btn-secondary" id="userProfileEditClose" onclick="abortPreview(event)" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </form>
           </div>
           <div class="expndCrdContainer">
@@ -80,71 +86,84 @@
             </button>
           </div>
         </div>
+
         <div class="collapse" id="userColumnFollow">
+
           <div class="followContainer">
-            <h4 class="inline">Following (<%= userData.following.length %>)
-            </h4>
-            <div class="expndCrdContainer inline">
-              <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
-                <i class="fas fa-chevron-left" id="followingChevronLftToDwn"></i>
-              </button>
+            <div class="followBoxHeader">
+              <h4 class="inline">Following (<%= userData.following.length %>)</h4>
+              <div class="expndCrdContainer rightSide">
+                <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
+                  <i class="fas fa-chevron-left" id="followingChevronLftToDwn"></i>
+                </button>
+              </div>
             </div>
             <div class="followLinkContainer collapse" id="followLinklist">
-              <div class="followLinkBox">
-                <% if(userData.following.length > 0){ %>
 
-                <% userData.following.forEach(function(usersFollowed) {%>
+              <% if(userData.following.length > 0){ %>
+              <% userData.following.forEach(function(usersFollowed) {%>
+
+              <div class="followLinkBox">
+
                 <% if(usersFollowed.bioImageFile === "/assets/defaultusericon.png") { %>
                 <% var userImage = usersFollowed.bioImageFile %>
                 <% } else { %>
                 <% var userImage = "/image/" + usersFollowed.bioImageFile %>
                 <% } %>
                 <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                <h5 class="inline .vertCtrAlign">
+                <h5 class=" vertCtrAlign">
                   <%= usersFollowed.profileName %>
                 </h5>
               </div>
-              <% }) %>
-              <% } else { %>
+                <% }) %>
+                <% } else { %>
               <h5>Not Following Anyone</h5>
-              <% } %>
+                <% } %>
             </div>
           </div>
+
           <br />
+
           <div class="followContainer">
-            <h4 class="inline">Following (<%= userData.followers.length %>)
-            </h4>
-            <div class="expndCrdContainer inline">
-              <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
-                <i class="fas fa-chevron-left" id="followerChevronLftToDwn"></i>
-              </button>
+            <div class="followBoxHeader">
+              <h4 class="inline">Followers (<%= userData.followers.length %>)</h4>
+              <div class="expndCrdContainer rightSide">
+                <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
+                  <i class="fas fa-chevron-left" id="followerChevronLftToDwn"></i>
+                </button>
+              </div>
             </div>
             <div class="followLinkContainer collapse" id="followerLinklist">
-              <div class="followLinkBox">
-                <% if(userData.followers.length > 0){ %>
 
-                <% userData.followers.forEach(function(followingUsers) {%>
+              <% if(userData.followers.length > 0){ %>
+              <% userData.followers.forEach(function(followingUsers) {%>
+
+              <div class="followLinkBox">
                 <% if(followingUsers.bioImageFile === "/assets/defaultusericon.png") { %>
                 <% var userImage = followingUsers.bioImageFile %>
                 <% } else { %>
                 <% var userImage = "/image/" + followingUsers.bioImageFile %>
                 <% } %>
                 <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                <h5 class="inline">
+                <h5 class="vertCtrAlign">
                   <%= followingUsers.profileName %>
                 </h5>
+              </div>
                 <% }) %>
                 <% } else { %>
-                <h5>No followers</h5>
+            <h5>No Followers</h5>
                 <% } %>
-              </div>
             </div>
           </div>
+
+          <br />
+
         </div>
+
       </div>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-sm-8">
       <div class="entryContainer entryFormCard">
         <form action="/upload" method="POST" enctype="multipart/form-data">
           <div class="form-group entry-form">
@@ -195,8 +214,8 @@
               </div>
             </div>
           </div>
-        </form>
 
+        </form>
       </div>
       <hr />
 
@@ -217,9 +236,7 @@
           <div class="uNFavIcnContainer">
             <div class="profileFllwUnFllw">
               <div class="userProfName">
-                <h3>
-                  <%= entry.userProfile %>
-                </h3>
+                <h3><%= entry.userProfile %></h3>
               </div>
 
               <% if (entry.userProfile === userData.profileName) { %>
@@ -237,7 +254,8 @@
               <div class="flwUnflw <%= hide %>">
                 <form method="POST" action="/follow">
                   <button class="followBtn btn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>">
-                    <%= folUnfol %></button>
+                    <%= folUnfol %>
+                  </button>
                 </form>
               </div>
 
@@ -255,7 +273,10 @@
 
               <div class="favBtnContainer">
                 <form method="POST" action="/favorite">
-                  <button class="favBtn" name="favoriteButton" id="favUnfav" value="<%= entry._id %>">
+
+                  <% var heartBtnEntryId = "e"+ entry._id%>
+
+                  <button class="favBtn" name="favoriteButton" id="<%= heartBtnEntryId %>" value="<%= entry._id %>">
 
                     <% var favs = JSON.stringify(entry.favoriteUsers) %>
                     <% if (favs.includes(userData._id)) { %>
@@ -345,9 +366,9 @@
                   </div>
                 </div>
               </div>
-
             </form>
           </div>
+
         </div>
       </div>
       <% }) %>
@@ -355,6 +376,7 @@
       <p>No entries to show!</p>
       <% } %>
     </div>
+
   </div>
 </div>
 

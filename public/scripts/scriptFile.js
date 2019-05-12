@@ -6,13 +6,13 @@ document.addEventListener("click", function(event) {
 
     setTimeout(function() {
       $(".expandable").removeClass("d-none");
-    }, 300);
+    }, 500);
 
   } else {
     $("textarea.expandTA").animate({ height: "4em" }, 500)
     setTimeout(function() {
       $(".expandable").addClass("d-none");
-    }, 300);
+    }, 500);
   }
 
 });
@@ -21,7 +21,6 @@ document.addEventListener("click", function(event) {
 
 $(".expndCrdBtn").click(function() {
   let getId = $(this).children().attr("id");
-  let getIdClass = $("#" + getId).attr("class");
   $("#" + getId).toggleClass("fa-rotate-180");
 
 });
@@ -30,10 +29,19 @@ $(".expndCrdBtn").click(function() {
 
 $(".expndFollowerBtn").click(function() {
   let getId = $(this).children().attr("id");
-  let getIdClass = $("#" + getId).attr("class");
   $("#" + getId).toggleClass("fa-rotate-90");
 
 });
+
+//-----------------heart hover icon toggle----------------------------------//
+
+$("document").ready(function() {
+    $(".favBtn").hover(function(){
+      let favBtnId = $(this).attr("id");
+      $("#" + favBtnId).children().toggleClass("d-none")
+    });
+});
+
 
 //-------------------image preview------------------------------------------//
 var loadFile = function(event) {
@@ -92,12 +100,6 @@ $(".viewerChoice").click(function() {
   userViewChoice(btnClicked);
 });
 
-//---favorite-unfavorite options---//
-// $("#favUnfav").click(function(){
-//   let btnClicked = $(this);
-//
-//   favoriteUnFavorite(btnClicked);
-// });
 
 //---functions---//
 
@@ -121,15 +123,3 @@ function userViewChoice(btnClicked) {
     }
   }
 }
-
-// function favoriteUnFavorite (btnClicked) {
-//
-//   if ($("#unFav").hasClass("d-none")){
-//     $("#fav").addClass("d-none");
-//     $("#unFav").removeClass("d-none");
-//   } else {
-//     $("#fav").removeClass("d-none");
-//     $("#unFav").addClass("d-none");
-//   }
-//
-// }

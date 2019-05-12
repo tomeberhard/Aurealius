@@ -542,7 +542,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
     userId: currentUser,
     userProfile: currentUserProfile,
     viewStatus: statusAssignment(),
-    reportStatus: "Open"
+    reportStatus: "Open",
   });
 
   Grouping.find({
@@ -607,10 +607,62 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
     }
   }
 
+  let uploadFieldOjb = new Object();
+
   const newImgFile = userFileExists();
+  if (newImgFile != "") {
+    uploadFieldOjb.bioImageFile = newImgFile;
+  }
   const currentUId = req.body.userProfileName;
+  if (currentUId != "") {
+    uploadFieldOjb.profileName = currentUId;
+  }
   const currentUserFirstName = req.body.userFName;
+
+  if (currentUserFirstName != "") {
+    uploadFieldOjb.firstName = currentUserFirstName;
+  }
   const currentUserLastName = req.body.userLName;
+  if (currentUserLastName != "") {
+    uploadFieldOjb.lastName = currentUserLastName;
+  }
+
+  AurealiusUser.updateOne({
+    _id: req.user.id
+  }, uploadFieldOjb, function(err, success) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("Succesfully updated user.")
+    }
+  });
+
+  if (currentUId != "") {
+    Entry.updateMany({
+        userId: req.user.id
+      }, {
+        $set: {
+          userProfile: currentUId
+        }
+      }, {
+        upsert: true
+      },
+      function(err, success) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Succesfully updated entries' userProfiles.")
+        }
+      });
+  }
+
+  res.redirect("back");
+
+});
+
+app.post("/follow", function(req, res) {
+
+  const fllw = req.body.followButton;
 
   AurealiusUser.findOne({
     _id: req.user.id
@@ -618,145 +670,198 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      if (newImgFile === "") {
-        AurealiusUser.updateOne({
-            _id: req.user.id
-          }, {
-            bioImageFile: foundUser.bioImageFile
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Kept existing user profile picture.");
-            }
+
+      let followingArray = JSON.stringify([...new Set(foundUser.following.map(item => item._id))]);
+
+      AurealiusUser.findOne({
+        _id: fllw
+      }, function(err, followBtnUser) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          if (followingArray.includes(followBtnUser._id) === false) {
+            AurealiusUser.updateOne({
+              _id: req.user.id
+            }, {
+              $push: {
+                following: followBtnUser
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully added user to following.")
+              }
+            });
+          } else {
+            AurealiusUser.updateOne({
+              _id: req.user.id
+            }, {
+              $pull: {
+                following: {
+                  _id: followBtnUser._id
+                }
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully removed user from following.")
+              }
+            });
           }
-        );
-      } else {
-        AurealiusUser.updateOne({
-            _id: req.user.id
-          }, {
-            bioImageFile: newImgFile
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Successfully updated profile picture.");
-            }
-          }
-        );
-      }
+        }
+      });
     }
   });
 
   AurealiusUser.findOne({
-    _id: req.user.id
+    _id: fllw
   }, function(err, foundUser) {
     if (err) {
       console.log(err);
     } else {
-      if (currentUId === "") {
-        AurealiusUser.updateOne({
-            _id: req.user.id
-          }, {
-            profileName: foundUser.profileName
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Kept existing user profile name.");
-            }
+
+      let followerArray = JSON.stringify([...new Set(foundUser.followers.map(item => item._id))]);
+
+      AurealiusUser.findOne({
+        _id: req.user.id
+      }, function(err, followingUser) {
+        if (err) {
+          console.log(err);
+        } else {
+          if (followerArray.includes(req.user.id) === false) {
+            AurealiusUser.updateOne({
+              _id: fllw
+            }, {
+              $push: {
+                followers: followingUser
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully added user to followers.")
+              }
+            });
+          } else {
+            AurealiusUser.updateOne({
+              _id: fllw
+            }, {
+              $pull: {
+                followers: {
+                  _id: followingUser._id
+                }
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully removed user from followers.")
+              }
+            });
           }
-        );
-      } else {
-        AurealiusUser.updateOne({
-            _id: req.user.id
-          }, {
-            profileName: currentUId
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Successfully updated profile name.");
-            }
-          }
-        );
-      }
+        }
+      });
     }
   });
 
-  AurealiusUser.findOne({
-    _id: req.user.id
-  }, function(err, foundUser) {
-    if (err) {
-      console.log(err);
-    } else {
-      if (currentUserFirstName === "") {
-        AurealiusUser.updateOne({
-            _id: req.user.id
-          }, {
-            firstName: foundUser.firstName
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Kept existing user first name.");
-            }
-          }
-        );
-      } else {
-        AurealiusUser.updateOne({
-            _id: req.user.id
-          }, {
-            firstName: currentUserFirstName
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Successfully updated user first name.");
-            }
-          }
-        );
+  res.redirect("back");
+
+});
+
+
+app.post("/favorite", function(req, res) {
+
+  Entry.find({
+    _id: req.body.favoriteButton
+  }, function(err, foundEntry) {
+
+    AurealiusUser.find({
+      _id: req.user.id,
+      favorites: {
+        $elemMatch: {
+          _id: foundEntry[0]._id
+        }
       }
-    }
+    }, function(err, userWfav) {
+      if (err) {
+        console.log(err);
+      } else {
+        if (userWfav.length != 0) {
+          AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            $pull: {
+              favorites: {
+                _id: foundEntry[0]._id
+              }
+            }
+          }, function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully removed entry from favorites.")
+            }
+          });
+        } else {
+          AurealiusUser.updateOne({
+            _id: req.user.id
+          }, {
+            $push: {
+              favorites: foundEntry
+            }
+          }, function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully added entry to favorites.")
+            }
+          });
+        }
+      }
+    });
   });
 
-  AurealiusUser.find({
-    _id: req.user.id
-  }, function(err, foundUser) {
+  Entry.findOne({
+    _id: req.body.favoriteButton,
+    favoriteUsers: {
+      $all: [req.user.id]
+    },
+  }, function(err, foundFavUser) {
     if (err) {
       console.log(err);
     } else {
-      if (currentUserFirstName === "") {
-        AurealiusUser.updateOne({
-            _id: req.user.id
+      if (foundFavUser) {
+        Entry.updateOne({
+            _id: req.body.favoriteButton
           }, {
-            lastName: foundUser[0].lastName
+            $pull: {
+              favoriteUsers: req.user.id
+            }
           },
           function(err, success) {
             if (err) {
               console.log(err);
             } else {
-              console.log("Kept existing user last name.");
+              console.log("Successfully unfavorited entry.");
             }
           }
         );
       } else {
-        AurealiusUser.updateOne({
-            _id: req.user.id
+        Entry.updateOne({
+            _id: req.body.favoriteButton
           }, {
-            lastName: currentUserLastName
+            $push: {
+              favoriteUsers: req.user.id
+            }
           },
           function(err, success) {
             if (err) {
               console.log(err);
             } else {
-              console.log("Successfully updated user last name.");
+              console.log("Successfully favorited entry.");
             }
           }
         );
@@ -768,306 +873,118 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
 
 });
 
-app.post("/follow", function(req, res) {
+app.post("/report", function(req, res) {
 
-      const fllw = req.body.followButton;
-
-      AurealiusUser.findOne({
-        _id: req.user.id
-      }, function(err, foundUser) {
+  Entry.find({
+    _id: req.body.reportButton
+  }, function(err, foundEntry) {
+    if (err) {
+      console.log(err);
+    } else {
+      Entry.updateOne({
+        _id: req.body.reportButton
+      }, {
+        reportStatus: "Pending"
+      }, function(err, success) {
         if (err) {
           console.log(err);
         } else {
-
-          let followingArray = JSON.stringify([...new Set(foundUser.following.map(item => item._id))]);
-
-          AurealiusUser.findOne({
-              _id: fllw
-            }, function(err, followBtnUser) {
-              if (err) {
-                console.log(err);
-              } else {
-
-                if (followingArray.includes(followBtnUser._id) === false) {
-                  AurealiusUser.updateOne({
-                    _id: req.user.id
-                  }, {
-                    $push: {
-                      following: followBtnUser
-                    }
-                  }, function(err, success) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log("Successfully added user to following.")
-                    }
-                  });
-                } else {
-                  AurealiusUser.updateOne({
-                    _id: req.user.id
-                  }, {
-                    $pull: {
-                      following:
-                      {
-                        _id: followBtnUser._id
-                      }
-                    }
-                  }, function(err, success) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log("Successfully removed user from following.")
-                    }
-                  });
-                }
-              }
-            }
-          );
+          console.log("Successfully reported entry.");
         }
       });
 
       AurealiusUser.findOne({
-        _id: fllw
-      }, function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
+          _id: req.user.id
+        },
+        function(err, foundUser) {
+          if (err) {
+            console.log(err);
+          } else {
 
-          let followerArray = JSON.stringify([...new Set(foundUser.followers.map(item => item._id))]);
+            function reportTracker() {
+              if (foundUser.reports === undefined) {
+                let reportings = 0;
+                let updatedReportings = ++reportings;
+                return updatedReportings;
+              } else {
+                let reportings = foundUser.reports;
+                let updatedReportings = ++reportings
+                return updatedReportings;
+              }
+            }
 
-          AurealiusUser.findOne({
+            AurealiusUser.updateOne({
               _id: req.user.id
-            }, function(err, followingUser) {
-              if (err) {
-                console.log(err);
-              } else {
-                if (followerArray.includes(req.user.id) === false) {
-                  AurealiusUser.updateOne({
-                    _id: fllw
-                  }, {
-                    $push: {
-                      followers: followingUser
-                    }
-                  }, function(err, success) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log("Successfully added user to followers.")
-                    }
-                  });
-                } else {
-                  AurealiusUser.updateOne({
-                    _id: fllw
-                  }, {
-                    $pull: {
-                      followers: {
-                        _id: followingUser._id
-                      }
-                    }
-                  }, function(err, success) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log("Successfully removed user from followers.")
-                    }
-                  });
-                }
-              }
-            }
-          );
-        }
-      });
-
-        res.redirect("back");
-
-      });
-
-
-      app.post("/favorite", function(req, res) {
-
-        Entry.find({
-          _id: req.body.favoriteButton
-        }, function(err, foundEntry) {
-
-          AurealiusUser.find({
-            _id: req.user.id,
-            favorites: {
-              $elemMatch: {
-                _id: foundEntry[0]._id
-              }
-            }
-          }, function(err, userWfav) {
-            if (err) {
-              console.log(err);
-            } else {
-              if (userWfav.length != 0) {
-                AurealiusUser.updateOne({
-                  _id: req.user.id
-                }, {
-                  $pull: {
-                    favorites: {
-                      _id: foundEntry[0]._id
-                    }
-                  }
-                }, function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully removed entry from favorites.")
-                  }
-                });
-              } else {
-                AurealiusUser.updateOne({
-                  _id: req.user.id
-                }, {
-                  $push: {
-                    favorites: foundEntry
-                  }
-                }, function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully added entry to favorites.")
-                  }
-                });
-              }
-            }
-          });
-        });
-
-        Entry.findOne({
-          _id: req.body.favoriteButton,
-          favoriteUsers: {
-            $all: [req.user.id]
-          },
-        }, function(err, foundFavUser) {
-          if (err) {
-            console.log(err);
-          } else {
-            if (foundFavUser) {
-              Entry.updateOne({
-                  _id: req.body.favoriteButton
-                }, {
-                  $pull: {
-                    favoriteUsers: req.user.id
-                  }
-                },
-                function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully unfavorited entry.");
-                  }
-                }
-              );
-            } else {
-              Entry.updateOne({
-                  _id: req.body.favoriteButton
-                }, {
-                  $push: {
-                    favoriteUsers: req.user.id
-                  }
-                },
-                function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully favorited entry.");
-                  }
-                }
-              );
-            }
-          }
-        });
-
-        res.redirect("back");
-
-      });
-
-      app.post("/report", function(req, res) {
-
-        Entry.find({
-          _id: req.body.reportButton
-        }, function(err, foundEntry) {
-          if (err) {
-            console.log(err);
-          } else {
-            Entry.updateOne({
-              _id: req.body.reportButton
             }, {
-              reportStatus: "Pending"
+              reports: reportTracker()
             }, function(err, success) {
               if (err) {
                 console.log(err);
               } else {
-                console.log("Successfully reported entry.");
+                console.log("Successfully updated number of reportings.");
               }
             });
 
-            AurealiusUser.findOne({
-                _id: req.user.id
-              },
-              function(err, foundUser) {
-                if (err) {
-                  console.log(err);
-                } else {
-
-                  function reportTracker() {
-                    if (foundUser.reports === undefined) {
-                      let reportings = 0;
-                      let updatedReportings = ++reportings;
-                      return updatedReportings;
-                    } else {
-                      let reportings = foundUser.reports;
-                      let updatedReportings = ++reportings
-                      return updatedReportings;
-                    }
-                  }
-
-                  AurealiusUser.updateOne({
-                    _id: req.user.id
-                  }, {
-                    reports: reportTracker()
-                  }, function(err, success) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log("Successfully updated number of reportings.");
-                    }
-                  });
-
-                  const newReport = new Report({
-                    reportingId: foundUser._id,
-                    entryId: foundEntry[0]._id,
-                    status: "Pending",
-                    ruleBroken: req.body.rule,
-                    comments: req.body.reportComments
-                  });
-                  newReport.save();
-                  console.log("Successfully added new reporting.")
-                }
-              });
+            const newReport = new Report({
+              reportingId: foundUser._id,
+              entryId: foundEntry[0]._id,
+              status: "Pending",
+              ruleBroken: req.body.rule,
+              comments: req.body.reportComments
+            });
+            newReport.save();
+            console.log("Successfully added new reporting.")
           }
         });
+    }
+  });
 
-        res.redirect("back");
+  res.redirect("back");
 
+});
+
+app.post("/delete", function(req, res) {
+
+  Entry.deleteOne({
+    imageFile: req.body.deleteButton
+  }, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully deleted entry.");
+    }
+  });
+
+  gfs.remove({
+    filename: req.body.deleteButton,
+    root: "uploads"
+  }, function(err) {
+    if (err) {
+      return res.status(404).json({
+        err: err
       });
+    } else {
+      res.redirect("user");
+    }
+  });
+});
 
-      app.post("/delete", function(req, res) {
+app.post("/deleteCollection", function(req, res) {
 
-        Entry.deleteOne({
-          imageFile: req.body.deleteButton
-        }, function(err) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("Successfully deleted entry.");
-          }
-        });
+  Entry.find({
+    userId: req.user.id,
+    grouping: req.body.deleteCollectionButton
+  }, function(err, foundEntries) {
+    if (err) {
+      console.log(err);
+    } else {
 
+      let groupingImageFiles = [...new Set(foundEntries.map(item => item.imageFile))];
+
+      var i;
+      for (i = 0; i < groupingImageFiles.length; i++) {
         gfs.remove({
-          filename: req.body.deleteButton,
+          filename: groupingImageFiles[i],
           root: "uploads"
         }, function(err) {
           if (err) {
@@ -1075,87 +992,59 @@ app.post("/follow", function(req, res) {
               err: err
             });
           } else {
-            res.redirect("user");
+            console.log("Successfully deleted grouping image file.")
           }
         });
-      });
-
-      app.post("/deleteCollection", function(req, res) {
-
-        Entry.find({
-          userId: req.user.id,
-          grouping: req.body.deleteCollectionButton
-        }, function(err, foundEntries) {
-          if (err) {
-            console.log(err);
-          } else {
-
-            let groupingImageFiles = [...new Set(foundEntries.map(item => item.imageFile))];
-
-            var i;
-            for (i = 0; i < groupingImageFiles.length; i++) {
-              gfs.remove({
-                filename: groupingImageFiles[i],
-                root: "uploads"
-              }, function(err) {
-                if (err) {
-                  return res.status(404).json({
-                    err: err
-                  });
-                } else {
-                  console.log("Successfully deleted grouping image file.")
-                }
-              });
-            }
-          }
-        });
-
-        Entry.deleteMany({
-          userId: req.user.id,
-          grouping: req.body.deleteCollectionButton
-        }, function(err) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log("Successfully deleted all entries in grouping.");
-          }
-        });
-
-        //---NEED TO FIGURE OUT THE GROUPING DELETE MECHANISM-----------------------//
-        // Grouping.deleteMany({userId: req.user.Id,
-        //   grouping: req.body.deleteCollectionButton
-        // }, function(err) {
-        //   if (err) {
-        //     console.log(err);
-        //   } else {
-        //     console.log("Successfully deleted all entries in group.");
-        //   }
-        // });
-
-        res.redirect("user");
-
-      });
-
-      app.post("/chosenCollection", function(req, res) {
-
-        const collectionChosen = req.body.userCollectionChosen;
-
-        if (req.isAuthenticated()) {
-          const currentUserId = req.user._id;
-
-          res.redirect("/user/" + currentUserId + "/collections/" + collectionChosen);
-        }
-
-      });
-
-      //---SERVER---///
-
-      let port = process.env.PORT;
-
-      if (port == null || port == "") {
-        port = 3000;
       }
+    }
+  });
 
-      app.listen(port, function() {
-        console.log("Server started successfully.");
-      });
+  Entry.deleteMany({
+    userId: req.user.id,
+    grouping: req.body.deleteCollectionButton
+  }, function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully deleted all entries in grouping.");
+    }
+  });
+
+  //---NEED TO FIGURE OUT THE GROUPING DELETE MECHANISM-----------------------//
+  // Grouping.deleteMany({userId: req.user.Id,
+  //   grouping: req.body.deleteCollectionButton
+  // }, function(err) {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     console.log("Successfully deleted all entries in group.");
+  //   }
+  // });
+
+  res.redirect("user");
+
+});
+
+app.post("/chosenCollection", function(req, res) {
+
+  const collectionChosen = req.body.userCollectionChosen;
+
+  if (req.isAuthenticated()) {
+    const currentUserId = req.user._id;
+
+    res.redirect("/user/" + currentUserId + "/collections/" + collectionChosen);
+  }
+
+});
+
+//---SERVER---///
+
+let port = process.env.PORT;
+
+if (port == null || port == "") {
+  port = 3000;
+}
+
+app.listen(port, function() {
+  console.log("Server started successfully.");
+});

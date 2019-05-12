@@ -1,4 +1,3 @@
-
 body {
   background: url(/assets/backgroundCanvas.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -8,11 +7,27 @@ body {
 }
 
 h1,h2,h3,h4,h5 {
-  font-family: 'Fira Sans Extra Condensed', sans-serif;
+  font-family: 'Sansita', sans-serif;
 }
 
 p {
   font-family: 'IM Fell Great Primer', serif;
+}
+
+hr {
+  border-top: 3px solid;
+  color: #474f85;
+  opacity: .2;
+  width: 95%;
+}
+
+/* responsively apply fixed position */
+@media (min-width: 801px){
+  .userContainer {
+    position: fixed;
+    /* top: 0; */
+    /* bottom: 0; */
+  }
 }
 
 .container {
@@ -30,13 +45,17 @@ p {
 }
 
 .entryContainer {
-  padding: 2%;
+  padding: 2rem;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   }
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+  padding:2rem;
 }
 
 .cardWImg {
@@ -57,14 +76,14 @@ font-family: 'IM Fell Great Primer', serif;
 }
 
 .btn {
-  font-family: 'Fira Sans Extra Condensed', sans-serif;
+  font-family: 'Sansita', sans-serif;
 }
 
 .btn-primary {
   color: #474f85;
   background-color: #51e3d4;
   border-color: #474f85;
-  font-family: 'Fira Sans Extra Condensed', sans-serif;
+  /* font-family: 'Sansita', sans-serif; */
 }
 
 .btn-primary:hover {
@@ -74,7 +93,7 @@ font-family: 'IM Fell Great Primer', serif;
 }
 
 .custom-file {
-  font-family: 'Fira Sans Extra Condensed', sans-serif;
+  font-family: 'Sansita', sans-serif;
 }
 
 .header {
@@ -86,7 +105,7 @@ font-family: 'IM Fell Great Primer', serif;
   background: rgb(35,39,66);
   background: linear-gradient(0deg, rgba(49,55,93,1) 0%, rgba(71,79,133,1) 86%, rgba(35,39,66,1) 100%);
   z-index:1;
-  font-family: 'Fira Sans Extra Condensed', sans-serif;
+  font-family: 'Sansita', sans-serif;
 }
 
 .footer {
@@ -98,7 +117,7 @@ font-family: 'IM Fell Great Primer', serif;
   background: rgb(35,39,66);
   background: linear-gradient(180deg, rgba(49,55,93,1) 0%, rgba(71,79,133,1) 86%, rgba(35,39,66,1) 100%);
   z-index:1;
-  font-family: 'Fira Sans Extra Condensed', sans-serif;
+  font-family: 'Sansita', sans-serif;
 }
 
 .headerlinks {
@@ -244,9 +263,9 @@ background-color: #000;
   border-width: 1px;
 }
 
-.bigger {
+/* .bigger {
   font-size: 1.5rem;
-}
+} */
 
 .flwUnflw {
   padding-left: 2%;
@@ -275,6 +294,7 @@ background-color: #000;
 
 .shareBtn:hover {
   color: #474f85;
+  text-shadow: 0px 0px 5px #51e3d4;
 }
 
 .shareBtn:focus {
@@ -288,7 +308,13 @@ background-color: #000;
 .favBtn {
   background: none;
   border: none;
-  color: red;
+  /* color: darkgray; */
+  color: #474f85;
+}
+
+.favBtn:hover {
+  color: #474f85;
+  text-shadow: 0px 0px 5px #51e3d4;
 }
 
 .aFSMIconContainer {
@@ -307,12 +333,26 @@ font-size: 1.5rem;
 }
 
 .expndCrdContainer {
+  /* position: absolute;
+  right: 0; */
   text-align: center;
+}
+
+.followBoxHeader {
+  position: relative;
+
+  padding: 2%;
+}
+.rightSide {
+  position: absolute;
+  top: 20%;
+  right: 2%;
 }
 
 .expndCrdBtn {
   background: none;
   border: none;
+  padding-top: 1%;
   color: darkgray;
 }
 
@@ -325,10 +365,11 @@ font-size: 1.5rem;
 }
 
 .report {
-  font-size: 1.5rem;
-  padding-top: 15px;
+  font-size: 1.75rem;
+  padding-top: 1%;
   background: none;
   border: none;
+  color: darkgray;
 }
 
 .report:hover {
@@ -351,14 +392,24 @@ font-size: 1.5rem;
   text-align: center;
 }
 
+.profilePicContainer {
+  background-color: #fafcfd;
+  /* padding: 2%; */
+  border-radius: .25rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
 .userProfilePic {
-  height: 200px;
-  width:200px;
-  border-style: solid;
+  /* height: 200px; */
+  width: 90%;
+  /* border-style: solid;
   border-width: 2px;
   border-radius: 50%;
-  overflow: hidden;
+  overflow: hidden; */
   margin: auto;
+  padding: 4%;
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+
 }
 
 .followContainer {
@@ -372,6 +423,7 @@ font-size: 1.5rem;
   display: flex;
   align-items: center;
   border-style: solid;
+  margin: 2%;
   border-color: lightgray;
   border-width: 1px;
   border-radius: .25rem;
