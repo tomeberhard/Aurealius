@@ -5,7 +5,7 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-sm-3 center-block">
+    <div class="col-lg-3 center-block">
       <div class="userContainer">
 
         <div class="profilePicContainer">
@@ -16,8 +16,8 @@
           <% } %>
           <div class="userProfilePic orientation" image="<%= userImage %>"></div>
         </div>
-        <br />
-        <div class="userInfo">
+        <br class="smallerBreak"/>
+        <div class="userInfoCard">
           <div class="profileInfo">
             <h2>
               <%= userData.profileName %>
@@ -89,16 +89,21 @@
 
         <div class="collapse" id="userColumnFollow">
 
-          <div class="followContainer">
+          <div class="followContainer text-center">
             <div class="followBoxHeader">
               <h4 class="inline">Following (<%= userData.following.length %>)</h4>
-              <div class="expndCrdContainer rightSide">
+              <!-- <div class="expndCrdContainer rightSide">
                 <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
                   <i class="fas fa-chevron-left" id="followingChevronLftToDwn"></i>
                 </button>
-              </div>
+              </div> -->
             </div>
-            <div class="followLinkContainer collapse" id="followLinklist">
+            <div class="expndCrdContainer">
+              <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
+                <i class="fas fa-chevron-down" id="followingChevronLftToDwn"></i>
+              </button>
+            </div>
+            <div class="followLinkContainer  collapse" id="followLinklist">
 
               <% if(userData.following.length > 0){ %>
               <% userData.following.forEach(function(usersFollowed) {%>
@@ -117,21 +122,26 @@
               </div>
                 <% }) %>
                 <% } else { %>
-              <h5>Not Following Anyone</h5>
+              <h5 class="noFollowTxt">Not Following Anyone</h5>
                 <% } %>
             </div>
           </div>
 
           <br />
 
-          <div class="followContainer">
+          <div class="followContainer text-center">
             <div class="followBoxHeader">
               <h4 class="inline">Followers (<%= userData.followers.length %>)</h4>
-              <div class="expndCrdContainer rightSide">
+              <!-- <div class="expndCrdContainer rightSide">
                 <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
                   <i class="fas fa-chevron-left" id="followerChevronLftToDwn"></i>
                 </button>
-              </div>
+              </div> -->
+            </div>
+            <div class="expndCrdContainer">
+              <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
+                <i class="fas fa-chevron-down" id="followerChevronLftToDwn"></i>
+              </button>
             </div>
             <div class="followLinkContainer collapse" id="followerLinklist">
 
@@ -145,13 +155,13 @@
                 <% var userImage = "/image/" + followingUsers.bioImageFile %>
                 <% } %>
                 <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                <h5 class="vertCtrAlign">
+                <h5>
                   <%= followingUsers.profileName %>
                 </h5>
               </div>
                 <% }) %>
                 <% } else { %>
-            <h5>No Followers</h5>
+            <h5 class="noFollowTxt">No Followers</h5>
                 <% } %>
             </div>
           </div>
@@ -163,7 +173,7 @@
       </div>
     </div>
 
-    <div class="col-sm-8">
+    <div class="col-lg-8">
       <div class="entryContainer entryFormCard">
         <form action="/upload" method="POST" enctype="multipart/form-data">
           <div class="form-group entry-form">

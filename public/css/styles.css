@@ -21,22 +21,14 @@ hr {
   width: 95%;
 }
 
-/* responsively apply fixed position */
-@media (min-width: 801px){
-  .userContainer {
-    position: fixed;
-    /* top: 0; */
-    /* bottom: 0; */
-  }
-}
-
 .container {
   margin-top: 100px;
   z-index: 2;
   }
 
 .entryFormCard {
-  background-color: #fafcfd;
+  /* background-color: #fafcfd; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
 }
 
 .form-control {
@@ -52,6 +44,7 @@ hr {
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-image: url(/assets/lightpaperfibers_@2X.png);
 }
 
 .card-body {
@@ -65,7 +58,8 @@ hr {
 
 .cardWOImg {
   /* background-color: #f3f9fb; */
-    background-image: url(/assets/lightpaperfibers_@2X.png);
+    /* background-image: url(/assets/lightpaperfibers_@2X.png); */
+    /* text-shadow: 0 0 2px rgba(0, 0, 0, 0.5); */
 }
 
 .captionContainer {
@@ -104,6 +98,7 @@ font-family: 'IM Fell Great Primer', serif;
   /* background-color: #474f85; */
   background: rgb(35,39,66);
   background: linear-gradient(0deg, rgba(49,55,93,1) 0%, rgba(71,79,133,1) 86%, rgba(35,39,66,1) 100%);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
   z-index:1;
   font-family: 'Sansita', sans-serif;
 }
@@ -116,6 +111,7 @@ font-family: 'IM Fell Great Primer', serif;
   /* background-color: #474f85; */
   background: rgb(35,39,66);
   background: linear-gradient(180deg, rgba(49,55,93,1) 0%, rgba(71,79,133,1) 86%, rgba(35,39,66,1) 100%);
+  box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.5);
   z-index:1;
   font-family: 'Sansita', sans-serif;
 }
@@ -143,12 +139,14 @@ nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
+
   overflow: hidden;
-    vertical-align: bottom;
+  vertical-align: bottom;
 }
 
 nav li {
   float: left;
+
 }
 
 nav li a {
@@ -160,6 +158,7 @@ nav li a {
   padding-left:16px;
   padding-right: 16px;
   text-decoration: none;
+  text-shadow: 0 0 25px black;
   border-width: 5px;
 }
 
@@ -330,6 +329,7 @@ font-size: 1.5rem;
 
 .orientation canvas {
   width: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .expndCrdContainer {
@@ -377,15 +377,28 @@ font-size: 1.5rem;
 }
 
 /* -----------------------user column  edit------------------------------- */
-.userContainer {
-  width: 250px;
+
+@media screen and (min-width: 995px) and (max-width: 1200px) {
+  .userContainer {
+    position: fixed;
+    width: 230px;
+  }
 }
 
-.userInfo {
-  background-color: #fafcfd;
+@media only screen and (min-width: 1201px) {
+  .userContainer {
+    position: fixed;
+    width: 250px;
+  }
+}
+
+.userInfoCard {
+  /* background-color: #fafcfd; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
   padding: 2%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 1.5rem;
 }
 
 .profileInfo {
@@ -393,7 +406,8 @@ font-size: 1.5rem;
 }
 
 .profilePicContainer {
-  background-color: #fafcfd;
+  /* background-color: #fafcfd; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
   /* padding: 2%; */
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -413,7 +427,8 @@ font-size: 1.5rem;
 }
 
 .followContainer {
-  background-color: #fafcfd;
+  /* background-color: #fafcfd; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
   padding: 2%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -421,9 +436,11 @@ font-size: 1.5rem;
 
 .followLinkBox {
   display: flex;
+  /* justify-content: center;   */
   align-items: center;
   border-style: solid;
   margin: 2%;
+  background-color: #fafcfd;
   border-color: lightgray;
   border-width: 1px;
   border-radius: .25rem;
@@ -437,11 +454,11 @@ font-size: 1.5rem;
   border-width: 2px;
   border-radius: 50%;
   overflow: hidden;
-  margin-right: 10px;
+  margin: 0 10px 0 10px;
 }
 
-.vertCtrAlign {
-  margin: auto 0 auto 0;
+.noFollowTxt {
+  color: darkgray;
 }
 
 .inline {
