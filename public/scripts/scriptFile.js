@@ -1,15 +1,53 @@
+//-------------------active page header formatting--------------------------//
+
+let path = (window.location.pathname);
+let navPage = "";
+
+defineNavPage();
+
+switch (navPage) {
+  case ("index"):
+
+    $(function() {
+      $("li.evyOnPgLk").addClass("activePage");
+      $("li.evyOnPgLk").children().addClass("activePage");
+    });
+
+    break;
+
+  case ("collections"):
+    $(function() {
+      $("li.cllctLk").addClass("activePage");
+      $("li.cllctLk").children().addClass("activePage");
+    });
+
+    break;
+
+  case ("user"):
+    $(function() {
+      $("li.userPgLk").addClass("activePage");
+      $("li.userPgLk").children().addClass("activePage");
+    });
+
+    break;
+}
+
 //-------------------entry form input expand--------------------------------//
 document.addEventListener("click", function(event) {
 
   if (event.target.closest(".entry-form")) {
-    $("textarea.expandTA").animate({ height: "10em" }, 500)
+    $("textarea.expandTA").animate({
+      height: "10em"
+    }, 500)
 
     setTimeout(function() {
       $(".expandable").removeClass("d-none");
     }, 500);
 
   } else {
-    $("textarea.expandTA").animate({ height: "4em" }, 500)
+    $("textarea.expandTA").animate({
+      height: "4em"
+    }, 500)
     setTimeout(function() {
       $(".expandable").addClass("d-none");
     }, 500);
@@ -36,10 +74,10 @@ $(".expndFollowerBtn").click(function() {
 //-----------------heart hover icon toggle----------------------------------//
 
 $("document").ready(function() {
-    $(".favBtn").hover(function(){
-      let favBtnId = $(this).attr("id");
-      $("#" + favBtnId).children().toggleClass("d-none")
-    });
+  $(".favBtn").hover(function() {
+    let favBtnId = $(this).attr("id");
+    $("#" + favBtnId).children().toggleClass("d-none")
+  });
 });
 
 
@@ -101,7 +139,21 @@ $(".viewerChoice").click(function() {
 });
 
 
-//---functions---//
+//----------------------------functions--------------------------------------//
+
+function defineNavPage() {
+  if (path.indexOf("/", 2) > 0) {
+    let cutPathIndex = path.indexOf("/", 2);
+    navPage = path.slice(1, cutPathIndex)
+    // alert(navPage);
+    return navPage
+  } else {
+    let pathLength = (path).length;
+    navPage = path.slice(1, pathLength);
+    // alert(navPage);
+    return navPage
+  }
+}
 
 function userViewChoice(btnClicked) {
 
