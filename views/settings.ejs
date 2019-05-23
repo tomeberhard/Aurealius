@@ -1,0 +1,79 @@
+<%- include('partials/headerLoggedIn') %>
+
+<title>Account</title>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 m-auto">
+      <div class="userBio">
+        <div class="userImageContainer">
+
+          <% if(userInfo.bioImageFile === "/assets/defaultusericon.png") { %>
+          <% var userImage = userInfo.bioImageFile %>
+          <% } else { %>
+          <% var userImage = "/image/" + userInfo.bioImageFile %>
+          <% } %>
+          <div class="userImage orientation" image="<%= userImage %>"></div>
+        </div>
+        <div class="userInfo">
+          <h4 class="text-center display-4">
+            <%=userInfo.firstName + " " + userInfo.lastName %>
+          </h4>
+          <form action="/userUpload" method="POST" id="userBioForm" enctype="multipart/form-data">
+            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#userInfoModal">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Edit Your Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col">
+                            <div class="userImagePreviewContainer">
+                              <div class="userImageframe">
+                                <div class="userImagePreview orientation" id="bioImage" image="<%= userImage %>"></div>
+                                <img id="bioImagePreview" class="userImagePreview d-none"/>
+                              </div>
+                            </div>
+                            <div class="custom-file mb-3">
+                              <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
+                            </div>
+                          </div>
+                          <div class="col-6">
+                            <label for="editProfileName">Username</label>
+                            <input class="form-control" name="userProfileName" id="editProfileName" placeholder="<%= userInfo.profileName %>"></input>
+                            <label for="editFistName">First Name</label>
+                            <input class="form-control" name="userFName" id="editFirstName" placeholder="<%= userInfo.firstName %>"></input>
+                            <label for="editFistName">Last Name</label>
+                            <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userInfo.lastName %>"></input>
+                            <!-- <label for="editUserEmail">Email</label>
+                            <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
+                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
+                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password" </input>
+                            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <input type="submit" value="Save" class="btn btn-primary btn-block" />
+                      <button type="button" class="btn btn-secondary" id="userProfileEditClose" onclick="abortPreview(event)" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+<%- include('partials/footer') %>

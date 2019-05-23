@@ -8,10 +8,12 @@ body {
 
 h1, h2, h3, h4, h5 {
   font-family: 'Sansita', sans-serif;
+  color: #1b224f;
 }
 
 p {
   font-family: 'IM Fell Great Primer', serif;
+  color:#465559;
 }
 
 hr {
@@ -139,6 +141,7 @@ nav.footer li a:hover {
   font-size: 1.25rem;
   background: none;
   border: none;
+  margin-left: 2%;
 }
 
 .settingsIcn:hover {
@@ -178,6 +181,7 @@ nav.footer li a:hover {
     padding-right: 8px;
     text-shadow: 0 0 17px black;
   }
+
 
   .footer {
     height: 50px;
@@ -223,7 +227,7 @@ nav.footer li a:hover {
 }
 
 .btn-primary:hover {
-  color: white;
+  color: #fff;
   background-color: #474f85;
   border-color: #51e3d4;
 }
@@ -272,6 +276,10 @@ nav.footer li a:hover {
   right: 0;
   width: 25%;
   text-align: right;
+}
+
+label.btn {
+  padding-top: 4px;
 }
 
 /* -----------------------user page view choice------------------------------- */
@@ -358,22 +366,28 @@ nav.footer li a:hover {
 }
 
 .profileFllwUnFllw {
-  width: 88%;
+  /* width: 88%;
   height: 30px;
   left: 0;
-  top: 0;
+  top: 0; */
 }
 
 .userProfName {
   display: inline-block;
 }
 
+.userProfName h3 {
+  color:#474f85;
+}
+
 .followBtn {
-  color: darkgray;
+  color: #474f85;
   border-style: solid;
-  border-color: darkgray;
+  border-color: #474f85;
   border-width: 1px;
+  /* height: 1rem; */
   padding: .15rem .5rem;
+  margin-bottom: 20%;
 }
 
 .followBtn:hover {
@@ -387,7 +401,8 @@ nav.footer li a:hover {
 .flwUnflw {
   padding-left: 2%;
   display: inline-block;
-  vertical-align: top;
+  /* vertical-align: middle; */
+
 }
 
 .favShare {
@@ -477,6 +492,12 @@ nav.footer li a:hover {
   padding: 2%;
 }
 
+@media screen and (max-width: 500px) {
+  .followBoxHeader h5 {
+  font-size: 1rem;
+  }
+}
+
 .rightSide {
   position: absolute;
   top: 20%;
@@ -516,6 +537,10 @@ nav.footer li a:hover {
   color: red;
 }
 
+.modal {
+  /* z-index: 0; */
+}
+
 /* -----------------------user column  edit------------------------------- */
 @media screen and (min-width: 768px) and (max-width: 900px) {
   .userContainer {
@@ -541,12 +566,11 @@ nav.footer li a:hover {
 }
 
 .userInfoCard {
-  /* background-color: #fafcfd; */
   background-image: url(/assets/lightpaperfibers_@2X.png);
   padding: 2%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  margin-bottom: 1.5rem;
+  /* margin-bottom: 1.5rem; */
 }
 
 .profileInfo {
@@ -554,11 +578,20 @@ nav.footer li a:hover {
 }
 
 .profilePicContainer {
-  /* background-color: #fafcfd; */
   background-image: url(/assets/lightpaperfibers_@2X.png);
   padding: 2%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.align-items-center {
+  display: flex;
+  align-items: center;  /*Aligns vertically center */
+  justify-content: center; /*Aligns horizontally center */
+}
+
+.userBoxPadding {
+  margin-bottom: 5%;
 }
 
 .userProfilePic {
@@ -583,12 +616,25 @@ nav.footer li a:hover {
   }
 }
 
+@media only screen and (min-width: 768px) {
+  .userColumnLeft {
+    margin-bottom: 7%;
+  }
+}
+
 .followContainer {
   /* background-color: #fafcfd; */
   background-image: url(/assets/lightpaperfibers_@2X.png);
   padding: 2%;
+  margin-top: 5%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+@media screen and (max-width: 750px) {
+  .followingContainer {
+  margin-top: 0;
+  }
 }
 
 .followLinkBox {
@@ -596,19 +642,34 @@ nav.footer li a:hover {
   /* justify-content: center;   */
   align-items: center;
   border-style: solid;
-  margin: 2%;
+  color: #474f85;
+  margin: 4%;
+  /* font-size: 2rem;  */
   background-color: #fafcfd;
-  border-color: lightgray;
+  border-color: #474f85;
   border-width: 1px;
   border-radius: .25rem;
   padding: .25rem .25rem;
 }
 
+h5.followTxt {
+  font-size: 1rem;
+  margin-top: inherit;
+  margin-bottom: inherit;
+  border-color: #474f85;
+}
+
+/*
+.followLinkBox:hover {
+  color: #fff;
+} */
+
 .followingPrvw {
   width: 30px;
   height: 30px;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
+  border-color: #474f85;
   border-radius: 50%;
   overflow: hidden;
   margin: 0 10px 0 10px;
@@ -682,7 +743,7 @@ nav.footer li a:hover {
   width: 150%;
 }
 
-.capPad {
+.cardWImg {
   padding-top: 10px;
 }
 

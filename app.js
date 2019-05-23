@@ -205,6 +205,34 @@ app.get("/index", function(req, res) {
   });
 });
 
+app.get("/settings", function(req, res) {
+
+  const currentUserId = req.user._id;
+
+  if (req.isAuthenticated()) {
+    res.redirect("/settings/" + currentUserId);
+  }
+});
+
+app.get("/settings/:currentUserId", function(req, res) {
+
+  const userIdentifier = req.params.currentUserId;
+
+
+  AurealiusUser.findOne({
+    _id: userIdentifier
+  }, function(err, userData) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("settings", {
+        userInfo: userData
+      });
+    }
+  });
+});
+
+
 app.get("/user", function(req, res) {
 
   const currentUserId = req.user._id;
@@ -774,7 +802,7 @@ app.post("/follow", function(req, res) {
 
 app.post("/favorite", function(req, res) {
 
-  Entry.find({
+  Entry.findOne({
     _id: req.body.favoriteButton
   }, function(err, foundEntry) {
 
@@ -782,7 +810,7 @@ app.post("/favorite", function(req, res) {
       _id: req.user.id,
       favorites: {
         $elemMatch: {
-          _id: foundEntry[0]._id
+          _id: foundEntry._id
         }
       }
     }, function(err, userWfav) {
@@ -795,7 +823,7 @@ app.post("/favorite", function(req, res) {
           }, {
             $pull: {
               favorites: {
-                _id: foundEntry[0]._id
+                _id: foundEntry._id
               }
             }
           }, function(err, success) {

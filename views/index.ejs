@@ -8,8 +8,8 @@
     <div class="col-md-3 center-block">
       <div class="userContainer">
         <div class="container-fluid">
-          <div class="row align-items-center">
-            <div class="col-md-12 userColumnLeft">
+          <div class="row userBoxPadding align-items-center">
+            <div class="col-md-12 align-items-center userColumnLeft">
               <div class="profilePicContainer">
                 <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
                 <% var userImage = userData.bioImageFile %>
@@ -30,59 +30,9 @@
                     <%= userData.firstName %>
                     <%= userData.lastName %>
                   </h4>
-                  <form action="/userUpload" class="inline" method="POST" id="userBioForm" enctype="multipart/form-data">
-                    <button type="button" class="settingsIcn" data-toggle="modal" data-target="#userInfoModal">
-                      <i class="fas fa-cog"></i>
-                    </button>
-                    <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title">Edit Your Settings</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <div class="form-group">
-                              <div class="container-fluid">
-                                <div class="row">
-                                  <div class="col">
-                                    <div class="userImagePreviewContainer">
-                                      <div class="userImageframe">
-                                        <div class="userImagePreview orientation" id="bioImage" image="<%= userImage %>"></div>
-                                        <img id="bioImagePreview" class="userImagePreview d-none" />
-                                      </div>
-                                    </div>
-                                    <div class="custom-file mb-3">
-                                      <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)" />
-                                    </div>
-                                  </div>
-                                  <div class="col-6">
-                                    <label for="editProfileName">Username</label>
-                                    <input class="form-control" name="userProfileName" id="editProfileName" placeholder="<%= userData.profileName %>"></input>
-                                    <label for="editFistName">First Name</label>
-                                    <input class="form-control" name="userFName" id="editFirstName" placeholder="<%= userData.firstName %>"></input>
-                                    <label for="editFistName">Last Name</label>
-                                    <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userData.lastName %>"></input>
-                                    <!-- <label for="editUserEmail">Email</label>
-                                      <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
-                                    <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
-                                    <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password"</input>
-                                    <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="modal-footer">
-                            <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                            <button type="button" class="btn btn-secondary" id="userProfileEditClose" onclick="abortPreview(event)" data-dismiss="modal">Close</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
+                  <a href="/settings" class="settingsIcn inline">
+                    <i class="fas fa-cog"></i>
+                  </a>
                 </div>
                 <div class="expndCrdContainer">
                   <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#userColumnFollow" aria-expanded="false" aria-controls="userColumnFollows">
@@ -96,21 +46,22 @@
             <div class="col-sm-12">
               <div class="collapse" id="userColumnFollow">
 
-                <div class="followContainer text-center">
+                <div class="followContainer followingContainer text-center">
                   <div class="followBoxHeader">
-                    <h4 class="inline">Following (<%= userData.following.length %>)</h4>
+                    <h5 class="inline">Following (
+                      <%= userData.following.length %>)</h5>
                   </div>
                   <div class="expndCrdContainer">
                     <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
                       <i class="fas fa-chevron-down" id="followingChevronLftToDwn"></i>
                     </button>
                   </div>
-                  <div class="followLinkContainer  collapse" id="followLinklist">
+                  <div class="followLinkContainer collapse" id="followLinklist">
 
                     <% if(userData.following.length > 0){ %>
                     <% userData.following.forEach(function(usersFollowed) {%>
 
-                    <div class="followLinkBox">
+                    <a href="/index" class="btn btn-primary followLinkBox">
 
                       <% if(usersFollowed.bioImageFile === "/assets/defaultusericon.png") { %>
                       <% var userImage = usersFollowed.bioImageFile %>
@@ -118,22 +69,21 @@
                       <% var userImage = "/image/" + usersFollowed.bioImageFile %>
                       <% } %>
                       <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                      <h5 class=" vertCtrAlign">
+                      <h5 class="followTxt">
                         <%= usersFollowed.profileName %>
                       </h5>
-                    </div>
-                      <% }) %>
-                      <% } else { %>
-                    <h5 class="noFollowTxt">Not Following Anyone</h5>
-                      <% } %>
+                    </a>
+                    <% }) %>
+                    <% } else { %>
+                    <p class="noFollowTxt">Not Following Anyone</p>
+                    <% } %>
                   </div>
                 </div>
 
-                <br />
-
                 <div class="followContainer text-center">
                   <div class="followBoxHeader">
-                    <h4 class="inline">Followers (<%= userData.followers.length %>)</h4>
+                    <h5 class="inline">Followers (
+                      <%= userData.followers.length %>)</h5>
                   </div>
                   <div class="expndCrdContainer">
                     <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
@@ -145,32 +95,29 @@
                     <% if(userData.followers.length > 0){ %>
                     <% userData.followers.forEach(function(followingUsers) {%>
 
-                    <div class="followLinkBox">
+                    <div class="btn btn-primary followLinkBox">
                       <% if(followingUsers.bioImageFile === "/assets/defaultusericon.png") { %>
                       <% var userImage = followingUsers.bioImageFile %>
                       <% } else { %>
                       <% var userImage = "/image/" + followingUsers.bioImageFile %>
                       <% } %>
                       <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                      <h5>
+                      <h5 class="followTxt">
                         <%= followingUsers.profileName %>
                       </h5>
                     </div>
-                      <% }) %>
-                      <% } else { %>
-                  <h5 class="noFollowTxt">No Followers</h5>
-                      <% } %>
+                    <% }) %>
+                    <% } else { %>
+                    <p class="noFollowTxt">No Followers</p>
+                    <% } %>
                   </div>
                 </div>
 
                 <br />
 
+              </div>
             </div>
           </div>
-        </div>
-
-
-
 
         </div>
 
@@ -187,7 +134,7 @@
                 <input type="file" name="file" id="file" class="" />
               </div>
               <div class="toggleCotainer">
-                <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-height="20" data-width="90" checked value="private">
+                <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-width="100" checked value="private">
               </div>
             </div>
           </div>
@@ -244,14 +191,16 @@
       <% var cardClass = "cardWImg" %>
       <% } %>
 
-      <div class="card card-body mb-3 cushion <%= cardClass %>">
+      <div class="card card-body mb-3 cushion">
         <div class="orientation" image="<%= hide %>"></div>
-        <div class="capPad">
+        <div class="<%= cardClass %>">
           <div class="uNFavIcnContainer">
             <div class="profileFllwUnFllw">
-              <div class="userProfName">
-                <h3><%= entry.userProfile %></h3>
-              </div>
+              <a href="/index" class="userProfName">
+                <h3>
+                  <%= entry.userProfile %>
+                </h3>
+              </a>
 
               <% if (entry.userProfile === userData.profileName) { %>
               <% var hide = "d-none" %>
