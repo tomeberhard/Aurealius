@@ -737,32 +737,38 @@ app.post("/follow", function(req, res) {
           let targetFollowerArray = JSON.stringify([...new Set(foundTarget.followers.map(item => item._id))]);
 
           if (posterFollowingArray.includes(foundTarget._id) === false) {
-            AurealiusUser.updateOne({
+            AurealiusUser.findOneAndUpdate({
               _id: foundPoster._id
             }, {
               $push: {
                 following: foundTarget
               }
-            }, function(err, success) {
+            },{
+              new: true
+            }, function(err, updatedPoster) {
               if (err) {
                 console.log(err);
               } else {
-                console.log("Successfully added user " + foundTarget._id + " to following.")
-              }
+                console.log("Successfully added user " + foundTarget._id + " to following.");
 
-              AurealiusUser.updateOne({
-                _id: foundTarget._id
-              }, {
-                $push: {
-                  followers: foundPoster
-                }
-              }, function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Successfully added user " + foundPoster._id + " to followers.")
-                }
-              });
+                AurealiusUser.updateOne({
+                  _id: foundTarget._id
+                }, {
+                  $push: {
+                    followers: foundPoster
+                  }
+                }, function(err, success) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully added user " + foundPoster._id + " to followers.")
+                  }
+                });
+                res.status(200);
+                res.render('partials/followPanel', {
+                  userData: updatedPoster
+                });
+              }
 
             });
 
@@ -780,38 +786,46 @@ app.post("/follow", function(req, res) {
               if (err) {
                 console.log(err);
               } else {
-                console.log("Successfully removed user " + foundPoster._id + " from followers.")
-              }
-            });
+                console.log("Successfully removed user " + foundPoster._id + " from followers.");
 
-            AurealiusUser.updateOne({
-              _id: foundPoster._id
-            }, {
-              $pull: {
-                following: {
-                  _id: foundTarget._id
+                AurealiusUser.findOneAndUpdate({
+                  _id: foundPoster._id
+                }, {
+                  $pull: {
+                    following: {
+                      _id: foundTarget._id
+                      }
                   }
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully removed user " + foundTarget._id + " from following.")
+                },{
+                  new: true
+                }, function(err, updatedPoster) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully removed user " + foundTarget._id + " from following.")
+                    res.status(200);
+                    res.render('partials/followPanel', {
+                      userData: updatedPoster
+                    });
+                  }
+                });
               }
             });
 
           }
 
-          res.status(200);
-          res.render('partials/followPanel', {
-            userData: foundPoster
-          });
-          res.end();
+          // res.status(200);
+          // res.render('partials/followPanel', {
+          //   userData: foundPoster
+          // });
+          // res.end();
         }
 
       });
     }
   });
+
+
 
 });
 
