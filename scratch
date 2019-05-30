@@ -1,20 +1,15 @@
 
-
-<% if(entries){ %>
-  <div class="capPad">
-    <% entries.forEach(function(entry) { %>
-  <p class="card-text"><%= entry.caption %></p>
-</div>
-<form method="POST" action="/delete">
-  <button class="btn btn-danger btn-block mt-4" value="<%= entry.imageFile %>" name="deleteButton">DELETE</button>
-</form>
-</div>
+<% $("#"+ heartBtnEntryId).on("click", function(event) { %>
+  <% event.preventDefault() %>
+  <% event.stopPropogation() %>
+  <% $.ajax({ %>
+      <% url: "/favorite" + $("#"+ favFormEntryId).data("entryId"), %>
+      <% type: "POST", %>
+      <% contentType: "application/json", %>
+      <% data: JSON.stringify({"_id": $(heartBtnEntryId).val()}) %>
+    <% }).done(function(results) { %>
+      <% favs = JSON.stringify(entry.favoriteUsers) %>
+    <% }).fail(function(err) { %>
+    <%  console.log(err) %>
+    <% }) %>
 <% }) %>
-<% } else { %>
-<p>No entries to show!</p>
-<% } %>
-
-
-
-
-<%# <img class="entry-img" id="file-input" src="image/<%= entry.imageFile %>" alt=""> %>

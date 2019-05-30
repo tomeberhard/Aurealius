@@ -73,13 +73,83 @@ $(".expndFollowerBtn").click(function() {
 
 //-----------------heart hover icon toggle----------------------------------//
 
-$("document").ready(function() {
   $(".favBtn").hover(function() {
     let favBtnId = $(this).attr("id");
     $("#" + favBtnId).children().toggleClass("d-none")
   });
+
+//-----------------heart click icon toggle----------------------------------//
+
+// $("document").ready(function() {
+//   $(".favBtn").click(function() {
+//     let favBtnId = $(this).attr("id");
+//     $("#" + favBtnId).children().toggleClass("d-none")
+//   });
+// });
+
+
+
+//-----------------------------favBtn AJAX----------------------------------//
+
+$(".favBtn").click(function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  let favBtnId = $(this).attr("id");
+  let favBtnData = $(this).attr("value");
+  // let favBtnFormID = $(this).parent().attr("id");
+  let data = JSON.stringify({
+    _id: favBtnData
+  });
+  $.ajax({
+    url: "/favorite",
+    type: "POST",
+    contentType: "application/json",
+    data: data
+  }).done(
+    $("#" + favBtnId).children().toggleClass("d-none")
+  ).fail(function(err) {
+    console.log(err)
+  });
 });
 
+
+//-----------------------------followBtn AJAX----------------------------------//
+$(".followBtn").click(function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  let flwBtnClsses = $(this).attr("class");
+  let splitPosition = flwBtnClsses.indexOf("btn ") + 4;
+  let flwBtnUserPClss = flwBtnClsses.slice(splitPosition, flwBtnClsses.length);
+  let flwBtnTxt = $(this).text();
+  let flwBtnData = $(this).attr("value");
+  let data = JSON.stringify({
+    flwBtnUserId: flwBtnData
+  });
+  $.ajax({
+    url: "/follow",
+    type: "POST",
+    contentType: "application/json",
+    data: data
+  }).done(function(result) {
+    updateFollowing(result);
+    toggleAllFollows();
+  }
+  ).fail(function(err) {
+    console.log(err)
+  });
+});
+
+function updateFollowing (followPanel) {
+  $("#followLinklist").html(followPanel)
+}
+
+function toggleAllFollows () {
+  if (flwBtnTxt === "Follow") {
+    $("." + flwBtnUserPClss).html("Unfollow")
+  } else {
+    $("." + flwBtnUserPClss).html("Follow")
+  }
+}
 
 //-------------------image preview------------------------------------------//
 var loadFile = function(event) {

@@ -45,9 +45,10 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="collapse" id="userColumnFollow">
-
+                <!-- Partial inserted here! -->
                 <div class="followContainer followingContainer text-center">
                   <div class="followBoxHeader">
+
                     <h5 class="inline">Following (
                       <%= userData.following.length %>)</h5>
                   </div>
@@ -58,27 +59,11 @@
                   </div>
                   <div class="followLinkContainer collapse" id="followLinklist">
 
-                    <% if(userData.following.length > 0){ %>
-                    <% userData.following.forEach(function(usersFollowed) {%>
+                    <%- include('partials/followPanel') %>
 
-                    <a href="/index" class="btn btn-primary followLinkBox">
-
-                      <% if(usersFollowed.bioImageFile === "/assets/defaultusericon.png") { %>
-                      <% var userImage = usersFollowed.bioImageFile %>
-                      <% } else { %>
-                      <% var userImage = "/image/" + usersFollowed.bioImageFile %>
-                      <% } %>
-                      <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                      <h5 class="followTxt">
-                        <%= usersFollowed.profileName %>
-                      </h5>
-                    </a>
-                    <% }) %>
-                    <% } else { %>
-                    <p class="noFollowTxt">Not Following Anyone</p>
-                    <% } %>
                   </div>
                 </div>
+
 
                 <div class="followContainer text-center">
                   <div class="followBoxHeader">
@@ -112,7 +97,7 @@
                     <% } %>
                   </div>
                 </div>
-
+                <!-- Partial ended here! -->
                 <br />
 
               </div>
@@ -214,9 +199,12 @@
               <% var folUnfol = "Follow" %>
               <% } %>
 
+              <% var followbtnUName = "flwBtn" + entry.userProfile %>
+
               <div class="flwUnflw <%= hide %>">
                 <form method="POST" action="/follow">
-                  <button class="followBtn btn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>">
+                  <% var flwBtnId = "flw"+ entry._id %>
+                  <button class="followBtn btn <%= followbtnUName %>" name="followButton" id="<%= flwBtnId %>" value="<%= entry.userId %>">
                     <%= folUnfol %>
                   </button>
                 </form>
@@ -235,7 +223,10 @@
               </div>
 
               <div class="favBtnContainer">
-                <form method="POST" action="/favorite">
+
+                <% var favFormEntryId = "favForm"+ entry._id%>
+
+                <form method="POST" action="/favorite" id="<%= favFormEntryId %>">
 
                   <% var heartBtnEntryId = "e"+ entry._id%>
 

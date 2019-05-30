@@ -205,6 +205,30 @@ app.get("/index", function(req, res) {
   });
 });
 
+app.get("/partials/followPanel", function(req, res) {
+
+  if (req.isAuthenticated()) {
+    AurealiusUser.findOne({
+      _id: req.user.id
+    }, function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
+
+        let followingArray = JSON.stringify([...new Set(userInfo.following.map(item => item._id))]);
+        let followerArray = JSON.stringify([...new Set(userInfo.followers.map(item => item._id))]);
+
+        res.render("partials/followPanel", {
+          userData: foundUser,
+          userFollowing: followingArray,
+          userFollowers: followerArray
+        });
+
+      }
+    });
+  }
+});
+
 app.get("/settings", function(req, res) {
 
   const currentUserId = req.user._id;
@@ -690,120 +714,113 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
 
 app.post("/follow", function(req, res) {
 
-  const fllw = req.body.followButton;
+  const poster = req.user.id;
+  const followTargetId = req.body.flwBtnUserId;
 
   AurealiusUser.findOne({
-    _id: req.user.id
-  }, function(err, foundUser) {
+    _id: poster
+  }, function(err, foundPoster) {
     if (err) {
       console.log(err);
     } else {
 
-      let followingArray = JSON.stringify([...new Set(foundUser.following.map(item => item._id))]);
+      let posterFollowingArray = JSON.stringify([...new Set(foundPoster.following.map(item => item._id))]);
+      let posterFollowerArray = JSON.stringify([...new Set(foundPoster.followers.map(item => item._id))]);
 
       AurealiusUser.findOne({
-        _id: fllw
-      }, function(err, followBtnUser) {
+        _id: followTargetId
+      }, function(err, foundTarget) {
         if (err) {
           console.log(err);
         } else {
 
-          if (followingArray.includes(followBtnUser._id) === false) {
+          let targetFollowerArray = JSON.stringify([...new Set(foundTarget.followers.map(item => item._id))]);
+
+          if (posterFollowingArray.includes(foundTarget._id) === false) {
             AurealiusUser.updateOne({
-              _id: req.user.id
+              _id: foundPoster._id
             }, {
               $push: {
-                following: followBtnUser
+                following: foundTarget._id
               }
             }, function(err, success) {
               if (err) {
                 console.log(err);
               } else {
-                console.log("Successfully added user to following.")
+                console.log("Successfully added user " + foundTarget._id + " to following.")
               }
+
+              AurealiusUser.updateOne({
+                _id: foundTarget._id
+              }, {
+                $push: {
+                  followers: foundPoster._id
+                }
+              }, function(err, success) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Successfully added user " + foundPoster._id + " to followers.")
+                }
+              });
+
             });
+
           } else {
+
             AurealiusUser.updateOne({
-              _id: req.user.id
+              _id: foundTarget._id
             }, {
               $pull: {
-                following: {
-                  _id: followBtnUser._id
-                }
+                followers: foundPoster._id
+
               }
             }, function(err, success) {
               if (err) {
                 console.log(err);
               } else {
-                console.log("Successfully removed user from following.")
+                console.log("Successfully removed user " + foundPoster._id + " from followers.")
               }
             });
+
+            AurealiusUser.updateOne({
+              _id: foundPoster._id
+            }, {
+              $pull: {
+                following: foundTarget._id
+
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully removed user " + foundTarget._id + " from following.")
+              }
+            });
+
           }
+
+          res.status(200);
+          res.render('partials/followPanel', {
+            userData: foundPoster
+          });
+          res.end();
         }
+
       });
     }
   });
-
-  AurealiusUser.findOne({
-    _id: fllw
-  }, function(err, foundUser) {
-    if (err) {
-      console.log(err);
-    } else {
-
-      let followerArray = JSON.stringify([...new Set(foundUser.followers.map(item => item._id))]);
-
-      AurealiusUser.findOne({
-        _id: req.user.id
-      }, function(err, followingUser) {
-        if (err) {
-          console.log(err);
-        } else {
-          if (followerArray.includes(req.user.id) === false) {
-            AurealiusUser.updateOne({
-              _id: fllw
-            }, {
-              $push: {
-                followers: followingUser
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully added user to followers.")
-              }
-            });
-          } else {
-            AurealiusUser.updateOne({
-              _id: fllw
-            }, {
-              $pull: {
-                followers: {
-                  _id: followingUser._id
-                }
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully removed user from followers.")
-              }
-            });
-          }
-        }
-      });
-    }
-  });
-
-  res.redirect("back");
 
 });
 
 
 app.post("/favorite", function(req, res) {
 
+  // console.log(req.user.id);
+  // console.log(req.body._id);
+
   Entry.findOne({
-    _id: req.body.favoriteButton
+    _id: req.body._id
   }, function(err, foundEntry) {
 
     AurealiusUser.find({
@@ -853,7 +870,7 @@ app.post("/favorite", function(req, res) {
   });
 
   Entry.findOne({
-    _id: req.body.favoriteButton,
+    _id: req.body._id,
     favoriteUsers: {
       $all: [req.user.id]
     },
@@ -863,7 +880,7 @@ app.post("/favorite", function(req, res) {
     } else {
       if (foundFavUser) {
         Entry.updateOne({
-            _id: req.body.favoriteButton
+            _id: req.body._id
           }, {
             $pull: {
               favoriteUsers: req.user.id
@@ -879,7 +896,7 @@ app.post("/favorite", function(req, res) {
         );
       } else {
         Entry.updateOne({
-            _id: req.body.favoriteButton
+            _id: req.body._id
           }, {
             $push: {
               favoriteUsers: req.user.id
@@ -897,7 +914,9 @@ app.post("/favorite", function(req, res) {
     }
   });
 
-  res.redirect("back");
+  // res.redirect("back");
+  res.status(200);
+  res.end();
 
 });
 
