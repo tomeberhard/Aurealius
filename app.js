@@ -741,7 +741,7 @@ app.post("/follow", function(req, res) {
               _id: foundPoster._id
             }, {
               $push: {
-                following: foundTarget._id
+                following: foundTarget
               }
             }, function(err, success) {
               if (err) {
@@ -754,7 +754,7 @@ app.post("/follow", function(req, res) {
                 _id: foundTarget._id
               }, {
                 $push: {
-                  followers: foundPoster._id
+                  followers: foundPoster
                 }
               }, function(err, success) {
                 if (err) {
@@ -772,8 +772,9 @@ app.post("/follow", function(req, res) {
               _id: foundTarget._id
             }, {
               $pull: {
-                followers: foundPoster._id
-
+                followers: {
+                  _id: foundPoster._id
+                }
               }
             }, function(err, success) {
               if (err) {
@@ -787,8 +788,9 @@ app.post("/follow", function(req, res) {
               _id: foundPoster._id
             }, {
               $pull: {
-                following: foundTarget._id
-
+                following: {
+                  _id: foundTarget._id
+                  }
               }
             }, function(err, success) {
               if (err) {
