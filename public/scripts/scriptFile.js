@@ -114,7 +114,7 @@ $(".favBtn").click(function(event) {
 
 
 //-----------------------------followBtn AJAX----------------------------------//
-$(".followBtn").click(function(event) {
+$(".followBtn").on("click", function(event) {
   event.preventDefault();
   event.stopPropagation();
   let followingNumber = $("#followLinklist").children().length;
