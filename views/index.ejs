@@ -44,14 +44,12 @@
           </div>
           <div class="row">
             <div class="col-sm-12">
-              <div class="collapse" id="userColumnFollow">
+              <div class="collapse show" id="userColumnFollow">
                 <div class="followContainer followingContainer text-center">
                   <div class="followBoxHeader">
 
-                    <% var followingNumber = userData.following.length %>
-
                     <h5 class="inline" id="followNum">
-                      Following (<%= followingNumber %>)
+                      Following (<%= userData.following.length %>)
                     </h5>
                   </div>
                   <div class="expndCrdContainer">
@@ -232,18 +230,18 @@
                 <form method="POST" action="/favorite" id="<%= favFormEntryId %>">
 
                   <% var heartBtnEntryId = "e"+ entry._id%>
+                  <% var favs = JSON.stringify(entry.favoriteUsers) %>
+                  <% if (favs.includes(userData._id)) { %>
+                  <% var faved = "" %>
+                  <% var notFaved = "d-none" %>
+                  <% var clicked = "clicked" %>
+                  <% } else { %>
+                  <% var faved = "d-none" %>
+                  <% var notFaved = "" %>
+                  <% var clicked = "" %>
+                  <% } %>
 
-                  <button class="favBtn" name="favoriteButton" id="<%= heartBtnEntryId %>" value="<%= entry._id %>">
-
-                    <% var favs = JSON.stringify(entry.favoriteUsers) %>
-                    <% if (favs.includes(userData._id)) { %>
-                    <% var faved = "" %>
-                    <% var notFaved = "d-none" %>
-                    <% } else { %>
-                    <% var faved = "d-none" %>
-                    <% var notFaved = "" %>
-                    <% } %>
-
+                  <button class="favBtn <%= clicked %>" name="favoriteButton" id="<%= heartBtnEntryId %>" value="<%= entry._id %>">
                     <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
                     <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
                   </button>

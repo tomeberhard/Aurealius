@@ -814,11 +814,6 @@ app.post("/follow", function(req, res) {
 
           }
 
-          // res.status(200);
-          // res.render('partials/followPanel', {
-          //   userData: foundPoster
-          // });
-          // res.end();
         }
 
       });

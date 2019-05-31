@@ -63,20 +63,31 @@ $(".expndCrdBtn").click(function() {
 
 });
 
-//-----------------expand user column follow flip---------------------------//
-
-$(".expndFollowerBtn").click(function() {
-  let getId = $(this).children().attr("id");
-  $("#" + getId).toggleClass("fa-rotate-90");
-
-});
-
 //-----------------heart hover icon toggle----------------------------------//
 
-  $(".favBtn").hover(function() {
+
+  $(".favBtn").mouseenter(function() {
     let favBtnId = $(this).attr("id");
-    $("#" + favBtnId).children().toggleClass("d-none")
+    let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+    // console.log($("#" + favBtnId).hasClass("clicked"));
+    if ($("#" + favBtnId).hasClass("clicked") === false) {
+      $("#" + favBtnId).children().eq(0).addClass("d-none");
+      $("#" + favBtnId).children().eq(1).removeClass("d-none");
+
+      // $("#" + favBtnId).children().toggleClass("d-none");
+    }
+
+  }).mouseleave(function(){
+    let favBtnId = $(this).attr("id");
+    let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+
+    if ($("#" + favBtnId).hasClass("clicked") === false) {
+
+      $("#" + favBtnId).children().eq(1).addClass("d-none");
+      $("#" + favBtnId).children().eq(0).removeClass("d-none");
+    }
   });
+
 
 //-----------------heart click icon toggle----------------------------------//
 
@@ -91,10 +102,16 @@ $(".expndFollowerBtn").click(function() {
 
 //-----------------------------favBtn AJAX----------------------------------//
 
-$(".favBtn").click(function(event) {
+$(".favBtn").on("click", function(event) {
   event.preventDefault();
   event.stopPropagation();
   let favBtnId = $(this).attr("id");
+  let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+  if ($("#" + favBtnId).hasClass("clicked")) {
+      $("#"+ favBtnId).removeClass("clicked");
+  } else {
+      $("#"+ favBtnId).addClass("clicked");
+  }
   let favBtnData = $(this).attr("value");
   // let favBtnFormID = $(this).parent().attr("id");
   let data = JSON.stringify({
@@ -105,18 +122,32 @@ $(".favBtn").click(function(event) {
     type: "POST",
     contentType: "application/json",
     data: data
-  }).done(
-    $("#" + favBtnId).children().toggleClass("d-none")
+  }).done(function () {
+    if ($("#"+ favBtnId).hasClass("clicked") === false) {
+      $("#" + favBtnId).children().eq(1).addClass("d-none");
+      $("#" + favBtnId).children().eq(0).removeClass("d-none");
+    } else {
+      $("#" + favBtnId).children().eq(0).addClass("d-none");
+      $("#" + favBtnId).children().eq(1).removeClass("d-none");
+    }
+
+        // $("#" + favBtnId).children().toggleClass("d-none")
+    // }
+  }
   ).fail(function(err) {
     console.log(err)
   });
 });
 
 
+
 //-----------------------------followBtn AJAX----------------------------------//
 $(".followBtn").on("click", function(event) {
   event.preventDefault();
   event.stopPropagation();
+
+  // $("#followLinklist").addClass("show");
+
   let flwBtnClsses = $(this).attr("class");
   let splitPosition = flwBtnClsses.indexOf("btn ") + 4;
   let flwBtnUserPClss = flwBtnClsses.slice(splitPosition, flwBtnClsses.length);
@@ -132,14 +163,16 @@ $(".followBtn").on("click", function(event) {
     data: data
   }).done(function(result) {
     updateFollowing(result);
+    let followingNumber = $("#followLinklist").children().length;
+
     if (flwBtnTxt === "Follow") {
       $("." + flwBtnUserPClss).html("Unfollow");
       // let followingNumber = $("#followLinklist").children().length;
-      // $("#followNum").html("Following ("+ followingNumber +")");
+      $("#followNum").html("Following ("+ followingNumber +")");
     } else {
       $("." + flwBtnUserPClss).html("Follow");
       // let followingNumber = $("#followLinklist").children().length;
-      // $("#followNum").html("Following ("+ followingNumber +")");
+      $("#followNum").html("Following ("+ followingNumber +")");
     }
 
   }
