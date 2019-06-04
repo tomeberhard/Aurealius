@@ -49,7 +49,8 @@
                   <div class="followBoxHeader">
 
                     <h5 class="inline" id="followNum">
-                      Following (<%= userData.following.length %>)
+                      Following (
+                      <%= userData.following.length %>)
                     </h5>
                   </div>
                   <div class="expndCrdContainer">
@@ -66,7 +67,8 @@
                 <div class="followContainer text-center">
                   <div class="followBoxHeader">
                     <h5 class="inline">
-                      Followers (<%= userData.followers.length %>)
+                      Followers (
+                      <%= userData.followers.length %>)
                     </h5>
                   </div>
                   <div class="expndCrdContainer">
@@ -114,9 +116,19 @@
           <div class="form-group entry-form">
             <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
             <div class="upldToggleContainer expandable d-none">
-              <div class="custom-file mb-3 upldToggleContainerWidth">
-                <input type="file" name="file" id="file" class="" />
-              </div>
+              <!-- <div class="custom-file mb-3 upldToggleContainerWidth"> -->
+              <label class="btn fileBtn" for="my-file-selector">
+                <input id="my-file-selector" type="file" name="file" class="" style="display:none" onchange="$('#upload-file-info').html(this.files[0].name)">
+                Add Image
+              </label>
+              <div class='inline label label-info' id="upload-file-info"></div>
+
+
+              <!-- <label class="btn fileBtn">
+                Add Image <input type="file" name="file" id="file" class="" hidden />
+              </label> -->
+
+              <!-- </div> -->
               <div class="toggleCotainer">
                 <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-width="100" checked value="private">
               </div>
@@ -175,7 +187,9 @@
       <% var cardClass = "cardWImg" %>
       <% } %>
 
-      <div class="card card-body mb-3 cushion">
+      <% var cardId = "eID" + entry._id %>
+
+      <div class="card card-body mb-3 cushion" id="<%= cardId %> ">
         <div class="orientation" image="<%= hide %>"></div>
         <div class="<%= cardClass %>">
           <div class="uNFavIcnContainer">
@@ -207,7 +221,7 @@
                     <%= folUnfol %>
 
 
-                   </button>
+                  </button>
                 </form>
               </div>
 
@@ -258,9 +272,28 @@
             </span>
           </div>
           <div class="captionContainer">
-            <p class="card-text">
+
+            <% var captionId = "cpt"+ entry._id %>
+
+            <p class="card-text" id="<%= captionId %>">
               <%= entry.caption %>
             </p>
+            <div class="editEntryForm d-none">
+              <form method="POST" action="">
+
+                <% var editCaptionFormId = "editCptTA"+ entry._id %>
+
+                <textarea class="" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%= entry.caption %></textarea>
+
+                <% var editCptBtnBarId = "editCptBtnBar"+ entry._id %>
+
+                <div class="editEntryBtnBar" id="<%= editCptBtnBarId %>">
+                  <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditBtn" />
+                  <button type="button" class="btn btn-secondary closeEditBtn" value="<%= entry._id %>">Close</button>
+                </div>
+              </form>
+            </div>
+
           </div>
 
           <% var collapseExpandID = "b" + collapseShareID %>
@@ -272,56 +305,86 @@
             </button>
           </div>
 
-          <div class="collapse" id="<%= collapseExpandID %>">
-            <form method="POST" action="/report">
-              <button type="button" class="report" data-toggle="modal" data-target="#reportModal">
-                <i class="fas fa-exclamation-circle"></i>
-              </button>
+          <div class="collapse entryTrayContainer" id="<%= collapseExpandID %>">
+            <div class="reportIcnContainer">
 
-              <div class="modal" id="reportModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Report Entry</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <label for="reportRuleSelector">Which Rule Does this Entry Break?</label>
-                        <div class="form-check" id="reportRuleSelector">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector1" value="Entry must be based in gratitude" checked>
-                          <label class="form-check-label" for="reportRuleSelector1">
-                            Entry must be based in gratitude
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector2" value="Gratitude cannot be at expense of the well-being of another">
-                          <label class="form-check-label" for="reportRuleSelector2">
-                            Gratitude cannot be at expense of the well-being of another
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector3" value="No politics">
-                          <label class="form-check-label" for="reportRuleSelector3">
-                            No politics
-                          </label>
-                        </div>
 
-                        <br />
+              <form method="POST" action="/report">
+                <button class="entryContainerBtn warning" data-toggle="modal" data-target="#reportModal">
+                  <i class="fas fa-exclamation-circle"></i>
+                </button>
 
-                        <textarea class="form-control" rows="3" name="reportComments" placeholder="Comments"></textarea>
+                <div class="modal" id="reportModal" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Report Entry</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
                       </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary btn-block" value="<%= entry._id %>" name="reportButton">Submit</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <div class="modal-body">
+                        <div class="form-group">
+                          <label for="reportRuleSelector">Which Rule Does this Entry Break?</label>
+                          <div class="form-check" id="reportRuleSelector">
+                            <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector1" value="Entry must be based in gratitude" checked>
+                            <label class="form-check-label" for="reportRuleSelector1">
+                              Entry must be based in gratitude
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector2" value="Gratitude cannot be at expense of the well-being of another">
+                            <label class="form-check-label" for="reportRuleSelector2">
+                              Gratitude cannot be at expense of the well-being of another
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector3" value="No politics">
+                            <label class="form-check-label" for="reportRuleSelector3">
+                              No politics
+                            </label>
+                          </div>
+
+                          <br />
+
+                          <textarea class="form-control" rows="3" name="reportComments" placeholder="Comments"></textarea>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" value="<%= entry._id %>" name="reportButton">Submit</button>
+                        <button type="button" class="btn btn-secondary inline" data-dismiss="modal">Close</button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
+
+            <% var yours = JSON.stringify(userData._id) %>
+            <% var posTheirs = JSON.stringify(entry.userId) %>
+            <% if (yours === posTheirs) { %>
+            <% var show = "" %>
+            <% } else { %>
+            <% var show = "d-none" %>
+            <% } %>
+
+
+            <div class="editIcnContainer <%= show %>">
+              <!-- <form method="POST" action="/update"> -->
+                <button class="editBtn entryContainerBtn" value="<%= entry._id %>" name="entryToUpdate">
+                  <i class="fas fa-edit"></i>
+                </button>
+              <!-- </form> -->
+            </div>
+
+            <div class="deleteIcnContainer <%= show %>">
+              <form method="POST" action="/delete">
+                <button class="entryContainerBtn warning " value="<%= entry.imageFile %>" name="deleteButton">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
+
           </div>
 
         </div>

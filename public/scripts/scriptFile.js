@@ -89,17 +89,6 @@ $(".expndCrdBtn").click(function() {
   });
 
 
-//-----------------heart click icon toggle----------------------------------//
-
-// $("document").ready(function() {
-//   $(".favBtn").click(function() {
-//     let favBtnId = $(this).attr("id");
-//     $("#" + favBtnId).children().toggleClass("d-none")
-//   });
-// });
-
-
-
 //-----------------------------favBtn AJAX----------------------------------//
 
 $(".favBtn").on("click", function(event) {
@@ -175,6 +164,19 @@ $(".followBtn").on("click", function(event) {
       $("#followNum").html("Following ("+ followingNumber +")");
     }
 
+    jQuery(function() {
+    	jQuery(".followingPrvw.orientation").each(function() {
+    		var div = $(this);
+    		loadImage(
+		        div.attr("image"),
+		        function (img) { div.append(img); },
+		        {orientation: true}
+    		    );
+
+    	});
+
+    })
+
   }
   ).fail(function(err) {
     console.log(err)
@@ -184,6 +186,60 @@ $(".followBtn").on("click", function(event) {
 function updateFollowing (followPanel) {
   $("#followLinklist").html(followPanel)
 }
+
+//-----------------------------editEntryBtn----------------------------------//
+
+$(".editBtn").on("click", function(event) {
+  let editBtnEntryId = $(this).attr("value");
+  let currentCaptionHeight = $("#" + "cpt" + editBtnEntryId).outerHeight();
+  let currentCaptionWidth = $("#" + "cpt" + editBtnEntryId).outerWidth();
+  let numberLineHeight = parseInt($("#" + "cpt" + editBtnEntryId).css("lineHeight"));
+  let rows = Math.ceil(currentCaptionHeight / numberLineHeight) + 1 ;
+
+  $("#" + "editCptTA" + editBtnEntryId).attr("rows", rows);
+  $("#" + "editCptTA" + editBtnEntryId).css("width", currentCaptionWidth);
+  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").removeClass("d-none");
+  $("#" + "cpt" + editBtnEntryId).addClass("d-none");
+
+});
+
+$(".closeEditBtn").on("click", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  let editBtnEntryId = $(this).attr("value");
+  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+  $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+});
+
+$(".submitEditBtn").on("click", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let updatedCaption = $(this).closest(".editEntryForm").find("textarea").val();
+  // console.log(updatedCaption);
+
+  let editCaptionFormId = $(this).parent().attr("id");
+  let editBtnEntryId = editCaptionFormId.slice(13);
+  // console.log(editBtnEntryId);
+
+  let data = JSON.stringify({
+    _id: editBtnEntryId,
+    caption: updatedCaption
+  });
+  $.ajax({
+    url: "/update",
+    type: "POST",
+    contentType: "application/json",
+    data: data
+  }).done(function () {
+    $("#" + "cpt" + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
+    $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+    $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+  }
+  ).fail(function(err) {
+    console.log(err)
+  });
+});
 
 
 //-------------------image preview------------------------------------------//

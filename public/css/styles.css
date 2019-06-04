@@ -219,6 +219,8 @@ nav.footer li a:hover {
   font-family: 'Sansita', sans-serif;
 }
 
+
+
 @media screen and (max-width: 500px) {
   .btn {
     font-size: .9rem;
@@ -268,11 +270,36 @@ nav.footer li a:hover {
   height: 35px;
 }
 
+
+.fileBtn {
+  color: #474f85;
+  border-style: solid;
+  border-color: #474f85;
+  border-width: 1px;
+  padding: .15rem .5rem;
+}
+
+.fileBtn:hover {
+  color: white;
+  border-style: solid;
+  border-color: #51e3d4;
+  background-color: #474f85;
+  border-width: 1px;
+}
+
+.label {
+  font-family: 'IM Fell Great Primer', serif;
+}
+
 .upldToggleContainerWidth {
   position: absolute;
   top: 0;
   left: 0;
   width: 75%;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .toggleCotainer {
@@ -385,6 +412,10 @@ label.btn {
   color:#474f85;
 }
 
+a.userProfName {
+  color:#474f85;
+}
+
 .followBtn {
   color: #474f85;
   border-style: solid;
@@ -423,6 +454,35 @@ label.btn {
   text-align: right;
 }
 
+.editBtn {
+  background: none;
+  border: none;
+  color: darkgray;
+}
+
+.editBtn:hover {
+  color: #474f85;
+  text-shadow: 0px 0px 5px #51e3d4;
+}
+
+.editBtn:focus {
+  outline: 0;
+}
+
+
+@media screen and (max-width: 500px) {
+  .editBtn {
+  font-size: .75rem;
+  }
+}
+
+.editEntryBtnBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding:1rem 1rem 0 1rem;
+}
+
 .shareBtnContainer {
   display: inline-block;
 }
@@ -432,6 +492,7 @@ label.btn {
   border: none;
   color: darkgray;
 }
+
 
 @media screen and (max-width: 500px) {
   .shareBtn {
@@ -532,7 +593,11 @@ label.btn {
   outline: 0;
 }
 
-.report {
+.entryTrayContainer {
+  position: relative;
+}
+
+.entryContainerBtn {
   font-size: 1.75rem;
   padding-top: 1%;
   background: none;
@@ -540,21 +605,21 @@ label.btn {
   color: darkgray;
 }
 
-@media screen and (max-width: 500px) {
-  .report {
-  font-size: 1.25rem;
-  }
+.reportIcnContainer {
+
 }
 
-.report:hover {
-  color: red;
+@media screen and (max-width: 500px) {
+  .entryContainerBtn {
+  font-size: 1.25rem;
+  }
 }
 
 .modal {
   /* z-index: 0; */
 }
 
-/* -----------------------user column  edit------------------------------- */
+/* -----------------------user column  edit-------------------r------------ */
 @media screen and (min-width: 768px) and (max-width: 900px) {
   .userContainer {
     position: fixed;
@@ -810,13 +875,24 @@ h5.followTxt {
   /* vertical-align: middle; */
 }
 
-.deleteIcn {
-  font-size: 1.25rem;
-  background: none;
-  border: none;
+.deleteIcnContainer {
+  position: absolute;
+  right:0;
+  bottom:0;
 }
 
-.deleteIcn:hover {
+.editIcnContainer {
+  position: absolute;
+  width:50%;
+  height: 100%;
+  left: 25%;
+  right:25%;
+  padding-top: 0.5%;
+  bottom: 0;
+  text-align: center;
+}
+
+.warning:hover {
   color: red;
 }
 

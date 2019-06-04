@@ -48,8 +48,11 @@ app.use(passport.session());
 mongoose.connect("mongodb://localhost:27017/aurealiusUsersDB", {
   useNewUrlParser: true
 });
-// //below just to kill depracation warning//
+//below just to kill depracation warning//
+
 mongoose.set('useCreateIndex', true);
+//kills error from findOneandUpdate//
+mongoose.set('useFindAndModify', false);
 
 const mongoURI = "mongodb://localhost:27017/aurealiusUsersDB";
 const conn = mongoose.createConnection(mongoURI);
@@ -824,6 +827,26 @@ app.post("/follow", function(req, res) {
 
 });
 
+app.post("/update", function(req, res) {
+
+  Entry.updateOne({
+    _id: req.body._id,
+  },{
+    $set: {
+      caption: req.body.caption
+    }
+  }, function(err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully updated entry caption.");
+      res.status(200);
+      res.end();
+    }
+  });
+
+});
+
 
 app.post("/favorite", function(req, res) {
 
@@ -985,7 +1008,7 @@ app.post("/report", function(req, res) {
 
             const newReport = new Report({
               reportingId: foundUser._id,
-              entryId: foundEntry[0]._id,
+              entryId: foundEntry._id,
               status: "Pending",
               ruleBroken: req.body.rule,
               comments: req.body.reportComments
