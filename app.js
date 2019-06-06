@@ -100,7 +100,10 @@ const entrySchema = new mongoose.Schema({
   userId: String,
   // profileName: [userSchema],
   userProfile: String,
-  favoriteUsers: Array,
+  favoriteUsers: [{
+    type: ObjectId,
+    ref: "aurealiusUser"
+  }],
   viewStatus: String,
   reportStatus: String
 }, {
@@ -117,8 +120,14 @@ const userSchema = new mongoose.Schema({
   bioImageFile: String,
   googleId: String,
   facebookId: String,
-  entries: [entrySchema],
-  favorites: [entrySchema],
+  entries: [{
+    type: ObjectId,
+    ref: "entry"
+  }],
+  favorites: [{
+    type: ObjectId,
+    ref: "entry"
+  }],
   _followers: [{
     type: ObjectId,
     ref: "aurealiusUser"
@@ -647,7 +656,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
           // userId: currentUser
         }, {
           $push: {
-            entries: newEntry
+            entries: mongoose.Types.ObjectId(newEntry._id)
           }
         }, function(err, success) {
           if (err) {
@@ -659,7 +668,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
       } else {
         const newGrouping = new Grouping({
           name: collectionAllocator(),
-          entries: newEntry
+          entries: mongoose.Types.ObjectId(newEntry._id)
           // userId: currentUser
         });
         newGrouping.save();
@@ -671,7 +680,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
     _id: currentUser
   }, {
     $push: {
-      entries: newEntry
+      entries: mongoose.Types.ObjectId(newEntry._id)
     }
   }, function(err, success) {
     if (err) {
@@ -815,27 +824,27 @@ app.post("/follow", function(req, res) {
                       console.log("Successfully added user " + foundTarget._id + " to following.");
 
                       AurealiusUser.updateOne({
-                        _id: foundTarget._id
-                      }, {
-                        $push: {
-                          _followers: mongoose.Types.ObjectId(foundPoster._id)
-                        }
-                      })
-                      .populate({
-                        path: "_following",
-                        model: "aurealiusUser"
-                      })
-                      .populate({
-                        path: "_followers",
-                        model: "aurealiusUser"
-                      })
-                      .exec(function(err, success) {
-                        if (err) {
-                          console.log(err);
-                        } else {
-                          console.log("Successfully added user " + foundPoster._id + " to followers.")
-                        }
-                      });
+                          _id: foundTarget._id
+                        }, {
+                          $push: {
+                            _followers: mongoose.Types.ObjectId(foundPoster._id)
+                          }
+                        })
+                        .populate({
+                          path: "_following",
+                          model: "aurealiusUser"
+                        })
+                        .populate({
+                          path: "_followers",
+                          model: "aurealiusUser"
+                        })
+                        .exec(function(err, success) {
+                          if (err) {
+                            console.log(err);
+                          } else {
+                            console.log("Successfully added user " + foundPoster._id + " to followers.")
+                          }
+                        });
                       res.status(200);
                       res.render('partials/followPanel', {
                         userData: updatedPoster,
@@ -849,57 +858,57 @@ app.post("/follow", function(req, res) {
               } else {
 
                 AurealiusUser.updateOne({
-                  _id: foundTarget._id
-                }, {
-                  $pull: {
-                    _followers: mongoose.Types.ObjectId(foundPoster._id)
-                  }
-                })
-                .populate({
-                  path: "_following",
-                  model: "aurealiusUser"
-                })
-                .populate({
-                  path: "_followers",
-                  model: "aurealiusUser"
-                })
-                .exec(function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully removed user " + foundPoster._id + " from followers.");
+                    _id: foundTarget._id
+                  }, {
+                    $pull: {
+                      _followers: mongoose.Types.ObjectId(foundPoster._id)
+                    }
+                  })
+                  .populate({
+                    path: "_following",
+                    model: "aurealiusUser"
+                  })
+                  .populate({
+                    path: "_followers",
+                    model: "aurealiusUser"
+                  })
+                  .exec(function(err, success) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      console.log("Successfully removed user " + foundPoster._id + " from followers.");
 
-                    AurealiusUser.findOneAndUpdate({
-                      _id: foundPoster._id
-                    }, {
-                      $pullAll: {
-                        _following: [mongoose.Types.ObjectId(foundTarget._id)]
-                      }
-                    }, {
-                      new: true
-                    }).populate({
-                      path: "_following",
-                      model: "aurealiusUser"
-                    })
-                    .populate({
-                      path: "_followers",
-                      model: "aurealiusUser"
-                    })
-                    .exec(function(err, updatedPoster) {
-                      if (err) {
-                        console.log(err);
-                      } else {
-                        console.log("Successfully removed user " + foundTarget._id + " from following.")
-                        res.status(200);
-                        res.render('partials/followPanel', {
-                          userData: updatedPoster,
-                          userFollowing: updatedPoster._following,
-                          userFollowers: updatedPoster._followers
+                      AurealiusUser.findOneAndUpdate({
+                          _id: foundPoster._id
+                        }, {
+                          $pullAll: {
+                            _following: [mongoose.Types.ObjectId(foundTarget._id)]
+                          }
+                        }, {
+                          new: true
+                        }).populate({
+                          path: "_following",
+                          model: "aurealiusUser"
+                        })
+                        .populate({
+                          path: "_followers",
+                          model: "aurealiusUser"
+                        })
+                        .exec(function(err, updatedPoster) {
+                          if (err) {
+                            console.log(err);
+                          } else {
+                            console.log("Successfully removed user " + foundTarget._id + " from following.")
+                            res.status(200);
+                            res.render('partials/followPanel', {
+                              userData: updatedPoster,
+                              userFollowing: updatedPoster._following,
+                              userFollowers: updatedPoster._followers
+                            });
+                          }
                         });
-                      }
-                    });
-                  }
-                });
+                    }
+                  });
 
               }
 
@@ -934,38 +943,31 @@ app.post("/update", function(req, res) {
 
 app.post("/favorite", function(req, res) {
 
-  // console.log(req.user.id);
-  // console.log(req.body._id);
-
   Entry.findOne({
     _id: req.body._id
   }, function(err, foundEntry) {
 
-    AurealiusUser.find({
-      _id: req.user.id,
-      favorites: {
-        $elemMatch: {
-          _id: foundEntry._id
-        }
-      }
-    }, function(err, userWfav) {
+    AurealiusUser.findOne({
+      _id: req.user.id
+    }, function(err, foundUser) {
       if (err) {
-        console.log(err);
+        console.log(err)
       } else {
-        if (userWfav.length != 0) {
+
+        if (userfavoritesArray.includes(foundEntry._id)) {
           AurealiusUser.updateOne({
             _id: req.user.id
           }, {
-            $pull: {
-              favorites: {
-                _id: foundEntry._id
-              }
+            $pullAll: {
+              favorites: [mongoose.Types.ObjectId(foundEntry._id)]
             }
+          }, {
+            new: true
           }, function(err, success) {
             if (err) {
               console.log(err);
             } else {
-              console.log("Successfully removed entry from favorites.")
+              console.log("Successfully removed entry from user's favorites.");
             }
           });
         } else {
@@ -973,13 +975,47 @@ app.post("/favorite", function(req, res) {
             _id: req.user.id
           }, {
             $push: {
-              favorites: foundEntry
+              favorites: mongoose.Types.ObjectId(foundEntry._id)
             }
           }, function(err, success) {
             if (err) {
               console.log(err);
             } else {
-              console.log("Successfully added entry to favorites.")
+              console.log("Successfully added entry from user's favorites.");
+            }
+          });
+        }
+
+        let entryFavoritesArray = JSON.stringify(foundEntry.favoriteUsers);;
+
+        if (entryFavoritesArray.includes(foundUser._id)) {
+          Entry.updateOne({
+            _id: req.body._id
+          }, {
+            $pullAll: {
+              favoriteUsers: [mongoose.Types.ObjectId(req.user.id)]
+            }
+          }, {
+            new: true
+          }, function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully removed user from entry favorites.");
+            }
+          });
+        } else {
+          Entry.updateOne({
+            _id: req.body._id
+          }, {
+            $push: {
+              favoriteUsers: mongoose.Types.ObjectId(req.user.id)
+            }
+          }, function(err, success) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("Successfully added user to entry favorites.");
             }
           });
         }
@@ -987,50 +1023,97 @@ app.post("/favorite", function(req, res) {
     });
   });
 
-  Entry.findOne({
-    _id: req.body._id,
-    favoriteUsers: {
-      $all: [req.user.id]
-    },
-  }, function(err, foundFavUser) {
-    if (err) {
-      console.log(err);
-    } else {
-      if (foundFavUser) {
-        Entry.updateOne({
-            _id: req.body._id
-          }, {
-            $pull: {
-              favoriteUsers: req.user.id
-            }
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Successfully unfavorited entry.");
-            }
-          }
-        );
-      } else {
-        Entry.updateOne({
-            _id: req.body._id
-          }, {
-            $push: {
-              favoriteUsers: req.user.id
-            }
-          },
-          function(err, success) {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log("Successfully favorited entry.");
-            }
-          }
-        );
-      }
-    }
-  });
+
+  // AurealiusUser.find({
+  //   _id: req.user.id,
+  //   favorites: {
+  //     $elemMatch: {
+  //       _id: foundEntry._id
+  //     }
+  //   }
+  // }, function(err, userWfav) {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     if (userWfav.length != 0) {
+  //       AurealiusUser.updateOne({
+  //         _id: req.user.id
+  //       }, {
+  //         $pull: {
+  //           favorites: {
+  //             _id: foundEntry._id
+  //           }
+  //         }
+  //       }, function(err, success) {
+  //         if (err) {
+  //           console.log(err);
+  //         } else {
+  //           console.log("Successfully removed entry from favorites.")
+  //         }
+  //       });
+  //     } else {
+  //       AurealiusUser.updateOne({
+  //         _id: req.user.id
+  //       }, {
+  //         $push: {
+  //           favorites: foundEntry
+  //         }
+  //       }, function(err, success) {
+  //         if (err) {
+  //           console.log(err);
+  //         } else {
+  //           console.log("Successfully added entry to favorites.")
+  //         }
+  //       });
+  //     }
+  //   }
+  // });
+  // });
+
+  // Entry.findOne({
+  //   _id: req.body._id,
+  //   favoriteUsers: {
+  //     $all: [req.user.id]
+  //   },
+  // }, function(err, foundFavUser) {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     if (foundFavUser) {
+  //       Entry.updateOne({
+  //           _id: req.body._id
+  //         }, {
+  //           $pull: {
+  //             favoriteUsers: req.user.id
+  //           }
+  //         },
+  //         function(err, success) {
+  //           if (err) {
+  //             console.log(err);
+  //           } else {
+  //             console.log("Successfully unfavorited entry.");
+  //           }
+  //         }
+  //       );
+  //     } else {
+  //       Entry.updateOne({
+  //           _id: req.body._id
+  //         }, {
+  //           $push: {
+  //             favoriteUsers: req.user.id
+  //           }
+  //         },
+  //         function(err, success) {
+  //           if (err) {
+  //             console.log(err);
+  //           } else {
+  //             console.log("Successfully favorited entry.");
+  //           }
+  //         }
+  //       );
+  //     }
+  //   }
+  // });
 
   // res.redirect("back");
   res.status(200);
