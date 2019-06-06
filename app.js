@@ -940,7 +940,6 @@ app.post("/update", function(req, res) {
 
 });
 
-
 app.post("/favorite", function(req, res) {
 
   Entry.findOne({
@@ -953,6 +952,8 @@ app.post("/favorite", function(req, res) {
       if (err) {
         console.log(err)
       } else {
+
+        let userfavoritesArray = JSON.stringify(foundUser.favorites);
 
         if (userfavoritesArray.includes(foundEntry._id)) {
           AurealiusUser.updateOne({
@@ -986,7 +987,7 @@ app.post("/favorite", function(req, res) {
           });
         }
 
-        let entryFavoritesArray = JSON.stringify(foundEntry.favoriteUsers);;
+        let entryFavoritesArray = JSON.stringify(foundEntry.favoriteUsers);
 
         if (entryFavoritesArray.includes(foundUser._id)) {
           Entry.updateOne({
@@ -1023,99 +1024,6 @@ app.post("/favorite", function(req, res) {
     });
   });
 
-
-  // AurealiusUser.find({
-  //   _id: req.user.id,
-  //   favorites: {
-  //     $elemMatch: {
-  //       _id: foundEntry._id
-  //     }
-  //   }
-  // }, function(err, userWfav) {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     if (userWfav.length != 0) {
-  //       AurealiusUser.updateOne({
-  //         _id: req.user.id
-  //       }, {
-  //         $pull: {
-  //           favorites: {
-  //             _id: foundEntry._id
-  //           }
-  //         }
-  //       }, function(err, success) {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           console.log("Successfully removed entry from favorites.")
-  //         }
-  //       });
-  //     } else {
-  //       AurealiusUser.updateOne({
-  //         _id: req.user.id
-  //       }, {
-  //         $push: {
-  //           favorites: foundEntry
-  //         }
-  //       }, function(err, success) {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           console.log("Successfully added entry to favorites.")
-  //         }
-  //       });
-  //     }
-  //   }
-  // });
-  // });
-
-  // Entry.findOne({
-  //   _id: req.body._id,
-  //   favoriteUsers: {
-  //     $all: [req.user.id]
-  //   },
-  // }, function(err, foundFavUser) {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     if (foundFavUser) {
-  //       Entry.updateOne({
-  //           _id: req.body._id
-  //         }, {
-  //           $pull: {
-  //             favoriteUsers: req.user.id
-  //           }
-  //         },
-  //         function(err, success) {
-  //           if (err) {
-  //             console.log(err);
-  //           } else {
-  //             console.log("Successfully unfavorited entry.");
-  //           }
-  //         }
-  //       );
-  //     } else {
-  //       Entry.updateOne({
-  //           _id: req.body._id
-  //         }, {
-  //           $push: {
-  //             favoriteUsers: req.user.id
-  //           }
-  //         },
-  //         function(err, success) {
-  //           if (err) {
-  //             console.log(err);
-  //           } else {
-  //             console.log("Successfully favorited entry.");
-  //           }
-  //         }
-  //       );
-  //     }
-  //   }
-  // });
-
-  // res.redirect("back");
   res.status(200);
   res.end();
 
