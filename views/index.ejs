@@ -50,7 +50,7 @@
 
                     <h5 class="inline" id="followNum">
                       Following (
-                      <%= userData.following.length %>)
+                      <%= userData._following.length %>)
                     </h5>
                   </div>
                   <div class="expndCrdContainer">
@@ -68,7 +68,7 @@
                   <div class="followBoxHeader">
                     <h5 class="inline">
                       Followers (
-                      <%= userData.followers.length %>)
+                      <%= userData._followers.length %>)
                     </h5>
                   </div>
                   <div class="expndCrdContainer">
@@ -78,8 +78,8 @@
                   </div>
                   <div class="followLinkContainer collapse" id="followerLinklist">
 
-                    <% if(userData.followers.length > 0){ %>
-                    <% userData.followers.forEach(function(followingUsers) {%>
+                    <% if(userFollowers.length > 0){ %>
+                    <% userFollowers.forEach(function(followingUsers) {%>
 
                     <div class="btn btn-primary followLinkBox">
                       <% if(followingUsers.bioImageFile === "/assets/defaultusericon.png") { %>
@@ -206,7 +206,9 @@
               <% var hide = "" %>
               <% } %>
 
-              <% if (userFollowing.includes(entry.userId)) { %>
+              <% let userFollowingArray = JSON.stringify([...new Set(userFollowing.map(item => item._id))]); %>
+
+              <% if (userFollowingArray.includes(entry.userId)) { %>
               <% var folUnfol = "Unfollow" %>
               <% } else { %>
               <% var folUnfol = "Follow" %>
@@ -219,8 +221,6 @@
                   <% var flwBtnId = "flw"+ entry._id %>
                   <button class="followBtn btn <%= followbtnUName %>" name="followButton" id="<%= flwBtnId %>" value="<%= entry.userId %>">
                     <%= folUnfol %>
-
-
                   </button>
                 </form>
               </div>

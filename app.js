@@ -91,6 +91,8 @@ const upload = multer({
 });
 
 //---------------------Mongo Moongoose Models--------------------------//
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
@@ -117,8 +119,14 @@ const userSchema = new mongoose.Schema({
   facebookId: String,
   entries: [entrySchema],
   favorites: [entrySchema],
-  followers: Array,
-  following: Array,
+  _followers: [{
+    type: ObjectId,
+    ref: "aurealiusUser"
+  }],
+  _following: [{
+    type: ObjectId,
+    ref: "aurealiusUser"
+  }],
   reports: Number
 }, {
   timestamps: true
@@ -156,6 +164,11 @@ const reportSchema = new mongoose.Schema({
 const Report = new mongoose.model("report", reportSchema);
 
 
+module.exports = {
+  AurealiusUser,
+  Entry
+};
+
 //-------------------Get Requests-----------------------------------------///
 
 app.get("/index", function(req, res) {
@@ -175,8 +188,9 @@ app.get("/index", function(req, res) {
           let userInfo = req.user;
           let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
-          let followingArray = JSON.stringify([...new Set(userInfo.following.map(item => item._id))]);
-          let followerArray = JSON.stringify([...new Set(userInfo.followers.map(item => item._id))]);
+          // let followingArray = JSON.stringify([...new Set(userInfo._following.map(item => item._id))]);
+
+          let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
           Grouping.find({
             entries: {
@@ -193,13 +207,33 @@ app.get("/index", function(req, res) {
 
               let uniqueGroupings = [...new Set(foundGroupings.map(item => item.name))];
 
-              res.render("index", {
-                entries: foundEntries,
-                groupings: uniqueGroupings,
-                userData: userInfo,
-                userFollowing: followingArray,
-                userFollowers: followerArray
-              });
+              AurealiusUser.findOne({
+                  _id: req.user.id
+                })
+                .populate({
+                  path: "_following",
+                  model: "aurealiusUser"
+                })
+                .populate({
+                  path: "_followers",
+                  model: "aurealiusUser"
+                })
+                .exec(function(err, foundUserFollow) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+
+                    // console.log(foundUserFollow._followers);
+                    res.render("index", {
+                      entries: foundEntries,
+                      groupings: uniqueGroupings,
+                      userData: userInfo,
+                      userFollowing: foundUserFollow._following,
+                      userFollowers: foundUserFollow._followers
+                    });
+                  }
+                });
+
             }
           });
         }
@@ -208,29 +242,29 @@ app.get("/index", function(req, res) {
   });
 });
 
-app.get("/partials/followPanel", function(req, res) {
-
-  if (req.isAuthenticated()) {
-    AurealiusUser.findOne({
-      _id: req.user.id
-    }, function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
-
-        let followingArray = JSON.stringify([...new Set(userInfo.following.map(item => item._id))]);
-        let followerArray = JSON.stringify([...new Set(userInfo.followers.map(item => item._id))]);
-
-        res.render("partials/followPanel", {
-          userData: foundUser,
-          userFollowing: followingArray,
-          userFollowers: followerArray
-        });
-
-      }
-    });
-  }
-});
+// app.get("/partials/followPanel", function(req, res) {
+//
+//   if (req.isAuthenticated()) {
+//     AurealiusUser.findOne({
+//     _id: req.user.id
+//   })
+//   .populate({path: "_following", model: "aurealiusUser"})
+//   .populate({path: "_followers", model: "aurealiusUser"})
+//   .exec( function(err, foundUserFollowing) {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//
+//         res.render("partials/followPanel", {
+//           userData: req.user,
+//           userFollowing: foundUserFollowing._following,
+//           userFollowers: foundUserFollowing._following
+//         });
+//
+//       }
+//     });
+//   }
+// });
 
 app.get("/settings", function(req, res) {
 
@@ -721,109 +755,159 @@ app.post("/follow", function(req, res) {
   const followTargetId = req.body.flwBtnUserId;
 
   AurealiusUser.findOne({
-    _id: poster
-  }, function(err, foundPoster) {
-    if (err) {
-      console.log(err);
-    } else {
+      _id: poster
+    })
+    .populate({
+      path: "_following",
+      model: "aurealiusUser"
+    })
+    .populate({
+      path: "_followers",
+      model: "aurealiusUser"
+    })
+    .exec(function(err, foundPoster) {
+      if (err) {
+        console.log(err);
+      } else {
 
-      let posterFollowingArray = JSON.stringify([...new Set(foundPoster.following.map(item => item._id))]);
-      let posterFollowerArray = JSON.stringify([...new Set(foundPoster.followers.map(item => item._id))]);
+        let posterFollowingArray = JSON.stringify([...new Set(foundPoster._following.map(item => item._id))]);
+        let posterFollowerArray = JSON.stringify([...new Set(foundPoster._followers.map(item => item._id))]);
 
-      AurealiusUser.findOne({
-        _id: followTargetId
-      }, function(err, foundTarget) {
-        if (err) {
-          console.log(err);
-        } else {
+        AurealiusUser.findOne({
+            _id: followTargetId
+          })
+          .populate({
+            path: "_following",
+            model: "aurealiusUser"
+          })
+          .populate({
+            path: "_followers",
+            model: "aurealiusUser"
+          })
+          .exec(function(err, foundTarget) {
+            if (err) {
+              console.log(err);
+            } else {
 
-          let targetFollowerArray = JSON.stringify([...new Set(foundTarget.followers.map(item => item._id))]);
+              let targetFollowerArray = JSON.stringify([...new Set(foundTarget._followers.map(item => item._id))]);
 
-          if (posterFollowingArray.includes(foundTarget._id) === false) {
-            AurealiusUser.findOneAndUpdate({
-              _id: foundPoster._id
-            }, {
-              $push: {
-                following: foundTarget
-              }
-            },{
-              new: true
-            }, function(err, updatedPoster) {
-              if (err) {
-                console.log(err);
+              if (posterFollowingArray.includes(foundTarget._id) === false) {
+                AurealiusUser.findOneAndUpdate({
+                    _id: foundPoster._id
+                  }, {
+                    $push: {
+                      _following: mongoose.Types.ObjectId(foundTarget._id)
+                    }
+                  }, {
+                    new: true
+                  }).populate({
+                    path: "_following",
+                    model: "aurealiusUser"
+                  })
+                  .populate({
+                    path: "_followers",
+                    model: "aurealiusUser"
+                  })
+                  .exec(function(err, updatedPoster) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      console.log("Successfully added user " + foundTarget._id + " to following.");
+
+                      AurealiusUser.updateOne({
+                        _id: foundTarget._id
+                      }, {
+                        $push: {
+                          _followers: mongoose.Types.ObjectId(foundPoster._id)
+                        }
+                      })
+                      .populate({
+                        path: "_following",
+                        model: "aurealiusUser"
+                      })
+                      .populate({
+                        path: "_followers",
+                        model: "aurealiusUser"
+                      })
+                      .exec(function(err, success) {
+                        if (err) {
+                          console.log(err);
+                        } else {
+                          console.log("Successfully added user " + foundPoster._id + " to followers.")
+                        }
+                      });
+                      res.status(200);
+                      res.render('partials/followPanel', {
+                        userData: updatedPoster,
+                        userFollowing: updatedPoster._following,
+                        userFollowers: updatedPoster._followers
+                      });
+                    }
+
+                  });
+
               } else {
-                console.log("Successfully added user " + foundTarget._id + " to following.");
 
                 AurealiusUser.updateOne({
                   _id: foundTarget._id
                 }, {
-                  $push: {
-                    followers: foundPoster
-                  }
-                }, function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully added user " + foundPoster._id + " to followers.")
-                  }
-                });
-                res.status(200);
-                res.render('partials/followPanel', {
-                  userData: updatedPoster
-                });
-              }
-
-            });
-
-          } else {
-
-            AurealiusUser.updateOne({
-              _id: foundTarget._id
-            }, {
-              $pull: {
-                followers: {
-                  _id: foundPoster._id
-                }
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully removed user " + foundPoster._id + " from followers.");
-
-                AurealiusUser.findOneAndUpdate({
-                  _id: foundPoster._id
-                }, {
                   $pull: {
-                    following: {
-                      _id: foundTarget._id
-                      }
+                    _followers: mongoose.Types.ObjectId(foundPoster._id)
                   }
-                },{
-                  new: true
-                }, function(err, updatedPoster) {
+                })
+                .populate({
+                  path: "_following",
+                  model: "aurealiusUser"
+                })
+                .populate({
+                  path: "_followers",
+                  model: "aurealiusUser"
+                })
+                .exec(function(err, success) {
                   if (err) {
                     console.log(err);
                   } else {
-                    console.log("Successfully removed user " + foundTarget._id + " from following.")
-                    res.status(200);
-                    res.render('partials/followPanel', {
-                      userData: updatedPoster
+                    console.log("Successfully removed user " + foundPoster._id + " from followers.");
+
+                    AurealiusUser.findOneAndUpdate({
+                      _id: foundPoster._id
+                    }, {
+                      $pullAll: {
+                        _following: [mongoose.Types.ObjectId(foundTarget._id)]
+                      }
+                    }, {
+                      new: true
+                    }).populate({
+                      path: "_following",
+                      model: "aurealiusUser"
+                    })
+                    .populate({
+                      path: "_followers",
+                      model: "aurealiusUser"
+                    })
+                    .exec(function(err, updatedPoster) {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log("Successfully removed user " + foundTarget._id + " from following.")
+                        res.status(200);
+                        res.render('partials/followPanel', {
+                          userData: updatedPoster,
+                          userFollowing: updatedPoster._following,
+                          userFollowers: updatedPoster._followers
+                        });
+                      }
                     });
                   }
                 });
+
               }
-            });
 
-          }
+            }
 
-        }
-
-      });
-    }
-  });
-
-
+          });
+      }
+    });
 
 });
 
@@ -831,7 +915,7 @@ app.post("/update", function(req, res) {
 
   Entry.updateOne({
     _id: req.body._id,
-  },{
+  }, {
     $set: {
       caption: req.body.caption
     }

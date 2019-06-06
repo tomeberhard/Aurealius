@@ -177,8 +177,8 @@ $(".followBtn").on("click", function(event) {
 
     })
 
-  }
-  ).fail(function(err) {
+  })
+  .fail(function(err) {
     console.log(err)
   });
 });
