@@ -189,13 +189,14 @@ app.get("/index", function(req, res) {
     viewStatus: "public",
     reportStatus: "Open"
   })
+  .sort({
+    createdAt: -1
+  })
   .populate({
     path: "_user",
     model: "aurealiusUser"
   })
-  .sort({
-    createdAt: -1
-  }).exec(function(err, foundEntries) {
+  .exec(function(err, foundEntries) {
     if (err) {
       console.log(err);
     } else {

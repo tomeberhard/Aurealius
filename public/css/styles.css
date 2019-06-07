@@ -1,11 +1,17 @@
 body {
-  background: url(/assets/backgroundCanvas.jpg) no-repeat center center fixed;
+  /* background: url(/assets/backgroundCanvas.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-size: cover;
-  min-height: 835px;
+  background-size: cover; */
+  /* background-color: #f3ecd3;
+background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png"); */
+/* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+
+background-color: #f3ecd3;
+background-image: url("https://www.transparenttextures.com/patterns/clean-textile.png");
 }
+
 
 h1, h2, h3, h4, h5 {
   font-family: 'Sansita', sans-serif;
@@ -47,9 +53,15 @@ hr {
   height: 75px;
   width: 100%;
   top: 0;
-  background: rgb(35, 39, 66);
-  background: linear-gradient(0deg, rgba(49, 55, 93, 1) 0%, rgba(71, 79, 133, 1) 86%, rgba(35, 39, 66, 1) 100%);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+  background-color: #474f85;
+  background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+
+
+  /* background: rgb(35, 39, 66);
+  background: linear-gradient(0deg, rgba(49, 55, 93, 1) 0%, rgba(71, 79, 133, 1) 86%, rgba(35, 39, 66, 1) 100%); */
+
+
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
   font-family: 'Sansita', sans-serif;
 }
