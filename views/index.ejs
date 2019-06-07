@@ -1,7 +1,5 @@
 <%- include('partials/headerLoggedIn') %>
 
-<title>Aurealius</title>
-
 <div class="container headerSpacing">
   <div class="row">
 
@@ -196,11 +194,11 @@
             <div class="profileFllwUnFllw">
               <a href="/index" class="userProfName">
                 <h3>
-                  <%= entry.userProfile %>
+                  <%= entry._user.profileName %>
                 </h3>
               </a>
 
-              <% if (entry.userProfile === userData.profileName) { %>
+              <% if (entry._user.profileName === userData.profileName) { %>
               <% var hide = "d-none" %>
               <% } else { %>
               <% var hide = "" %>
@@ -208,18 +206,18 @@
 
               <% let userFollowingArray = JSON.stringify([...new Set(userFollowing.map(item => item._id))]); %>
 
-              <% if (userFollowingArray.includes(entry.userId)) { %>
+              <% if (userFollowingArray.includes(entry._user._id)) { %>
               <% var folUnfol = "Unfollow" %>
               <% } else { %>
               <% var folUnfol = "Follow" %>
               <% } %>
 
-              <% var followbtnUName = "flwBtn" + entry.userProfile %>
+              <% var followbtnUName = "flwBtn" + entry._user.profileName %>
 
               <div class="flwUnflw <%= hide %>">
                 <form method="POST" action="/follow">
                   <% var flwBtnId = "flw"+ entry._id %>
-                  <button class="followBtn btn <%= followbtnUName %>" name="followButton" id="<%= flwBtnId %>" value="<%= entry.userId %>">
+                  <button class="followBtn btn <%= followbtnUName %>" name="followButton" id="<%= flwBtnId %>" value="<%= entry._user._id %>">
                     <%= folUnfol %>
                   </button>
                 </form>
@@ -244,7 +242,7 @@
                 <form method="POST" action="/favorite" id="<%= favFormEntryId %>">
 
                   <% var heartBtnEntryId = "e"+ entry._id%>
-                  <% var favs = JSON.stringify(entry.favoriteUsers) %>
+                  <% var favs = JSON.stringify(entry._favoriteUsers) %>
                   <% if (favs.includes(userData._id)) { %>
                   <% var faved = "" %>
                   <% var notFaved = "d-none" %>
@@ -361,7 +359,7 @@
             </div>
 
             <% var yours = JSON.stringify(userData._id) %>
-            <% var posTheirs = JSON.stringify(entry.userId) %>
+            <% var posTheirs = JSON.stringify(entry._user._id) %>
             <% if (yours === posTheirs) { %>
             <% var show = "" %>
             <% } else { %>
@@ -379,7 +377,7 @@
 
             <div class="deleteIcnContainer <%= show %>">
               <form method="POST" action="/delete">
-                <button class="entryContainerBtn warning " value="<%= entry.imageFile %>" name="deleteButton">
+                <button class="entryContainerBtn warning " value="<%= entry._id %> <%= entry.imageFile %>" name="deleteButton">
                   <i class="fas fa-trash"></i>
                 </button>
               </form>

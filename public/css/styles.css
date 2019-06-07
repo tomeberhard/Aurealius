@@ -4,6 +4,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  min-height: 835px;
 }
 
 h1, h2, h3, h4, h5 {
@@ -26,6 +27,12 @@ hr {
 .btn:focus {
   outline: 0;
   box-shadow: none;
+}
+
+/*---------------------------- Viewsize------------------------------ */
+
+.windowHeightMin {
+  min-height:835px;
 }
 
 /*---------------------------- header & footer------------------------------ */
@@ -308,6 +315,22 @@ nav.footer li a:hover {
   right: 0;
   width: 25%;
   text-align: right;
+}
+@media screen and (max-width: 500px) {
+  .toggleCotainer {
+    width: 40%;
+  }
+}
+@media screen and (max-width: 500px) {
+.toggle.btn {
+  min-height: 1.75rem;
+  }
+}
+
+@media screen and (max-width: 500px) {
+label.toggle-on.btn {
+  padding-top: 2px;
+  }
 }
 
 label.btn {

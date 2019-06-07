@@ -135,8 +135,6 @@ $(".followBtn").on("click", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  // $("#followLinklist").addClass("show");
-
   let flwBtnClsses = $(this).attr("class");
   let splitPosition = flwBtnClsses.indexOf("btn ") + 4;
   let flwBtnUserPClss = flwBtnClsses.slice(splitPosition, flwBtnClsses.length);
@@ -152,15 +150,14 @@ $(".followBtn").on("click", function(event) {
     data: data
   }).done(function(result) {
     updateFollowing(result);
-    let followingNumber = $("#followLinklist").children().length;
+
+    let followingNumber = $("#followLinklist > a").length;
 
     if (flwBtnTxt === "Follow") {
       $("." + flwBtnUserPClss).html("Unfollow");
-      // let followingNumber = $("#followLinklist").children().length;
       $("#followNum").html("Following ("+ followingNumber +")");
     } else {
       $("." + flwBtnUserPClss).html("Follow");
-      // let followingNumber = $("#followLinklist").children().length;
       $("#followNum").html("Following ("+ followingNumber +")");
     }
 
