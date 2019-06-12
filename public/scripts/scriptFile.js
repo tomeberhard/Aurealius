@@ -33,7 +33,7 @@ switch (navPage) {
 }
 
 //-------------------entry form input expand--------------------------------//
-document.addEventListener("click", function(event) {
+$(document).on("click", function(event) {
 
   if (event.target.closest(".entry-form")) {
     $("textarea.expandTA").animate({
@@ -66,40 +66,106 @@ $(".expndCrdBtn").click(function() {
 //-----------------heart hover icon toggle----------------------------------//
 
 
-  $(".favBtn").mouseenter(function() {
-    let favBtnId = $(this).attr("id");
-    let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
-    // console.log($("#" + favBtnId).hasClass("clicked"));
-    if ($("#" + favBtnId).hasClass("clicked") === false) {
-      $("#" + favBtnId).children().eq(0).addClass("d-none");
-      $("#" + favBtnId).children().eq(1).removeClass("d-none");
+$(document).on("mouseenter", ".favBtn", function() {
+  let favBtnId = $(this).attr("id");
+  let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+  // console.log($("#" + favBtnId).hasClass("clicked"));
+  if ($("#" + favBtnId).hasClass("clicked") === false) {
+    $("#" + favBtnId).children().eq(0).addClass("d-none");
+    $("#" + favBtnId).children().eq(1).removeClass("d-none");
 
-      // $("#" + favBtnId).children().toggleClass("d-none");
+    // $("#" + favBtnId).children().toggleClass("d-none");
+  }
+
+}).on("mouseleave", ".favBtn", function() {
+  let favBtnId = $(this).attr("id");
+  let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+
+  if ($("#" + favBtnId).hasClass("clicked") === false) {
+
+    $("#" + favBtnId).children().eq(1).addClass("d-none");
+    $("#" + favBtnId).children().eq(0).removeClass("d-none");
+  }
+});
+
+//-----------------------------infinite scroll ----------------------------------//
+
+let totalSeenIds = [];
+let isWorking = 0;
+
+$(window).scroll(function() {
+
+  var scrollPercent = Math.round(($(window).scrollTop()) / ($(document).height() - $(window).height()) * 100);
+  // get new data only if scroll bar is greater 80% of screen
+  if (scrollPercent > 80) {
+
+    if (isWorking === 0) {
+
+      isWorking = 1;
+
+      let ids = $("#renderedEntryContainer").children().map(function(){
+        return $(this).attr("id").substr(3).slice(0,-1);
+      }).get();
+
+      console.log(ids);
+
+      let data = JSON.stringify({totalSeenIds: ids});
+
+      $.ajax({
+        url: "/moreEEntries",
+        type: "POST",
+        contentType: "application/json",
+        data: data
+      }).done(function(result) {
+        updateEveryoneEntries(result);
+
+        jQuery(function() {
+          jQuery(".everyOneImg.orientation.scrollImages").each(function() {
+            var div = $(this);
+            loadImage(
+              div.attr("image"),
+              function(img) {
+                div.append(img);
+              }, {
+                orientation: true,
+              }
+            );
+          });
+          $(".appendedBelow").remove();
+        });
+
+      }).fail(function(err) {
+        console.log(err);
+      });
+
+      setTimeout(function(){isWorking=0},2500);
+      $(".scrollImages").removeClass("scrollImages");
+
     }
 
-  }).mouseleave(function(){
-    let favBtnId = $(this).attr("id");
-    let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+  }
 
-    if ($("#" + favBtnId).hasClass("clicked") === false) {
+});
 
-      $("#" + favBtnId).children().eq(1).addClass("d-none");
-      $("#" + favBtnId).children().eq(0).removeClass("d-none");
-    }
-  });
+function updateEveryoneEntries(everyoneEntries) {
 
+  $("#renderedEntryContainer").append("<div class='appendedBelow'></div>");
+  $("#renderedEntryContainer").append(everyoneEntries);
+  $("div.appendedBelow").nextAll().children().addClass("scrollImages");
+
+}
 
 //-----------------------------favBtn AJAX----------------------------------//
 
-$(".favBtn").on("click", function(event) {
+$(document).on("click",".favBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
   let favBtnId = $(this).attr("id");
   let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
   if ($("#" + favBtnId).hasClass("clicked")) {
-      $("#"+ favBtnId).removeClass("clicked");
+    $("#" + favBtnId).removeClass("clicked");
   } else {
-      $("#"+ favBtnId).addClass("clicked");
+    $("#" + favBtnId).addClass("clicked");
   }
   let favBtnData = $(this).attr("value");
   // let favBtnFormID = $(this).parent().attr("id");
@@ -111,8 +177,8 @@ $(".favBtn").on("click", function(event) {
     type: "POST",
     contentType: "application/json",
     data: data
-  }).done(function () {
-    if ($("#"+ favBtnId).hasClass("clicked") === false) {
+  }).done(function() {
+    if ($("#" + favBtnId).hasClass("clicked") === false) {
       $("#" + favBtnId).children().eq(1).addClass("d-none");
       $("#" + favBtnId).children().eq(0).removeClass("d-none");
     } else {
@@ -120,10 +186,9 @@ $(".favBtn").on("click", function(event) {
       $("#" + favBtnId).children().eq(1).removeClass("d-none");
     }
 
-        // $("#" + favBtnId).children().toggleClass("d-none")
+    // $("#" + favBtnId).children().toggleClass("d-none")
     // }
-  }
-  ).fail(function(err) {
+  }).fail(function(err) {
     console.log(err)
   });
 });
@@ -131,7 +196,7 @@ $(".favBtn").on("click", function(event) {
 
 
 //-----------------------------followBtn AJAX----------------------------------//
-$(".followBtn").on("click", function(event) {
+$(document).on("click",".followBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
@@ -144,54 +209,58 @@ $(".followBtn").on("click", function(event) {
     flwBtnUserId: flwBtnData
   });
   $.ajax({
-    url: "/follow",
-    type: "POST",
-    contentType: "application/json",
-    data: data
-  }).done(function(result) {
-    updateFollowing(result);
+      url: "/follow",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function(result) {
+      updateFollowing(result);
 
-    let followingNumber = $("#followLinklist > a").length;
+      let followingNumber = $("#followLinklist > a").length;
 
-    if (flwBtnTxt === "Follow") {
-      $("." + flwBtnUserPClss).html("Unfollow");
-      $("#followNum").html("Following ("+ followingNumber +")");
-    } else {
-      $("." + flwBtnUserPClss).html("Follow");
-      $("#followNum").html("Following ("+ followingNumber +")");
-    }
+      if (flwBtnTxt === "Follow") {
+        $("." + flwBtnUserPClss).html("Unfollow");
+        $("#followNum").html("Following (" + followingNumber + ")");
+      } else {
+        $("." + flwBtnUserPClss).html("Follow");
+        $("#followNum").html("Following (" + followingNumber + ")");
+      }
 
-    jQuery(function() {
-    	jQuery(".followingPrvw.orientation").each(function() {
-    		var div = $(this);
-    		loadImage(
-		        div.attr("image"),
-		        function (img) { div.append(img); },
-		        {orientation: true}
-    		    );
+      jQuery(function() {
+        jQuery(".followingPrvw.orientation").each(function() {
+          var div = $(this);
+          loadImage(
+            div.attr("image"),
+            function(img) {
+              div.append(img);
+            }, {
+              orientation: true,
+              aspectRatio: 1 / 1
+            }
+          );
 
-    	});
+        });
+
+      })
 
     })
-
-  })
-  .fail(function(err) {
-    console.log(err)
-  });
+    .fail(function(err) {
+      console.log(err)
+    });
 });
 
-function updateFollowing (followPanel) {
+function updateFollowing(followPanel) {
   $("#followLinklist").html(followPanel)
 }
 
 //-----------------------------editEntryBtn----------------------------------//
 
-$(".editBtn").on("click", function(event) {
+$(document).on("click", ".editBtn", function(event) {
   let editBtnEntryId = $(this).attr("value");
   let currentCaptionHeight = $("#" + "cpt" + editBtnEntryId).outerHeight();
   let currentCaptionWidth = $("#" + "cpt" + editBtnEntryId).outerWidth();
   let numberLineHeight = parseInt($("#" + "cpt" + editBtnEntryId).css("lineHeight"));
-  let rows = Math.ceil(currentCaptionHeight / numberLineHeight) + 1 ;
+  let rows = Math.ceil(currentCaptionHeight / numberLineHeight) + 1;
 
   $("#" + "editCptTA" + editBtnEntryId).attr("rows", rows);
   $("#" + "editCptTA" + editBtnEntryId).css("width", currentCaptionWidth);
@@ -200,7 +269,7 @@ $(".editBtn").on("click", function(event) {
 
 });
 
-$(".closeEditBtn").on("click", function(event) {
+$(document).on("click", ".closeEditBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
   let editBtnEntryId = $(this).attr("value");
@@ -208,7 +277,7 @@ $(".closeEditBtn").on("click", function(event) {
   $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
 });
 
-$(".submitEditBtn").on("click", function(event) {
+$(document).on("click",".submitEditBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
@@ -228,12 +297,11 @@ $(".submitEditBtn").on("click", function(event) {
     type: "POST",
     contentType: "application/json",
     data: data
-  }).done(function () {
+  }).done(function() {
     $("#" + "cpt" + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
     $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
     $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
-  }
-  ).fail(function(err) {
+  }).fail(function(err) {
     console.log(err)
   });
 });
@@ -289,7 +357,7 @@ $("#collectionSelector").on("change", function() {
 
 });
 
-//---------------------------------user page view selection------------------//
+//--------------------------user page view selection--------------------------//
 $(".viewerChoice").click(function() {
   let btnClicked = $(this);
 

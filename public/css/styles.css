@@ -19,10 +19,6 @@ h1, h2, h3, h4, h5 {
   color: #1b224f;
 }
 
-/* h5 {
-  font-family: 'Sansita', sans-serif;
-} */
-
 p {
   font-family: 'IM Fell Great Primer', serif;
   color:#465559;
@@ -33,6 +29,10 @@ hr {
   color: #474f85;
   opacity: .2;
   width: 95%;
+}
+
+textarea {
+  white-space: pre-line;
 }
 
 .btn:focus {
@@ -409,6 +409,10 @@ label.btn {
 .captionContainer {
   font-size: 1.35rem;
   font-family: 'IM Fell Great Primer', serif;
+}
+
+.card-text {
+  white-space: pre-line;
 }
 
 @media screen and (max-width: 500px) {

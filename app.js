@@ -101,9 +101,6 @@ const entrySchema = new mongoose.Schema({
     type: ObjectId,
     ref: "aurealiusUser"
   },
-  // userId: String,
-  // profileName: [userSchema],
-  // userProfile: String,
   _favoriteUsers: [{
     type: ObjectId,
     ref: "aurealiusUser"
@@ -154,15 +151,6 @@ passport.use(AurealiusUser.createStrategy());
 passport.serializeUser(AurealiusUser.serializeUser());
 passport.deserializeUser(AurealiusUser.deserializeUser());
 
-// const groupSchema = new mongoose.Schema({
-//   name: String,
-//   entries: [entrySchema],
-//   userId: String
-// }, {
-//   timestamps: true
-// });
-//
-// const Grouping = new mongoose.model("grouping", groupSchema);
 
 const reportSchema = new mongoose.Schema({
   _reportingUser: String,
@@ -189,6 +177,7 @@ app.get("/index", function(req, res) {
     viewStatus: "public",
     reportStatus: "Open"
   })
+  .limit(10)
   .sort({
     createdAt: -1
   })
@@ -206,58 +195,10 @@ app.get("/index", function(req, res) {
           let userInfo = req.user;
           let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
-          // let followingArray = JSON.stringify([...new Set(userInfo._following.map(item => item._id))]);
-
           let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
-          let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
-
-          // Grouping.find({
-          //   entries: {
-          //     $all: [{
-          //       $elemMatch: {
-          //         userId: identifier
-          //       }
-          //     }]
-          //   }
-          // }).exec(function(err, foundGroupings) {
-          //   if (err) {
-          //     console.log(err);
-          //   } else {
-          //
-          //     let uniqueGroupings = [...new Set(foundGroupings.map(item => item.name))];
-          //
-          //     AurealiusUser.findOne({
-          //         _id: req.user.id
-          //       })
-          //       .populate({
-          //         path: "_following",
-          //         model: "aurealiusUser"
-          //       })
-          //       .populate({
-          //         path: "_followers",
-          //         model: "aurealiusUser"
-          //       })
-          //       .exec(function(err, foundUserFollow) {
-          //         if (err) {
-          //           console.log(err);
-          //         } else {
-          //
-          //           // console.log(foundUserFollow._followers);
-          //           res.render("index", {
-          //             entries: foundEntries,
-          //             groupings: uniqueGroupings,
-          //             userData: userInfo,
-          //             userFollowing: foundUserFollow._following,
-          //             userFollowers: foundUserFollow._followers
-          //           });
-          //         }
-          //       });
-          //
-          //   }
-          // });
 
           AurealiusUser.findOne({
-              _id: req.user.id
+              _id: userInfo._id
             })
             .populate({
               path: "_following",
@@ -267,12 +208,17 @@ app.get("/index", function(req, res) {
               path: "_followers",
               model: "aurealiusUser"
             })
+            .populate({
+              path: "_entries",
+              model: "entry"
+            })
             .exec(function(err, foundUserFollow) {
               if (err) {
                 console.log(err);
               } else {
 
-                // console.log(foundUserFollow._followers);
+                let uniqueGroupings = [...new Set(foundUserFollow._entries.map(item => item.grouping))];
+
                 res.render("index", {
                   entries: foundEntries,
                   groupings: uniqueGroupings,
@@ -283,37 +229,11 @@ app.get("/index", function(req, res) {
               }
             });
 
-
-
         }
       }
     }
   });
 });
-
-// app.get("/partials/followPanel", function(req, res) {
-//
-//   if (req.isAuthenticated()) {
-//     AurealiusUser.findOne({
-//     _id: req.user.id
-//   })
-//   .populate({path: "_following", model: "aurealiusUser"})
-//   .populate({path: "_followers", model: "aurealiusUser"})
-//   .exec( function(err, foundUserFollowing) {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//
-//         res.render("partials/followPanel", {
-//           userData: req.user,
-//           userFollowing: foundUserFollowing._following,
-//           userFollowers: foundUserFollowing._following
-//         });
-//
-//       }
-//     });
-//   }
-// });
 
 app.get("/settings", function(req, res) {
 
@@ -682,39 +602,6 @@ app.post("/upload", upload.single("file"), function(req, res) {
     reportStatus: "Open",
   });
 
-  // Grouping.find({
-  //   name: collectionAllocator()
-  //   // userId: currentUser
-  // }, function(err, groupingNames) {
-  //   if (err) {
-  //     consoloe.log(err);
-  //   } else {
-  //     if (groupingNames != "") {
-  //       Grouping.update({
-  //         name: collectionAllocator()
-  //         // userId: currentUser
-  //       }, {
-  //         $push: {
-  //           entries: mongoose.Types.ObjectId(newEntry._id)
-  //         }
-  //       }, function(err, success) {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           console.log("Successfully added entry to existing grouping.");
-  //         }
-  //       });
-  //     } else {
-  //       const newGrouping = new Grouping({
-  //         name: collectionAllocator(),
-  //         entries: mongoose.Types.ObjectId(newEntry._id)
-  //         // userId: currentUser
-  //       });
-  //       newGrouping.save();
-  //     }
-  //   }
-  // });
-
   AurealiusUser.update({
     _id: currentUser
   }, {
@@ -795,6 +682,69 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
 
   res.redirect("back");
 
+});
+
+app.post("/moreEEntries", function(req, res) {
+
+  let seenEntryIds = req.body.totalSeenIds;
+
+  Entry.find({
+    viewStatus: "public",
+    reportStatus: "Open",
+    _id: {$nin: seenEntryIds}
+  })
+  .limit(10)
+  .sort({
+    createdAt: -1
+  })
+  .populate({
+    path: "_user",
+    model: "aurealiusUser"
+  })
+  .exec(function(err, foundEntries) {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundEntries) {
+        if (req.isAuthenticated()) {
+
+          let userInfo = req.user;
+          let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
+
+          let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
+          // let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+
+          AurealiusUser.findOne({
+              _id: req.user.id
+            })
+            .populate({
+              path: "_following",
+              model: "aurealiusUser"
+            })
+            .populate({
+              path: "_followers",
+              model: "aurealiusUser"
+            })
+            .exec(function(err, foundUserFollow) {
+              if (err) {
+                console.log(err);
+              } else {
+
+                res.status(200);
+                res.render("partials/everyoneEntries", {
+                  entries: foundEntries,
+                  // groupings: uniqueGroupings,
+                  userData: userInfo,
+                  userFollowing: foundUserFollow._following,
+                  userFollowers: foundUserFollow._followers
+                });
+              }
+            });
+
+        }
+      }
+    }
+  });
 });
 
 app.post("/follow", function(req, res) {
