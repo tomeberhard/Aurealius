@@ -19,6 +19,9 @@ const methodOverride = require("method-override");
 const path = require("path");
 const crypto = require("crypto");
 
+const cookieParser = require("cookie-parser");
+const flash = require("connect-flash");
+
 const fs = require("fs");
 
 const app = express();
@@ -34,12 +37,15 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 app.use(methodOverride("_method"));
+app.use(cookieParser());
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
 }));
+
+app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -153,8 +159,14 @@ passport.deserializeUser(AurealiusUser.deserializeUser());
 
 
 const reportSchema = new mongoose.Schema({
-  _reportingUser: String,
-  _entry: String,
+  _reportingUser: {
+    type: ObjectId,
+    ref: "aurealiusUser"
+  },
+  _entry: {
+    type: ObjectId,
+    ref: "entry"
+  },
   status: String,
   ruleBroken: String,
   comments: String
@@ -174,65 +186,65 @@ module.exports = {
 app.get("/index", function(req, res) {
 
   Entry.find({
-    viewStatus: "public",
-    reportStatus: "Open"
-  })
-  .limit(10)
-  .sort({
-    createdAt: -1
-  })
-  .populate({
-    path: "_user",
-    model: "aurealiusUser"
-  })
-  .exec(function(err, foundEntries) {
-    if (err) {
-      console.log(err);
-    } else {
-      if (foundEntries) {
-        if (req.isAuthenticated()) {
+      viewStatus: "public",
+      reportStatus: "Open"
+    })
+    .limit(10)
+    .sort({
+      createdAt: -1
+    })
+    .populate({
+      path: "_user",
+      model: "aurealiusUser"
+    })
+    .exec(function(err, foundEntries) {
+      if (err) {
+        console.log(err);
+      } else {
+        if (foundEntries) {
+          if (req.isAuthenticated()) {
 
-          let userInfo = req.user;
-          let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
+            let userInfo = req.user;
+            let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
-          let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
+            let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
-          AurealiusUser.findOne({
-              _id: userInfo._id
-            })
-            .populate({
-              path: "_following",
-              model: "aurealiusUser"
-            })
-            .populate({
-              path: "_followers",
-              model: "aurealiusUser"
-            })
-            .populate({
-              path: "_entries",
-              model: "entry"
-            })
-            .exec(function(err, foundUserFollow) {
-              if (err) {
-                console.log(err);
-              } else {
+            AurealiusUser.findOne({
+                _id: userInfo._id
+              })
+              .populate({
+                path: "_following",
+                model: "aurealiusUser"
+              })
+              .populate({
+                path: "_followers",
+                model: "aurealiusUser"
+              })
+              .populate({
+                path: "_entries",
+                model: "entry"
+              })
+              .exec(function(err, foundUserFollow) {
+                if (err) {
+                  console.log(err);
+                } else {
 
-                let uniqueGroupings = [...new Set(foundUserFollow._entries.map(item => item.grouping))];
+                  let uniqueGroupings = [...new Set(foundUserFollow._entries.map(item => item.grouping))];
 
-                res.render("index", {
-                  entries: foundEntries,
-                  groupings: uniqueGroupings,
-                  userData: userInfo,
-                  userFollowing: foundUserFollow._following,
-                  userFollowers: foundUserFollow._followers
-                });
-              }
-            });
+                  res.render("index", {
+                    entries: foundEntries,
+                    groupings: uniqueGroupings,
+                    userData: userInfo,
+                    userFollowing: foundUserFollow._following,
+                    userFollowers: foundUserFollow._followers
+                  });
+                }
+              });
 
+          }
         }
       }
-    }
-  });
+    });
 });
 
 app.get("/settings", function(req, res) {
@@ -409,22 +421,22 @@ app.get("/files", function(req, res) {
   });
 });
 
-//--filename specific path, display single file object----------------------//
-app.get("/files/:filename", function(req, res) {
-  gfs.files.findOne({
-    filename: req.params.filename
-  }, function(err, file) {
-    if (!file || file.length === 0) {
-      return res.status(404).json({
-        err: "No File Exist."
-      });
-    } else {
-      //-file exist-//
-      return res.json(file);
-    }
-  })
-
-});
+// //--filename specific path, display single file object----------------------//
+// app.get("/files/:filename", function(req, res) {
+//   gfs.files.findOne({
+//     filename: req.params.filename
+//   }, function(err, file) {
+//     if (!file || file.length === 0) {
+//       return res.status(404).json({
+//         err: "No File Exist."
+//       });
+//     } else {
+//       //-file exist-//
+//       return res.json(file);
+//     }
+//   })
+//
+// });
 
 //---------------filename specific path------------------------------------//
 app.get("/image/:filename", function(req, res) {
@@ -472,7 +484,9 @@ app.get("/register", function(req, res) {
 });
 
 app.get("/login", function(req, res) {
-  res.render("login");
+  res.render("login", {
+    error: req.flash("error")
+  });
 });
 
 app.get("/logout", function(req, res) {
@@ -528,24 +542,33 @@ app.post("/", function(req, res) {
   });
 });
 
-app.post("/login", function(req, res) {
+// app.post("/login", function(req, res) {
+//
+//   const user = new AurealiusUser({
+//     username: req.body.username,
+//     password: req.body.password,
+//   });
+//
+//   req.login(user, function(err) {
+//     if (err) {
+//       console.log(err);
+//       res.redirect("login");
+//     } else {
+//       passport.authenticate("local")(req, res, function() {
+//         res.redirect("index");
+//       });
+//     }
+//   });
+// });
 
-  const user = new AurealiusUser({
-    username: req.body.username,
-    password: req.body.password,
-  });
-
-  req.login(user, function(err) {
-    if (err) {
-      console.log(err);
-      res.redirect("login")
-    } else {
-      passport.authenticate("local")(req, res, function() {
-        res.redirect("index");
-      });
-    }
-  });
-});
+app.post("/login", passport.authenticate("local", {
+  successRedirect: "/index",
+  failureRedirect: "/login",
+  failureFlash: {
+    type: "error",
+    message: "Uh oh! Invalid username or password. Please try again."
+  }
+}));
 
 app.post("/upload", upload.single("file"), function(req, res) {
 
@@ -689,62 +712,64 @@ app.post("/moreEEntries", function(req, res) {
   let seenEntryIds = req.body.totalSeenIds;
 
   Entry.find({
-    viewStatus: "public",
-    reportStatus: "Open",
-    _id: {$nin: seenEntryIds}
-  })
-  .limit(10)
-  .sort({
-    createdAt: -1
-  })
-  .populate({
-    path: "_user",
-    model: "aurealiusUser"
-  })
-  .exec(function(err, foundEntries) {
-    if (err) {
-      console.log(err);
-    } else {
-      if (foundEntries) {
-        if (req.isAuthenticated()) {
+      viewStatus: "public",
+      reportStatus: "Open",
+      _id: {
+        $nin: seenEntryIds
+      }
+    })
+    .limit(10)
+    .sort({
+      createdAt: -1
+    })
+    .populate({
+      path: "_user",
+      model: "aurealiusUser"
+    })
+    .exec(function(err, foundEntries) {
+      if (err) {
+        console.log(err);
+      } else {
+        if (foundEntries) {
+          if (req.isAuthenticated()) {
 
-          let userInfo = req.user;
-          let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
+            let userInfo = req.user;
+            let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
-          let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
-          // let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
+            let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
+            // let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
 
-          AurealiusUser.findOne({
-              _id: req.user.id
-            })
-            .populate({
-              path: "_following",
-              model: "aurealiusUser"
-            })
-            .populate({
-              path: "_followers",
-              model: "aurealiusUser"
-            })
-            .exec(function(err, foundUserFollow) {
-              if (err) {
-                console.log(err);
-              } else {
+            AurealiusUser.findOne({
+                _id: req.user.id
+              })
+              .populate({
+                path: "_following",
+                model: "aurealiusUser"
+              })
+              .populate({
+                path: "_followers",
+                model: "aurealiusUser"
+              })
+              .exec(function(err, foundUserFollow) {
+                if (err) {
+                  console.log(err);
+                } else {
 
-                res.status(200);
-                res.render("partials/everyoneEntries", {
-                  entries: foundEntries,
-                  // groupings: uniqueGroupings,
-                  userData: userInfo,
-                  userFollowing: foundUserFollow._following,
-                  userFollowers: foundUserFollow._followers
-                });
-              }
-            });
+                  res.status(200);
+                  res.render("partials/everyoneEntries", {
+                    entries: foundEntries,
+                    // groupings: uniqueGroupings,
+                    userData: userInfo,
+                    userFollowing: foundUserFollow._following,
+                    userFollowers: foundUserFollow._followers
+                  });
+                }
+              });
 
+          }
         }
       }
-    }
-  });
+    });
 });
 
 app.post("/follow", function(req, res) {
@@ -1020,14 +1045,18 @@ app.post("/favorite", function(req, res) {
 
 app.post("/report", function(req, res) {
 
-  Entry.find({
-    _id: req.body.reportButton
+  let reportedEntryId = req.body.entryId;
+  let ruleBroken = req.body.ruleBroken;
+  let comments = req.body.comments;
+
+  Entry.findOne({
+    _id: reportedEntryId
   }, function(err, foundEntry) {
     if (err) {
       console.log(err);
     } else {
       Entry.updateOne({
-        _id: req.body.reportButton
+        _id: reportedEntryId
       }, {
         reportStatus: "Pending"
       }, function(err, success) {
@@ -1035,56 +1064,58 @@ app.post("/report", function(req, res) {
           console.log(err);
         } else {
           console.log("Successfully reported entry.");
-        }
-      });
 
-      AurealiusUser.findOne({
-          _id: req.user.id
-        },
-        function(err, foundUser) {
-          if (err) {
-            console.log(err);
-          } else {
-
-            function reportTracker() {
-              if (foundUser.reports === undefined) {
-                let reportings = 0;
-                let updatedReportings = ++reportings;
-                return updatedReportings;
-              } else {
-                let reportings = foundUser.reports;
-                let updatedReportings = ++reportings
-                return updatedReportings;
-              }
-            }
-
-            AurealiusUser.updateOne({
+          AurealiusUser.findOne({
               _id: req.user.id
-            }, {
-              reports: reportTracker()
-            }, function(err, success) {
+            },
+            function(err, foundUser) {
               if (err) {
                 console.log(err);
               } else {
-                console.log("Successfully updated number of reportings.");
+
+                function reportTracker() {
+                  if (foundUser.reports === undefined) {
+                    let reportings = 0;
+                    let updatedReportings = ++reportings;
+                    return updatedReportings;
+                  } else {
+                    let reportings = foundUser.reports;
+                    let updatedReportings = ++reportings
+                    return updatedReportings;
+                  }
+                }
+
+                AurealiusUser.updateOne({
+                  _id: req.user.id
+                }, {
+                  reports: reportTracker()
+                }, function(err, success) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully updated number of reportings.");
+
+                    const newReport = new Report({
+                      _reportingUser: mongoose.Types.ObjectId(foundUser._id),
+                      _entry: mongoose.Types.ObjectId(foundEntry._id),
+                      status: "Pending",
+                      ruleBroken: ruleBroken,
+                      comments: comments
+                    });
+                    newReport.save();
+                    console.log("Successfully added new reporting.");
+
+                    res.status(200);
+                    res.end();
+                  }
+                });
               }
             });
+        }
+      });
 
-            const newReport = new Report({
-              _reportingUser: mongoose.Types.ObjectId(foundUser._id),
-              _entry: mongoose.Types.ObjectId(foundEntry._id),
-              // status: "Pending",
-              ruleBroken: req.body.rule,
-              comments: req.body.reportComments
-            });
-            newReport.save();
-            console.log("Successfully added new reporting.")
-          }
-        });
     }
   });
-
-  res.redirect("back");
 
 });
 

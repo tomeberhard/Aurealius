@@ -130,14 +130,14 @@
     <div class="collapse entryTrayContainer" id="<%= collapseExpandID %>">
       <div class="reportIcnContainer">
 
+        <button class="entryContainerBtn warning" data-toggle="modal" data-target="#reportModal">
+          <i class="fas fa-exclamation-circle"></i>
+        </button>
 
         <form method="POST" action="/report">
-          <button class="entryContainerBtn warning" data-toggle="modal" data-target="#reportModal">
-            <i class="fas fa-exclamation-circle"></i>
-          </button>
 
-          <div class="modal" id="reportModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Report Entry</h5>
@@ -169,17 +169,19 @@
 
                     <br />
 
-                    <textarea class="form-control" rows="3" name="reportComments" placeholder="Comments"></textarea>
+                    <textarea class="form-control reportTA" rows="3" name="reportComments" placeholder="Comments"></textarea>
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary" value="<%= entry._id %>" name="reportButton">Submit</button>
-                  <button type="button" class="btn btn-secondary inline" data-dismiss="modal">Close</button>
+                  <button type="button" id="reportSubmitBtn" class="btn btn-primary" value="<%= entry._id %>" name="reportButton">Submit</button>
+                  <button type="button" id="modalCloseBtn" class="btn btn-secondary inline" data-dismiss="modal">Close</button>
                 </div>
+
               </div>
             </div>
           </div>
         </form>
+
       </div>
 
       <% var yours = JSON.stringify(userData._id) %>
@@ -191,9 +193,9 @@
       <% } %>
 
       <div class="editIcnContainer <%= show %>">
-          <button class="editBtn entryContainerBtn" value="<%= entry._id %>" name="entryToUpdate">
-            <i class="fas fa-edit"></i>
-          </button>
+        <button class="editBtn entryContainerBtn" value="<%= entry._id %>" name="entryToUpdate">
+          <i class="fas fa-edit"></i>
+        </button>
       </div>
 
       <div class="deleteIcnContainer <%= show %>">

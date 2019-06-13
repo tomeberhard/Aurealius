@@ -302,6 +302,12 @@ nav.footer li a:hover {
   padding: .15rem .5rem;
 }
 
+@media screen and (min-width: 768px) {
+.fileBtn {
+  height: 100%;
+  }
+}
+
 .fileBtn:hover {
   color: white;
   border-style: solid;
@@ -656,10 +662,6 @@ a.userProfName {
   .entryContainerBtn {
   font-size: 1.25rem;
   }
-}
-
-.modal {
-  /* z-index: 0; */
 }
 
 /* -----------------------user column  edit-------------------r------------ */

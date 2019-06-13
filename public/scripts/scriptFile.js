@@ -69,12 +69,10 @@ $(".expndCrdBtn").click(function() {
 $(document).on("mouseenter", ".favBtn", function() {
   let favBtnId = $(this).attr("id");
   let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
-  // console.log($("#" + favBtnId).hasClass("clicked"));
+
   if ($("#" + favBtnId).hasClass("clicked") === false) {
     $("#" + favBtnId).children().eq(0).addClass("d-none");
     $("#" + favBtnId).children().eq(1).removeClass("d-none");
-
-    // $("#" + favBtnId).children().toggleClass("d-none");
   }
 
 }).on("mouseleave", ".favBtn", function() {
@@ -103,13 +101,15 @@ $(window).scroll(function() {
 
       isWorking = 1;
 
-      let ids = $("#renderedEntryContainer").children().map(function(){
-        return $(this).attr("id").substr(3).slice(0,-1);
+      let ids = $("#renderedEntryContainer").children().map(function() {
+        return $(this).attr("id").substr(3).slice(0, -1);
       }).get();
 
       console.log(ids);
 
-      let data = JSON.stringify({totalSeenIds: ids});
+      let data = JSON.stringify({
+        totalSeenIds: ids
+      });
 
       $.ajax({
         url: "/moreEEntries",
@@ -138,7 +138,9 @@ $(window).scroll(function() {
         console.log(err);
       });
 
-      setTimeout(function(){isWorking=0},2500);
+      setTimeout(function() {
+        isWorking = 0
+      }, 2500);
       $(".scrollImages").removeClass("scrollImages");
 
     }
@@ -155,9 +157,46 @@ function updateEveryoneEntries(everyoneEntries) {
 
 }
 
+//-----------------------------report Entry AJAX----------------------------------//
+$(document).on("click", "#reportSubmitBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let entryId = $(this).closest(".card-body").attr("id");
+
+  let reportedEntryId = $(this).attr("value");
+  console.log(reportedEntryId);
+  let checkedOption = $(".form-check-input:checked").val();
+  console.log(checkedOption);
+  let reportComment = $(".reportTA").val()
+  console.log(reportComment);
+
+  let data = JSON.stringify({
+    entryId: reportedEntryId,
+    ruleBroken: checkedOption,
+    comments: reportComment
+  });
+  $.ajax({
+      url: "/report",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function() {
+
+      $("#modalCloseBtn").click()
+
+      $("#" + entryId).empty();
+      $("#" + entryId).add("<p style='text-align:center'>Thank you for reporting this entry.<br> We will review and let you know what we decide.</p>");
+
+    })
+    .fail(function(err) {
+      console.log(err)
+    });
+});
+
 //-----------------------------favBtn AJAX----------------------------------//
 
-$(document).on("click",".favBtn", function(event) {
+$(document).on("click", ".favBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
   let favBtnId = $(this).attr("id");
@@ -196,7 +235,7 @@ $(document).on("click",".favBtn", function(event) {
 
 
 //-----------------------------followBtn AJAX----------------------------------//
-$(document).on("click",".followBtn", function(event) {
+$(document).on("click", ".followBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
@@ -277,7 +316,7 @@ $(document).on("click", ".closeEditBtn", function(event) {
   $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
 });
 
-$(document).on("click",".submitEditBtn", function(event) {
+$(document).on("click", ".submitEditBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 

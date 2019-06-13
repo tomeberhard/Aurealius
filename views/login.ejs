@@ -8,7 +8,8 @@
       <div class="card">
         <div class="card-body">
 
-          <!-- Makes POST request to /login route -->
+          <p class="loginError" style="color:red;font-size:1.25rem"><%= error %></p>
+
           <form action="/login" method="POST">
             <div class="form-group">
               <label for="email">Email</label>
@@ -17,6 +18,7 @@
             <div class="form-group">
               <label for="password">Password</label>
               <input type="password" class="form-control" name="password">
+
             </div>
             <button type="submit" class="btn btn-dark">Login</button>
           </form>
