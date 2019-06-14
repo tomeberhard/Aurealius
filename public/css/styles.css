@@ -35,6 +35,15 @@ textarea {
   white-space: pre-line;
 }
 
+label {
+  font-family: 'IM Fell Great Primer', serif;
+}
+
+/* .modal-backdrop {
+  display: none;
+} */
+
+
 .btn:focus {
   outline: 0;
   box-shadow: none;

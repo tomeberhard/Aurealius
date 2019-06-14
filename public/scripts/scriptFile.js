@@ -101,8 +101,8 @@ $(window).scroll(function() {
 
       isWorking = 1;
 
-      let ids = $("#renderedEntryContainer").children().map(function() {
-        return $(this).attr("id").substr(3).slice(0, -1);
+      let ids = $("#renderedEntryContainer").children(".card").map(function() {
+        return $(this).attr("id").substr(3);
       }).get();
 
       console.log(ids);
@@ -158,14 +158,14 @@ function updateEveryoneEntries(everyoneEntries) {
 }
 
 //-----------------------------report Entry AJAX----------------------------------//
-$(document).on("click", "#reportSubmitBtn", function(event) {
+$(document).on("click", ".reportSubmitBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  let entryId = $(this).closest(".card-body").attr("id");
-
-  let reportedEntryId = $(this).attr("value");
+  let reportedEntryId = this.id.substr(6);
   console.log(reportedEntryId);
+  let entryId = $("#eID"+ reportedEntryId).closest(".card-body").attr("id");
+  console.log(entryId);
   let checkedOption = $(".form-check-input:checked").val();
   console.log(checkedOption);
   let reportComment = $(".reportTA").val()
@@ -182,11 +182,15 @@ $(document).on("click", "#reportSubmitBtn", function(event) {
       contentType: "application/json",
       data: data
     }).done(function() {
-
-      $("#modalCloseBtn").click()
+      $("#reportModal").modal("hide");
+      $("body").removeClass("modal-open");
+      $("body").removeAttr("style");
+      $(".modal-backdrop").remove();
 
       $("#" + entryId).empty();
-      $("#" + entryId).add("<p style='text-align:center'>Thank you for reporting this entry.<br> We will review and let you know what we decide.</p>");
+      $("#" + entryId).append("<p style='text-align:center'>Thank you for reporting this entry.<br> We will review and let you know what we decide.</p>");
+
+
 
     })
     .fail(function(err) {
