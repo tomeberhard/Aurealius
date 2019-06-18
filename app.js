@@ -120,7 +120,7 @@ const entrySchema = new mongoose.Schema({
 const Entry = new mongoose.model("entry", entrySchema);
 
 const userSchema = new mongoose.Schema({
-  userName: String,
+  // userName: String,
   profileName: String,
   firstName: String,
   lastName: String,
@@ -143,12 +143,15 @@ const userSchema = new mongoose.Schema({
     type: ObjectId,
     ref: "aurealiusUser"
   }],
-  reports: Number
+  reports: Number,
+  sessions: Number
 }, {
   timestamps: true
 });
 
-userSchema.plugin(passportLocalMongoose, {usernameField:"email"});
+userSchema.plugin(passportLocalMongoose, {
+  usernameField: "email"
+});
 
 const AurealiusUser = new mongoose.model("aurealiusUser", userSchema);
 
@@ -522,6 +525,13 @@ app.post("/register", function(req, res) {
     firstName: registeredFName,
     lastName: registeredLName,
     profileName: createdProfileName,
+    sessions: 1,
+    reminderSettings: {
+      status: "on",
+      frequency: "daily",
+      dayOfWeek: "thursday",
+      timeOfDay: "8:30pm",
+    },
     bioImageFile: "/assets/defaultusericon.png"
   }, req.body.password, function(err, user) {
     if (err) {
@@ -535,10 +545,42 @@ app.post("/register", function(req, res) {
   });
 });
 
+app.post("/changePassword", function(req, res) {
+
+  User.findOne({
+      _id: req.user.id
+    }, function(err, user) {
+      if (err) {
+        console.log(err)
+      } else {
+        user.changePassword(req.body.oldpassword, req.body.newpassword, function(err) {
+          if (err) {
+            if (err.name === 'IncorrectPasswordError') {
+              res.json({
+                success: false,
+                message: 'Incorrect password'
+              });
+            } else {
+              res.json({
+                success: false,
+                message: 'Something went wrong! Please try again after sometimes.'
+              });
+            }
+          } else {
+            res.json({
+              success: true,
+              message: 'Your password has been changed successfully.'
+            });
+          }
+        });
+      }
+    });
+});
+
 app.post("/", function(req, res) {
 
   const user = new AurealiusUser({
-    username: req.body.username,
+    email: req.body.email,
     password: req.body.password,
   });
 

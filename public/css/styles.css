@@ -39,9 +39,9 @@ label {
   font-family: 'IM Fell Great Primer', serif;
 }
 
-/* .modal-backdrop {
-  display: none;
-} */
+input {
+  font-family: 'IM Fell Great Primer', serif;
+}
 
 
 .btn:focus {
@@ -294,7 +294,7 @@ nav.footer li a:hover {
 }
 
 .settingsHr {
-width: 100%;  
+width: 100%;
 }
 
 .row {
@@ -306,11 +306,6 @@ width: 100%;
   align-items: center;
   justify-content: center;
 }
-
-/* .settingsContentWrapper   {
-margin-top: none;
-margin-bottom: none;
-} */
 
 .settingsLabelContainer {
  /* position: absolute; */
@@ -336,6 +331,11 @@ margin-bottom: none;
   left: 0;
 }
 
+@media screen and (min-width: 768px) {
+  .login.settingsInfoText {
+    width: 85%;
+  }
+}
 .settingInputText {
   margin-top: 2%;
   padding-left: 5%;
@@ -347,8 +347,24 @@ margin-bottom: none;
   right: 0;
 }
 
+.userSettingsImage {
+  width: 75%;
+  margin: auto;
+}
 
+.changePwdBtnContainer {
+  width: 95%;
+}
 
+#reminderSettings {
+  height: 36px;
+  position: relative;
+}
+.settingsToggleCotainer {
+  position: absolute;
+  top: 0;
+  right:0;
+}
 
 /* -----------------------expand entry form------------------------------- */
 .expandTA {
@@ -894,7 +910,7 @@ h5.followTxt {
 
 
 /* -----------------------user profile edit------------------------------- */
-.form-padding {
+/* .form-padding {
   padding-top: 5%;
 }
 
@@ -910,19 +926,10 @@ h5.followTxt {
 .userImageContainer {
   padding-top: 25px;
   padding-bottom: 25px;
-}
+} */
 
-.userImage {
-  height: 200px;
-  width: 200px;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: auto;
-}
 
-.userInfo {
+/* .userInfo {
   margin-bottom: 1.5rem;
 }
 
@@ -935,7 +942,7 @@ h5.followTxt {
   overflow: hidden;
   margin: auto;
   margin-bottom: 15%;
-}
+} */
 
 /* -------------------CANT GET THIS TO WORK--------------------------------- */
 .userImagePreview.orientation canvas {

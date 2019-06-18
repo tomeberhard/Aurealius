@@ -14,14 +14,12 @@
           <!-- biopic column -->
           <div class="col-md-3 m-auto">
             <div id="bioPicContainer">
-              <div id="bioPic">
-                <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
-                <% var userImage = userData.bioImageFile %>
-                <% } else { %>
-                <% var userImage = "/image/" + userData.bioImageFile %>
-                <% } %>
-                <div class="orientation" image="<%= userImage %>"></div>
-              </div>
+              <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
+              <% var userImage = userData.bioImageFile %>
+              <% } else { %>
+              <% var userImage = "/image/" + userData.bioImageFile %>
+              <% } %>
+              <div class="orientation userSettingsImage" image="<%= userImage %>"></div>
               <div class="settingsContentWrapper mt-2 mb-2">
                 <button class="btn btn-primary">Change</button>
               </div>
@@ -56,7 +54,7 @@
               </div>
               <div class="col-md-9">
                 <div class="settingsInputWBtnContainer">
-                  <div class="settingsInfoText" id="firstNameContent">
+                  <div class="basic settingsInfoText" id="firstNameContent">
                     <p class="settingInputText">
                       <%= userData.firstName %>
                     </p>
@@ -92,37 +90,108 @@
 
       <br />
 
-      <!-- login info column -->
+      <!-- login section -->
+      <div class="card card-settings">
+        <section>
+          <h5>Login Information</h5>
 
-      <div class="row">
-        <div class="card card-settings">
-          <div class="col-md-12 m-auto card">
-            <div id="emailContainer"></div>
-            <div id="passwordContainer"></div>
-          </div>
-        </div>
-        <!-- Social Media accounts -->
-        <div class="row card">
+          <hr class="settingsHr" />
+        </section>
+        <div class="row">
           <div class="col-md-12 m-auto">
-            <div id="twitterContainer"></div>
-            <div id="fBContainer"></div>
-            <div id="iGContainer"></div>
+            <div class="row mb-2">
+              <div class="col-md-3 m-auto">
+                <div class="text-center" id="userNameLabel">
+                  <p>Email</p>
+                </div>
+              </div>
+              <div class="col-md-9 m-auto">
+                <div class="settingsInputWBtnContainer">
+                  <div class="login settingsInfoText" id="userNameContent">
+                    <p class="settingInputText">
+                      <%= userData.email %>
+                    </p>
+                  </div>
+                  <div class="settingsBtnContainer" id="userNameEditBtn">
+                    <button class="btn btn-primary">Edit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-block btn-primary mt-2 mb-2">Change Password</button>
+      </div>
+
+      <br />
+
+      <div class="card card-settings">
+        <section>
+          <div id="reminderSettings">
+            <h5>Email Reminders</h5>
+            <div class="text-right settingsToggleCotainer">
+              <input type="checkbox" data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger" name="status" data-width="20" checked value="On">
+            </div>
+          </div>
+          <hr class="settingsHr" />
+        </section>
+        <div class="row">
+          <div class="col-md-12 m-auto">
+            <div class="row mb-3">
+              <div class="col-md-4 m-auto">
+                <div class="text-center" id="">
+                  <div class="form-group">
+                    <label for="emailFrequency">Frequency</label>
+                    <select class="form-control" id="emailFrequency">
+                      <option>Daily</option>
+                      <option>Weekly</option>
+                      <option>Monthly</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 m-auto">
+                <div class="text-center" id="userNameLabel">
+                  <div class="form-group" disabled>
+                    <label for="dayOfWeek">Day of Week</label>
+                    <select class="form-control" id="dayOfWeek">
+                      <option>Monday</option>
+                      <option>Tuesday</option>
+                      <option>Wednesday</option>
+                      <option>Thursday</option>
+                      <option>Friday</option>
+                      <option>Saturday</option>
+                      <option>Sunday</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 m-auto">
+                <div class="text-center" id="userNameLabel">
+                  <div class="form-group">
+                    <label for="timepicker1">Time of Day</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                      <input id="timepicker1" type="text" class="form-control input-small">
+                      <div class="input-group-append">
+                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                  <script type="text/javascript">
+                    $('#timepicker1').timepicker({
+                      defaultTime: "8:30 PM",
+                      minuteStep: 15
+                    });
+                  </script>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Email Reminder Settings -->
-      <div class="row">
-        <div class="card card-settings">
-          <!-- daily/weekly/monthly selector -->
-          <div class="col-md-3 m-auto"></div>
-          <!-- day of week selector -->
-          <div class="col-md-3 m-auto"></div>
-          <!-- time of day selector -->
-          <div class="col-md-3 m-auto"></div>
-          <!--on/off toggle -->
-          <div class="col-md-3 m-auto"></div>
-        </div>
-      </div>
+
+      <br />
+
     </div>
   </div>
 </div>
