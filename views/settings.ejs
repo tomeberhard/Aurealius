@@ -1,79 +1,163 @@
 <%- include('partials/headerLoggedIn') %>
 
-<title>Account</title>
-<div class="container">
+<div class="container headerSpacing">
   <div class="row">
-    <div class="col-md-6 m-auto">
-      <div class="userBio">
-        <div class="userImageContainer">
+    <div class="col-md-9 m-auto">
+      <!-- basic user info column -->
+      <div class="card card-settings">
+        <section>
+          <h5>Basic User Information</h5>
 
-          <% if(userInfo.bioImageFile === "/assets/defaultusericon.png") { %>
-          <% var userImage = userInfo.bioImageFile %>
-          <% } else { %>
-          <% var userImage = "/image/" + userInfo.bioImageFile %>
-          <% } %>
-          <div class="userImage orientation" image="<%= userImage %>"></div>
-        </div>
-        <div class="userInfo">
-          <h4 class="text-center display-4">
-            <%=userInfo.firstName + " " + userInfo.lastName %>
-          </h4>
-          <form action="/userUpload" method="POST" id="userBioForm" enctype="multipart/form-data">
-            <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#userInfoModal">
-              <i class="fas fa-edit"></i> Edit
-            </button>
-            <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">Edit Your Information</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+          <hr class="settingsHr" />
+        </section>
+        <div class="row">
+          <!-- biopic column -->
+          <div class="col-md-3 m-auto">
+            <div id="bioPicContainer">
+              <div id="bioPic">
+                <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
+                <% var userImage = userData.bioImageFile %>
+                <% } else { %>
+                <% var userImage = "/image/" + userData.bioImageFile %>
+                <% } %>
+                <div class="orientation" image="<%= userImage %>"></div>
+              </div>
+              <div class="settingsContentWrapper mt-2 mb-2">
+                <button class="btn btn-primary">Change</button>
+              </div>
+            </div>
+          </div>
+          <!-- name & profilename column -->
+          <div class="col-md-9">
+            <div class="row mb-2">
+              <div class="col-md-3 m-auto">
+                <div class="text-center" id="userNameLabel">
+                  <p>Profile Name</p>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <div class="settingsInputWBtnContainer">
+                  <div class="settingsInfoText" id="userNameContent">
+                    <p class="settingInputText">
+                      <%= userData.profileName %>
+                    </p>
                   </div>
-                  <div class="modal-body">
-                    <div class="form-group">
-                      <div class="container-fluid">
-                        <div class="row">
-                          <div class="col">
-                            <div class="userImagePreviewContainer">
-                              <div class="userImageframe">
-                                <div class="userImagePreview orientation" id="bioImage" image="<%= userImage %>"></div>
-                                <img id="bioImagePreview" class="userImagePreview d-none"/>
-                              </div>
-                            </div>
-                            <div class="custom-file mb-3">
-                              <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
-                            </div>
-                          </div>
-                          <div class="col-6">
-                            <label for="editProfileName">Username</label>
-                            <input class="form-control" name="userProfileName" id="editProfileName" placeholder="<%= userInfo.profileName %>"></input>
-                            <label for="editFistName">First Name</label>
-                            <input class="form-control" name="userFName" id="editFirstName" placeholder="<%= userInfo.firstName %>"></input>
-                            <label for="editFistName">Last Name</label>
-                            <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userInfo.lastName %>"></input>
-                            <!-- <label for="editUserEmail">Email</label>
-                            <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
-                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
-                            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password" </input>
-                            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                      <button type="button" class="btn btn-secondary" id="userProfileEditClose" onclick="abortPreview(event)" data-dismiss="modal">Close</button>
-                    </div>
+                  <div class="settingsBtnContainer" id="userNameEditBtn">
+                    <button class="btn btn-primary">Edit</button>
                   </div>
                 </div>
               </div>
             </div>
-          </form>
+            <div class="row mb-2">
+              <div class="col-md-3 m-auto">
+                <div class="text-center" id="firstNameLabel">
+                  <p>First Name</p>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <div class="settingsInputWBtnContainer">
+                  <div class="settingsInfoText" id="firstNameContent">
+                    <p class="settingInputText">
+                      <%= userData.firstName %>
+                    </p>
+                  </div>
+                  <div class="settingsBtnContainer" id="firstNameEditBtn">
+                    <button class="btn btn-primary">Edit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-md-3 m-auto">
+                <div class="text-center" id="lastNameLabel">
+                  <p>Last Name</p>
+                </div>
+              </div>
+              <div class="col-md-9">
+                <div class="settingsInputWBtnContainer">
+                  <div class="settingsInfoText" id="lastNameContent">
+                    <p class="settingInputText">
+                      <%= userData.lastName %>
+                    </p>
+                  </div>
+                  <div class="settingsBtnContainer" id="lastNameEditBtn">
+                    <button class="btn btn-primary">Edit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <br />
 
+      <!-- login info column -->
+
+      <div class="row">
+        <div class="card card-settings">
+          <div class="col-md-12 m-auto card">
+            <div id="emailContainer"></div>
+            <div id="passwordContainer"></div>
+          </div>
+        </div>
+        <!-- Social Media accounts -->
+        <div class="row card">
+          <div class="col-md-12 m-auto">
+            <div id="twitterContainer"></div>
+            <div id="fBContainer"></div>
+            <div id="iGContainer"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Email Reminder Settings -->
+      <div class="row">
+        <div class="card card-settings">
+          <!-- daily/weekly/monthly selector -->
+          <div class="col-md-3 m-auto"></div>
+          <!-- day of week selector -->
+          <div class="col-md-3 m-auto"></div>
+          <!-- time of day selector -->
+          <div class="col-md-3 m-auto"></div>
+          <!--on/off toggle -->
+          <div class="col-md-3 m-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%- include('partials/footer') %>
+
+<!-- <form action="/userUpload" method="POST" id="userBioForm" enctype="multipart/form-data">
+    <div class="form-group">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <div class="userImagePreviewContainer">
+              <div class="userImageframe">
+                <div class="userImagePreview orientation" id="bioImage" image="= userImage %>"></div>
+                <img id="bioImagePreview" class="userImagePreview d-none"/>
+              </div>
+            </div>
+            <div class="custom-file mb-3">
+              <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
+            </div>
+          </div>
+          <div class="col-6">
+            <label for="editProfileName">Username</label>
+            <input class="form-control" name="userProfileName" id="editProfileName" placeholder=" userInfo.profileName %>"></input>
+            <label for="editFistName">First Name</label>
+            <input class="form-control" name="userFName" id="editFirstName" placeholder=" userInfo.firstName %>"></input>
+            <label for="editFistName">Last Name</label>
+            <input class="form-control" name="userLName" id="editLastName" placeholder=" userInfo.lastName %>"></input> -->
+<!-- <label for="editUserEmail">Email</label>
+            <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
+<!-- <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
+            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password" </input>
+            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
+          </div>
+        </div>
+      </div>
+    </div>
+</form> -->

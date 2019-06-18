@@ -148,7 +148,7 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(passportLocalMongoose, {usernameField:"email"});
 
 const AurealiusUser = new mongoose.model("aurealiusUser", userSchema);
 
@@ -249,30 +249,42 @@ app.get("/index", function(req, res) {
 
 app.get("/settings", function(req, res) {
 
-  const currentUserId = req.user._id;
-
   if (req.isAuthenticated()) {
-    res.redirect("/settings/" + currentUserId);
+
+    AurealiusUser.findOne({
+      _id: req.user._id
+    }, function(err, userData) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("settings", {
+          userData: userData
+        });
+      }
+    });
+  } else {
+    res.render("login", {
+      error: req.flash("error")
+    });
   }
 });
 
-app.get("/settings/:currentUserId", function(req, res) {
-
-  const userIdentifier = req.params.currentUserId;
-
-
-  AurealiusUser.findOne({
-    _id: userIdentifier
-  }, function(err, userData) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.render("settings", {
-        userInfo: userData
-      });
-    }
-  });
-});
+// app.get("/settings/:currentUserId", function(req, res) {
+//
+//   const userIdentifier = req.user;
+//
+//   AurealiusUser.findOne({
+//     _id: userIdentifier._id
+//   }, function(err, userData) {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       res.render("settings", {
+//         userInfo: userData
+//       });
+//     }
+//   });
+// });
 
 
 app.get("/user", function(req, res) {
@@ -506,7 +518,7 @@ app.post("/register", function(req, res) {
   const createdProfileName = registeredFName + slicedLName + timeStamp;
 
   AurealiusUser.register({
-    username: req.body.username,
+    email: req.body.email,
     firstName: registeredFName,
     lastName: registeredLName,
     profileName: createdProfileName,
