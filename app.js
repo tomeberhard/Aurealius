@@ -708,25 +708,36 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
     }
   }
 
-  let uploadFieldOjb = new Object();
+  AurealiusUser.updateOne({
+    _id: req.user.id
+  }, {bioImageFile: userFileExists()}, function(err, success) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("Succesfully updated userBioImage.")
+    }
+  });
 
-  const newImgFile = userFileExists();
-  if (newImgFile != "") {
-    uploadFieldOjb.bioImageFile = newImgFile;
-  }
-  const currentUId = req.body.userProfileName;
-  if (currentUId != "") {
-    uploadFieldOjb.profileName = currentUId;
-  }
-  const currentUserFirstName = req.body.userFName;
+  res.redirect("back");
 
-  if (currentUserFirstName != "") {
-    uploadFieldOjb.firstName = currentUserFirstName;
-  }
-  const currentUserLastName = req.body.userLName;
-  if (currentUserLastName != "") {
-    uploadFieldOjb.lastName = currentUserLastName;
-  }
+});
+
+app.post("/userSettingsUpload", function(req, res) {
+
+  let uploadFieldOjb = req.body.data;
+  // const currentUId = req.body.userProfileName;
+  // if (currentUId != "") {
+  //   uploadFieldOjb.profileName = currentUId;
+  // }
+  // const currentUserFirstName = req.body.userFName;
+  //
+  // if (currentUserFirstName != "") {
+  //   uploadFieldOjb.firstName = currentUserFirstName;
+  // }
+  // const currentUserLastName = req.body.userLName;
+  // if (currentUserLastName != "") {
+  //   uploadFieldOjb.lastName = currentUserLastName;
+  // }
 
   AurealiusUser.updateOne({
     _id: req.user.id
@@ -734,30 +745,34 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
     if (err) {
       console.log(err)
     } else {
-      console.log("Succesfully updated user.")
+      console.log("Succesfully updated user settings.")
     }
   });
+  //
+  // if (uploadFieldOjb.profileName != undefined) {
+  //   Entry.updateMany({
+  //       _user: req.user.id
+  //     }, {
+  //       $set: {
+  //         userProfile: currentUId
+  //       }
+  //     }, {
+  //       upsert: true
+  //     },
+  //     function(err, success) {
+  //       if (err) {
+  //         console.log(err);
+  //       } else {
+  //         console.log("Succesfully updated entries' userProfiles.")
+  //       }
+  //     });
+  // }
 
-  if (currentUId != "") {
-    Entry.updateMany({
-        userId: req.user.id
-      }, {
-        $set: {
-          userProfile: currentUId
-        }
-      }, {
-        upsert: true
-      },
-      function(err, success) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log("Succesfully updated entries' userProfiles.")
-        }
-      });
-  }
 
-  res.redirect("back");
+  res.status(200);
+  res.end()
+
+  // res.redirect("back");
 
 });
 

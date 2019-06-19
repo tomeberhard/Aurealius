@@ -33,6 +33,10 @@ hr {
 
 textarea {
   white-space: pre-line;
+  color: #495057;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  font-family: 'IM Fell Great Primer', serif;
 }
 
 label {
@@ -326,7 +330,6 @@ width: 100%;
   border-radius: .25rem;
   width: 80%;
   height: 38px;
-  margin-right: 5%;
   top: 0;
   left: 0;
 }
@@ -507,6 +510,9 @@ label.btn {
 .card-text {
   white-space: pre-line;
 }
+.card-text:first-line {
+    line-height: 0px;
+}
 
 @media screen and (max-width: 500px) {
   .captionContainer {
@@ -617,6 +623,21 @@ a.userProfName {
   align-items: center;
   justify-content: flex-end;
   padding:1rem 1rem 0 1rem;
+}
+
+.editUserSettingsBtnBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding:.5rem;
+}
+
+.userFieldInput {
+  font-family: 'IM Fell Great Primer', serif;
+  color: #495057;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  padding: 1.5% 4%;
 }
 
 .shareBtnContainer {

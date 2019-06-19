@@ -12,78 +12,129 @@
         </section>
         <div class="row">
           <!-- biopic column -->
-          <div class="col-md-3 m-auto">
-            <div id="bioPicContainer">
-              <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
-              <% var userImage = userData.bioImageFile %>
-              <% } else { %>
-              <% var userImage = "/image/" + userData.bioImageFile %>
-              <% } %>
-              <div class="orientation userSettingsImage" image="<%= userImage %>"></div>
-              <div class="settingsContentWrapper mt-2 mb-2">
-                <button class="btn btn-primary">Change</button>
+          <div class="col-lg-3 m-auto">
+            <form action="/userUpload" method="POST" id="userBioPicForm" enctype="multipart/form-data">
+              <div id="bioPicContainer">
+                <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
+                <% var userImage = userData.bioImageFile %>
+                <% } else { %>
+                <% var userImage = "/image/" + userData.bioImageFile %>
+                <% } %>
+                <div class="userSettingsImage orientation" id="userBioImage" image="<%= userImage %>"></div>
+                <div class="userSettingsImage orientation d-none" id="bioImagePreview" image=""></div>
+                <div class="settingsContentWrapper mt-2 mb-2">
+                  <button class="btn btn-primary userBioPicBtn">Change</button>
+                  <div class="d-none" id="userBioPicSettingsBtnBar">
+                    <div class="custom-file mb-3">
+                      <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
+                    </div>
+                    <div class="editUserSettingsBtnBar">
+                      <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 userBioPicSubmitBtn" />
+                      <button type="button" class="btn btn-secondary closeEditSettingsBtn" id="closeUserBioPicEditSettingsBtn">Close</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
           <!-- name & profilename column -->
-          <div class="col-md-9">
-            <div class="row mb-2">
-              <div class="col-md-3 m-auto">
-                <div class="text-center" id="userNameLabel">
-                  <p>Profile Name</p>
-                </div>
-              </div>
-              <div class="col-md-9">
-                <div class="settingsInputWBtnContainer">
-                  <div class="settingsInfoText" id="userNameContent">
-                    <p class="settingInputText">
-                      <%= userData.profileName %>
-                    </p>
-                  </div>
-                  <div class="settingsBtnContainer" id="userNameEditBtn">
-                    <button class="btn btn-primary">Edit</button>
+          <div class="col-lg-9">
+            <form method="POST" action="/userSettingsUpload">
+              <div class="row mb-2">
+                <div class="col-md-3 m-auto">
+                  <div class="text-center" id="profileNameLabel">
+                    <p>Profile Name</p>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-md-3 m-auto">
-                <div class="text-center" id="firstNameLabel">
-                  <p>First Name</p>
+                <div class="col-md-9 m-auto">
+                  <div class="settingsInputWBtnContainer" id="profileNameSettingsInputWBtnContainer">
+                    <div class="settingsInfoText">
+                      <p class="settingInputText" id="profileNameSettingsContent">
+                        <%= userData.profileName %>
+                      </p>
+                    </div>
+                    <div class="settingsBtnContainer" id="profileNameEditBtn">
+                      <button class="btn btn-primary editSettingsBtn" value="profileName">Edit</button>
+                    </div>
+                  </div>
+                  <input type="text" maxlength="12" class="d-none userFieldInput" rows="" name="" id="profileNameEditInput" placeholder="<%= userData.profileName %>"/>
                 </div>
               </div>
-              <div class="col-md-9">
-                <div class="settingsInputWBtnContainer">
-                  <div class="basic settingsInfoText" id="firstNameContent">
-                    <p class="settingInputText">
-                      <%= userData.firstName %>
-                    </p>
-                  </div>
-                  <div class="settingsBtnContainer" id="firstNameEditBtn">
-                    <button class="btn btn-primary">Edit</button>
+              <div class="row mb-2 d-none" id="profileNameEditBtnContainer">
+                <div class="col-md-3 m-auto"></div>
+                <div class="col-md-9" >
+                  <div class="editUserSettingsBtnBar" id="">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="profileNameSubmitBtn" />
+                    <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="profileName">Close</button>
                   </div>
                 </div>
               </div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-md-3 m-auto">
-                <div class="text-center" id="lastNameLabel">
-                  <p>Last Name</p>
-                </div>
-              </div>
-              <div class="col-md-9">
-                <div class="settingsInputWBtnContainer">
-                  <div class="settingsInfoText" id="lastNameContent">
-                    <p class="settingInputText">
-                      <%= userData.lastName %>
-                    </p>
-                  </div>
-                  <div class="settingsBtnContainer" id="lastNameEditBtn">
-                    <button class="btn btn-primary">Edit</button>
+              </form>
+
+              <form method="POST" action="/userSettingsUpload">
+              <div class="row mb-2">
+                <div class="col-md-3 m-auto">
+                  <div class="text-center" id="firstNameLabel">
+                    <p>First Name</p>
                   </div>
                 </div>
+                <div class="col-md-9 m-auto">
+                  <div class="settingsInputWBtnContainer" id="firstNameSettingsInputWBtnContainer">
+                    <div class="settingsInfoText">
+                      <p class="settingInputText" id="firstNameSettingsContent">
+                        <%= userData.firstName %>
+                      </p>
+                    </div>
+                    <div class="settingsBtnContainer" id="firstNameEditBtn">
+                      <button class="btn btn-primary editSettingsBtn" value="firstName">Edit</button>
+                    </div>
+                  </div>
+                  <input type="text" maxlength="12" class="d-none userFieldInput" rows="" name="" id="firstNameEditInput" placeholder="<%= userData.firstName %>"/>
+                </div>
               </div>
-            </div>
+              <div class="row mb-2 d-none" id="firstNameEditBtnContainer">
+                <div class="col-md-3 m-auto"></div>
+                <div class="col-md-9" >
+                  <div class="editUserSettingsBtnBar" id="">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="firstNameSubmitBtn" />
+                    <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="firstName">Close</button>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+              <form method="POST" action="/userSettingsUpload">
+              <div class="row mb-2">
+                <div class="col-md-3 m-auto">
+                  <div class="text-center" id="lastNameLabel">
+                    <p>Last Name</p>
+                  </div>
+                </div>
+                <div class="col-md-9 m-auto">
+                  <div class="settingsInputWBtnContainer" id="lastNameSettingsInputWBtnContainer">
+                    <div class="settingsInfoText">
+                      <p class="settingInputText" id="lastNameSettingsContent">
+                        <%= userData.lastName %>
+                      </p>
+                    </div>
+                    <div class="settingsBtnContainer" id="lastNameEditBtn">
+                      <button class="btn btn-primary editSettingsBtn" value="lastName">Edit</button>
+                    </div>
+                  </div>
+                  <input type="text" maxlength="12" class="d-none userFieldInput" rows="" name="" id="lastNameEditInput" placeholder="<%= userData.lastName %>"/>
+                </div>
+              </div>
+              <div class="row mb-2 d-none" id="lastNameEditBtnContainer">
+                <div class="col-md-3 m-auto"></div>
+                <div class="col-md-9" >
+                  <div class="editUserSettingsBtnBar" id="">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="lastNameSubmitBtn" />
+                    <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="lastName">Close</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
           </div>
         </div>
       </div>
@@ -101,18 +152,18 @@
           <div class="col-md-12 m-auto">
             <div class="row mb-2">
               <div class="col-md-3 m-auto">
-                <div class="text-center" id="userNameLabel">
+                <div class="text-center" id="">
                   <p>Email</p>
                 </div>
               </div>
               <div class="col-md-9 m-auto">
                 <div class="settingsInputWBtnContainer">
-                  <div class="login settingsInfoText" id="userNameContent">
+                  <div class="login settingsInfoText" id="">
                     <p class="settingInputText">
                       <%= userData.email %>
                     </p>
                   </div>
-                  <div class="settingsBtnContainer" id="userNameEditBtn">
+                  <div class="settingsBtnContainer" id="">
                     <button class="btn btn-primary">Edit</button>
                   </div>
                 </div>
