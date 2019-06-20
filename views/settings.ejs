@@ -13,7 +13,7 @@
         <div class="row">
           <!-- biopic column -->
           <div class="col-lg-3 m-auto">
-            <form action="/userUpload" method="POST" id="userBioPicForm" enctype="multipart/form-data">
+            <form action="/userImageUpload" method="POST" id="userBioPicForm" enctype="multipart/form-data">
               <div id="bioPicContainer">
                 <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
                 <% var userImage = userData.bioImageFile %>
@@ -148,8 +148,8 @@
 
           <hr class="settingsHr" />
         </section>
-        <div class="row">
-          <div class="col-md-12 m-auto">
+
+          <form method="POST" action="/userSettingsUpload">
             <div class="row mb-2">
               <div class="col-md-3 m-auto">
                 <div class="text-center" id="">
@@ -157,20 +157,36 @@
                 </div>
               </div>
               <div class="col-md-9 m-auto">
-                <div class="settingsInputWBtnContainer">
+                <div class="settingsInputWBtnContainer" id="emailSettingsInputWBtnContainer">
                   <div class="login settingsInfoText" id="">
-                    <p class="settingInputText">
+                    <p class="settingInputText" id="emailSettingsContent">
                       <%= userData.email %>
                     </p>
                   </div>
-                  <div class="settingsBtnContainer" id="">
-                    <button class="btn btn-primary">Edit</button>
+                  <div class="settingsBtnContainer" id="emailEditBtn">
+                    <button class="btn btn-primary editEmailSettingsBtn" value="email">Edit</button>
                   </div>
+                </div>
+                <input type="email" maxlength="" class="d-none userFieldInput" rows="" name="" id="emailEditInput" placeholder="<%= userData.email %>"/>
+                <div class="validateEmail d-none">
+
+                    Please choose a valid email address!
+
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+            <div class="row mb-2 d-none" id="emailEditBtnContainer">
+              <div class="col-md-3 m-auto"></div>
+              <div class="col-md-9" >
+                <div class="editUserSettingsBtnBar" id="">
+                  <input type="submit" value="Submit" class="btn btn-primary btn-block mr-1 submitEmailEditSettingsBtn" id="emailSubmitBtn" />
+                  <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="email">Close</button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+
         <button class="btn btn-block btn-primary mt-2 mb-2">Change Password</button>
       </div>
 

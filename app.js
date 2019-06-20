@@ -696,7 +696,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
   res.redirect("back");
 });
 
-app.post("/userUpload", upload.single("file"), function(req, res) {
+app.post("/userImageUpload", upload.single("file"), function(req, res) {
 
   function userFileExists() {
     if (typeof req.file === "undefined") {
@@ -718,13 +718,16 @@ app.post("/userUpload", upload.single("file"), function(req, res) {
     }
   });
 
-  res.redirect("back");
+  res.status(200);
+  res.end(userFileExists());
+  // res.redirect("back");
 
 });
 
 app.post("/userSettingsUpload", function(req, res) {
 
   let uploadFieldOjb = req.body.data;
+  // console.log(uploadFieldOjb)
   // const currentUId = req.body.userProfileName;
   // if (currentUId != "") {
   //   uploadFieldOjb.profileName = currentUId;
@@ -739,15 +742,44 @@ app.post("/userSettingsUpload", function(req, res) {
   //   uploadFieldOjb.lastName = currentUserLastName;
   // }
 
-  AurealiusUser.updateOne({
-    _id: req.user.id
-  }, uploadFieldOjb, function(err, success) {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log("Succesfully updated user settings.")
-    }
-  });
+  if (uploadFieldOjb.hasOwnProperty("email")) {
+
+    AurealiusUser.findOne({ email: uploadFieldOjb.email}, function(err, foundUser) {
+
+      if (foundUser) {
+        res.end("Uh Oh! It looks like that email is already taken. Please try another.");
+
+      } else {
+
+        AurealiusUser.updateOne({
+          _id: req.user.id
+        }, uploadFieldOjb, function(err, success) {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log("Succesfully updated user settings.");
+            res.status(200);
+            res.end();
+          }
+        });
+      }
+    });
+  } else {
+
+    AurealiusUser.updateOne({
+      _id: req.user.id
+    }, uploadFieldOjb, function(err, success) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log("Succesfully updated user settings.");
+        res.status(200);
+        res.end()
+      }
+    });
+  }
+
+
   //
   // if (uploadFieldOjb.profileName != undefined) {
   //   Entry.updateMany({
@@ -769,8 +801,7 @@ app.post("/userSettingsUpload", function(req, res) {
   // }
 
 
-  res.status(200);
-  res.end()
+
 
   // res.redirect("back");
 

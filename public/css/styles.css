@@ -369,6 +369,11 @@ width: 100%;
   right:0;
 }
 
+.validateEmail {
+  font-family: 'IM Fell Great Primer', serif;
+  color: red;
+}
+
 /* -----------------------expand entry form------------------------------- */
 .expandTA {
   height: 1em;

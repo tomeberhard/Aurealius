@@ -356,13 +356,139 @@ $(document).on("click", ".submitEditSettingsBtn", function(event) {
     $("#"+fieldName+"EditInput").closest("form").get(0).reset();
     $("#"+fieldName+"SettingsInputWBtnContainer").removeClass("d-none");
     $("#"+fieldName+"SettingsContent").text(updatedFieldValue);
-    console.log(updatedFieldValue);
-
-
+    // console.log(updatedFieldValue);
 
   }).fail(function(err) {
     console.log(err)
   });
+});
+
+//-----------------------------editEmailSettings----------------------------------//
+
+$(document).on("click", ".editEmailSettingsBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let userField = $(this).attr("value")
+
+  $("#"+userField+"EditInput").css("width", "100%").removeClass("d-none");
+  $("#"+userField+"EditBtnContainer").removeClass("d-none");
+  $("#"+userField+"SettingsInputWBtnContainer").addClass("d-none");
+
+});
+
+$(document).on("click", ".closeEditSettingsBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let userField = $(this).attr("value")
+
+  $("#"+userField+"EditInput").addClass("d-none");
+  $("#"+userField+"EditInput").val("");
+  $("#"+userField+"EditBtnContainer").addClass("d-none");
+  $(this).closest("form").get(0).reset();
+  $("#"+userField+"SettingsInputWBtnContainer").removeClass("d-none");
+
+  if (!$(".validateEmail").hasClass("d-none")) {
+    $(".validateEmail").addClass("d-none")
+  }
+
+
+});
+
+$(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let fieldName = $(this).attr("id").replace("SubmitBtn","");
+
+  let updatedFieldValue = $("#"+fieldName+"EditInput").val();
+  // console.log(updatedFieldValue);
+
+  if (updatedFieldValue.includes("@")) {
+
+    let userEditObj = new Object();
+
+    userEditObj[fieldName] = updatedFieldValue;
+
+
+    // console.log(userEditObj);
+
+
+    let data = JSON.stringify({data: userEditObj});
+
+    $.ajax({
+      url: "/userSettingsUpload",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function(response) {
+
+      if(response) {
+
+        $(".validateEmail").text(response);
+        console.log(response);
+        $(".validateEmail").removeClass("d-none");
+
+      } else {
+
+        $("#"+fieldName+"EditInput").addClass("d-none");
+        $("#"+fieldName+"EditInput").val("");
+        $("#"+fieldName+"EditBtnContainer").addClass("d-none");
+        $("#"+fieldName+"EditInput").closest("form").get(0).reset();
+        $("#"+fieldName+"SettingsInputWBtnContainer").removeClass("d-none");
+        $("#"+fieldName+"SettingsContent").text(updatedFieldValue);
+        // console.log(updatedFieldValue);
+
+        if (!$(".validateEmail").hasClass("d-none")) {
+
+          $(".validateEmail").text("Your email has been successfully updated!");
+          $(".validateEmail").css("color","#465559");
+
+
+          setTimeout(function() {
+            $(".validateEmail").addClass("d-none");
+            $(".validateEmail").text("Please choose a valid email address!");
+            $(".validateEmail").css("color","red");
+          }, 2000);
+
+        } else {
+
+          $(".validateEmail").removeClass("d-none");
+          $(".validateEmail").text("Your email has been successfully updated!");
+          $(".validateEmail").css("color","#465559");
+          console.log(updatedFieldValue);
+          $("#emailEditInput").attr("placeholder", updatedFieldValue);
+
+          setTimeout(function() {
+            $(".validateEmail").addClass("d-none");
+            $(".validateEmail").text("Please choose a valid email address!");
+            $(".validateEmail").css("color","red");
+          }, 2000);
+        }
+
+      }
+
+    }).fail(function(err) {
+      console.log(err)
+    });
+
+  } else {
+
+    if($(".validateEmail").text("Please choose a valid email address!")) {
+
+      $(".validateEmail").removeClass("d-none");
+
+    } else {
+
+      $(".validateEmail").text("Please choose a valid email address!");
+      $(".validateEmail").removeClass("d-none");
+
+    }
+
+
+  }
+
 });
 
 //-------------------edit bioImage------------------------------------------//
@@ -387,6 +513,71 @@ $(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
 
   $(".userBioPicBtn").removeClass("d-none");
   $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+
+});
+
+$(document).on("click", ".userBioPicSubmitBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  // $("#userBioPicForm")[0].reset();
+  // $("#bioImagePreview").empty();
+
+$(userBioPicForm).ajaxSubmit({
+
+  error: function(err) {
+    console.log(err)
+  },
+  success: function(response) {
+    $("#userBioImage").attr("image", "image/" + response);
+
+    console.log("image/"+ response);
+
+    $("#userBioImage").empty();
+
+    $("#bioImagePreview").addClass("d-none");
+    $("#userBioPicForm")[0].reset();
+    $("#bioImagePreview").empty();
+
+    $("#userBioImage").removeClass("d-none");
+
+    jQuery(function() {
+      jQuery(".userSettingsImage.orientation").each(function() {
+        var div = $(this);
+        loadImage(
+          div.attr("image"),
+          function(img) {
+            div.append(img);
+          }, {
+            orientation: true,
+            aspectRatio: 1 / 1
+          }
+        );
+      });
+    })
+
+    $(".userBioPicBtn").removeClass("d-none");
+    $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+  }
+
+});
+  // let data = new FormData($(userBioPicForm).get(0));
+  //
+  // $.ajax({
+  //   url: "/userImageUpload",
+  //   type: "POST",
+  //   data: data,
+  //   contentType: false,
+  //   processData: false,
+  //   dataType: JSON
+  // }).done(function() {
+  //
+    // $(".userBioPicBtn").removeClass("d-none");
+    // $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+  //
+  // }).fail(function(err) {
+  //   console.log(err)
+  // });
 
 });
 
