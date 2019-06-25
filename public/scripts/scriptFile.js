@@ -719,6 +719,83 @@ $(userBioPicForm).ajaxSubmit({
   //   console.log(err)
   // });
 
+$(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  $("#userBioPicForm")[0].reset();
+  $("#bioImagePreview").empty();
+  $("#bioImagePreview").addClass("d-none");
+  $("#userBioImage").removeClass("d-none");
+
+  $(".userBioPicBtn").removeClass("d-none");
+  $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+
+});
+
+$(document).on("click", ".userBioPicSubmitBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  // $("#userBioPicForm")[0].reset();
+  // $("#bioImagePreview").empty();
+
+$(userBioPicForm).ajaxSubmit({
+
+  error: function(err) {
+    console.log(err)
+  },
+  success: function(response) {
+    $("#userBioImage").attr("image", "image/" + response);
+
+    console.log("image/"+ response);
+
+    $("#userBioImage").empty();
+
+    $("#bioImagePreview").addClass("d-none");
+    $("#userBioPicForm")[0].reset();
+    $("#bioImagePreview").empty();
+
+    $("#userBioImage").removeClass("d-none");
+
+    jQuery(function() {
+      jQuery(".userSettingsImage.orientation").each(function() {
+        var div = $(this);
+        loadImage(
+          div.attr("image"),
+          function(img) {
+            div.append(img);
+          }, {
+            orientation: true,
+            aspectRatio: 1 / 1
+          }
+        );
+      });
+    })
+
+    $(".userBioPicBtn").removeClass("d-none");
+    $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+  }
+
+});
+  // let data = new FormData($(userBioPicForm).get(0));
+  //
+  // $.ajax({
+  //   url: "/userImageUpload",
+  //   type: "POST",
+  //   data: data,
+  //   contentType: false,
+  //   processData: false,
+  //   dataType: JSON
+  // }).done(function() {
+  //
+    // $(".userBioPicBtn").removeClass("d-none");
+    // $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+  //
+  // }).fail(function(err) {
+  //   console.log(err)
+  // });
+
 });
 
 //-------------------image preview------------------------------------------//
