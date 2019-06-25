@@ -246,7 +246,21 @@
           <div id="reminderSettings">
             <h5>Email Reminders</h5>
             <div class="text-right settingsToggleCotainer">
-              <input type="checkbox" data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger" name="status" data-width="20" checked value="On">
+
+              <% var loadReminderStatus = userData.reminderSettings.status %>
+              <% if (loadReminderStatus === "off") { %>
+
+                <% var checkOnOff = "" %>
+                <% var formFieldOnOff = "disabled" %>
+
+              <% } else { %>
+
+                <% var checkOnOff = "checked" %>
+                <% var formFieldOnOff = "" %>
+
+              <% }%>
+
+              <input type="checkbox" data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger" name="remidnerStatus" data-width="20" value="<%= loadReminderStatus  %>" <%= checkOnOff  %>>
             </div>
           </div>
           <hr class="settingsHr" />
@@ -258,7 +272,7 @@
                 <div class="text-center" id="">
                   <div class="form-group">
                     <label for="emailFrequency">Frequency</label>
-                    <select class="form-control" id="emailFrequency">
+                    <select class="form-control" id="emailFrequency" <%= formFieldOnOff %>>
                       <option>Daily</option>
                       <option>Weekly</option>
                       <option>Monthly</option>
@@ -270,7 +284,7 @@
                 <div class="text-center" id="userNameLabel">
                   <div class="form-group" disabled>
                     <label for="dayOfWeek">Day of Week</label>
-                    <select class="form-control" id="dayOfWeek">
+                    <select class="form-control" id="dayOfWeek" <%= formFieldOnOff %>>
                       <option>Monday</option>
                       <option>Tuesday</option>
                       <option>Wednesday</option>
@@ -287,7 +301,7 @@
                   <div class="form-group">
                     <label for="timepicker1">Time of Day</label>
                     <div class="input-group bootstrap-timepicker timepicker">
-                      <input id="timepicker1" type="text" class="form-control input-small">
+                      <input id="timepicker1" type="text" class="form-control input-small" <%= formFieldOnOff %>>
                       <div class="input-group-append">
                         <span class="input-group-text"><i class="far fa-clock"></i></span>
                       </div>

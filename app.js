@@ -144,7 +144,8 @@ const userSchema = new mongoose.Schema({
     ref: "aurealiusUser"
   }],
   reports: Number,
-  sessions: Number
+  sessions: Number,
+  reminderSettings: Object,
 }, {
   timestamps: true
 });
@@ -183,6 +184,7 @@ module.exports = {
   AurealiusUser,
   Entry
 };
+
 
 //-------------------Get Requests-----------------------------------------///
 
@@ -268,7 +270,7 @@ app.get("/settings", function(req, res) {
     });
   } else {
     res.render("login", {
-      message: req.flash("success")
+      error: req.flash("error")
     });
   }
 });
@@ -521,18 +523,20 @@ app.post("/register", function(req, res) {
   const timeStamp = JSON.stringify(dateNow).slice(0, 4);
   const createdProfileName = registeredFName + slicedLName + timeStamp;
 
+  const emailStngObj = {
+    status: "on",
+    frequency: "daily",
+    dayOfWeek: "thursday",
+    timeOfDay: "8:30pm",
+  };
+
   AurealiusUser.register({
     email: req.body.email,
     firstName: registeredFName,
     lastName: registeredLName,
     profileName: createdProfileName,
     sessions: 1,
-    reminderSettings: {
-      status: "on",
-      frequency: "daily",
-      dayOfWeek: "thursday",
-      timeOfDay: "8:30pm",
-    },
+    reminderSettings: emailStngObj,
     bioImageFile: "/assets/defaultusericon.png"
   }, req.body.password, function(err, user) {
     if (err) {
@@ -570,7 +574,7 @@ app.post("/changePassword", function(req, res) {
             } else {
               res.json({
                 success: false,
-                message: 'Something went wrong! Please try again later.'
+                message: 'Something went wrong! Please try again.'
               });
             }
           } else {

@@ -91,7 +91,7 @@ $(document).on("mouseenter", ".favBtn", function() {
 let totalSeenIds = [];
 let isWorking = 0;
 
-if(window.location.pathname != "/settings") {
+if (window.location.pathname != "/settings") {
   $(window).scroll(function() {
 
     var scrollPercent = Math.round(($(window).scrollTop()) / ($(document).height() - $(window).height()) * 100);
@@ -167,7 +167,7 @@ $(document).on("click", ".reportSubmitBtn", function(event) {
 
   let reportedEntryId = this.id.substr(6);
   console.log(reportedEntryId);
-  let entryId = $("#eID"+ reportedEntryId).closest(".card-body").attr("id");
+  let entryId = $("#eID" + reportedEntryId).closest(".card-body").attr("id");
   console.log(entryId);
   let checkedOption = $(".form-check-input:checked").val();
   console.log(checkedOption);
@@ -305,9 +305,9 @@ $(document).on("click", ".editSettingsBtn", function(event) {
 
   let userField = $(this).attr("value")
 
-  $("#"+userField+"EditInput").css("width", "100%").removeClass("d-none");
-  $("#"+userField+"EditBtnContainer").removeClass("d-none");
-  $("#"+userField+"SettingsInputWBtnContainer").addClass("d-none");
+  $("#" + userField + "EditInput").css("width", "100%").removeClass("d-none");
+  $("#" + userField + "EditBtnContainer").removeClass("d-none");
+  $("#" + userField + "SettingsInputWBtnContainer").addClass("d-none");
 
 });
 
@@ -317,11 +317,11 @@ $(document).on("click", ".closeEditSettingsBtn", function(event) {
 
   let userField = $(this).attr("value")
 
-  $("#"+userField+"EditInput").addClass("d-none");
-  $("#"+userField+"EditInput").val("");
-  $("#"+userField+"EditBtnContainer").addClass("d-none");
+  $("#" + userField + "EditInput").addClass("d-none");
+  $("#" + userField + "EditInput").val("");
+  $("#" + userField + "EditBtnContainer").addClass("d-none");
   $(this).closest("form").get(0).reset();
-  $("#"+userField+"SettingsInputWBtnContainer").removeClass("d-none");
+  $("#" + userField + "SettingsInputWBtnContainer").removeClass("d-none");
 
 
 });
@@ -330,9 +330,9 @@ $(document).on("click", ".submitEditSettingsBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  let fieldName = $(this).attr("id").replace("SubmitBtn","");
+  let fieldName = $(this).attr("id").replace("SubmitBtn", "");
 
-  let updatedFieldValue = $("#"+fieldName+"EditInput").val();
+  let updatedFieldValue = $("#" + fieldName + "EditInput").val();
   // console.log(updatedFieldValue);
 
 
@@ -344,7 +344,9 @@ $(document).on("click", ".submitEditSettingsBtn", function(event) {
   console.log(userEditObj);
 
 
-  let data = JSON.stringify({data: userEditObj});
+  let data = JSON.stringify({
+    data: userEditObj
+  });
 
   $.ajax({
     url: "/userSettingsUpload",
@@ -353,13 +355,13 @@ $(document).on("click", ".submitEditSettingsBtn", function(event) {
     data: data
   }).done(function() {
 
-    $("#"+fieldName+"EditInput").addClass("d-none");
-    $("#"+fieldName+"EditInput").val("");
-    $("#"+fieldName+"EditInput").attr("placeholder", updatedFieldValue);
-    $("#"+fieldName+"EditBtnContainer").addClass("d-none");
-    $("#"+fieldName+"EditInput").closest("form").get(0).reset();
-    $("#"+fieldName+"SettingsInputWBtnContainer").removeClass("d-none");
-    $("#"+fieldName+"SettingsContent").text(updatedFieldValue);
+    $("#" + fieldName + "EditInput").addClass("d-none");
+    $("#" + fieldName + "EditInput").val("");
+    $("#" + fieldName + "EditInput").attr("placeholder", updatedFieldValue);
+    $("#" + fieldName + "EditBtnContainer").addClass("d-none");
+    $("#" + fieldName + "EditInput").closest("form").get(0).reset();
+    $("#" + fieldName + "SettingsInputWBtnContainer").removeClass("d-none");
+    $("#" + fieldName + "SettingsContent").text(updatedFieldValue);
     // console.log(updatedFieldValue);
 
   }).fail(function(err) {
@@ -373,7 +375,7 @@ $(document).on("click", "#changePWToggleBtn", function(event) {
 
   $("#subClosePWBtnContainer").toggleClass("dDactive");
 
-  if($("#subClosePWBtnContainer").hasClass("dDactive")) {
+  if ($("#subClosePWBtnContainer").hasClass("dDactive")) {
     $(this).text("Close");
     $(this).removeClass("btn-primary");
     $(this).removeClass("btn-block");
@@ -382,7 +384,7 @@ $(document).on("click", "#changePWToggleBtn", function(event) {
 
   } else {
 
-    if(!$(".validatePW").hasClass("d-none")) {
+    if (!$(".validatePW").hasClass("d-none")) {
       $(".validatePW").addClass("d-none");
     }
 
@@ -402,7 +404,7 @@ $(document).on("keydown", "#currentPW", function(event) {
 
   let textInput = $("#currentPW").val();
 
-  if(textInput != "") {
+  if (textInput != "") {
     $("#newPW1").removeAttr("disabled");
   } else {
     $("#newPW1").attr("disabled", true);
@@ -414,7 +416,7 @@ $(document).on("keydown", "#newPW1", function(event) {
 
   let textInput = $("#newPW1").val();
 
-  if(textInput != "") {
+  if (textInput != "") {
     $("#newPW2").removeAttr("disabled");
   } else {
     $("#newPW2").attr("disabled", true);
@@ -451,7 +453,7 @@ $(document).on("click", ".submitPWEditSettingsBtn", function(event) {
 
       if (response.success === true) {
 
-        if($(".validatePW").hasClass("d-none")) {
+        if ($(".validatePW").hasClass("d-none")) {
 
 
           $(".changePWMsg").text(response.message);
@@ -460,22 +462,22 @@ $(document).on("click", ".submitPWEditSettingsBtn", function(event) {
             $("#changePWToggleBtn").click()
             $("#changePWContainer").closest("form").get(0).reset();
             $(".changePWMsg").text("");
-            }, 2000);
+          }, 2000);
 
-          } else {
+        } else {
 
-            $(".validatePW").addClass("d-none");
-            $(".changePWMsg").text(response.message);
+          $(".validatePW").addClass("d-none");
+          $(".changePWMsg").text(response.message);
 
-            setTimeout(function() {
-              $("#changePWToggleBtn").click()
-              $("#changePWContainer").closest("form").get(0).reset();
-              $(".changePWMsg").text("");
-              }, 2000);
-          }
+          setTimeout(function() {
+            $("#changePWToggleBtn").click()
+            $("#changePWContainer").closest("form").get(0).reset();
+            $(".changePWMsg").text("");
+          }, 2000);
+        }
       } else {
 
-        if($(".validatePW").hasClass("d-none")) {
+        if ($(".validatePW").hasClass("d-none")) {
 
           $(".validatePW").addClass("d-none");
           $(".changePWMsg").addClass("validateWarning");
@@ -511,9 +513,9 @@ $(document).on("click", ".editEmailSettingsBtn", function(event) {
 
   let userField = $(this).attr("value")
 
-  $("#"+userField+"EditInput").css("width", "100%").removeClass("d-none");
-  $("#"+userField+"EditBtnContainer").removeClass("d-none");
-  $("#"+userField+"SettingsInputWBtnContainer").addClass("d-none");
+  $("#" + userField + "EditInput").css("width", "100%").removeClass("d-none");
+  $("#" + userField + "EditBtnContainer").removeClass("d-none");
+  $("#" + userField + "SettingsInputWBtnContainer").addClass("d-none");
 
 });
 
@@ -523,11 +525,11 @@ $(document).on("click", ".closeEditSettingsBtn", function(event) {
 
   let userField = $(this).attr("value")
 
-  $("#"+userField+"EditInput").addClass("d-none");
-  $("#"+userField+"EditInput").val("");
-  $("#"+userField+"EditBtnContainer").addClass("d-none");
+  $("#" + userField + "EditInput").addClass("d-none");
+  $("#" + userField + "EditInput").val("");
+  $("#" + userField + "EditBtnContainer").addClass("d-none");
   $(this).closest("form").get(0).reset();
-  $("#"+userField+"SettingsInputWBtnContainer").removeClass("d-none");
+  $("#" + userField + "SettingsInputWBtnContainer").removeClass("d-none");
 
   if (!$(".validateEmail").hasClass("d-none")) {
     $(".validateEmail").addClass("d-none");
@@ -540,9 +542,9 @@ $(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  let fieldName = $(this).attr("id").replace("SubmitBtn","");
+  let fieldName = $(this).attr("id").replace("SubmitBtn", "");
 
-  let updatedFieldValue = $("#"+fieldName+"EditInput").val();
+  let updatedFieldValue = $("#" + fieldName + "EditInput").val();
   // console.log(updatedFieldValue);
 
   if (updatedFieldValue.includes("@")) {
@@ -555,7 +557,9 @@ $(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
     // console.log(userEditObj);
 
 
-    let data = JSON.stringify({data: userEditObj});
+    let data = JSON.stringify({
+      data: userEditObj
+    });
 
     $.ajax({
       url: "/userSettingsUpload",
@@ -564,46 +568,46 @@ $(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
       data: data
     }).done(function(response) {
 
-      if(response) {
+      if (response) {
 
         $(".validateEmail").text(response);
-        console.log(response);
+        // console.log(response);
         $(".validateEmail").removeClass("d-none");
 
       } else {
 
-        $("#"+fieldName+"EditInput").addClass("d-none");
-        $("#"+fieldName+"EditInput").val("");
-        $("#"+fieldName+"EditBtnContainer").addClass("d-none");
-        $("#"+fieldName+"EditInput").closet("form").get(0).reset();
-        $("#"+fieldName+"SettingsInputWBtnContainer").removeClass("d-none");
-        $("#"+fieldName+"SettingsContent").text(updatedFieldValue);
+        $("#" + fieldName + "EditInput").addClass("d-none");
+        $("#" + fieldName + "EditInput").val("");
+        $("#" + fieldName + "EditBtnContainer").addClass("d-none");
+        $("#" + fieldName + "EditInput").closet("form").get(0).reset();
+        $("#" + fieldName + "SettingsInputWBtnContainer").removeClass("d-none");
+        $("#" + fieldName + "SettingsContent").text(updatedFieldValue);
         // console.log(updatedFieldValue);
 
         if (!$(".validateEmail").hasClass("d-none")) {
 
           $(".validateEmail").text("Your email has been successfully updated!");
-          $(".validateEmail").css("color","#465559");
+          $(".validateEmail").css("color", "#465559");
 
 
           setTimeout(function() {
             $(".validateEmail").addClass("d-none");
             $(".validateEmail").text("Please choose a valid email address!");
-            $(".validateEmail").css("color","red");
+            $(".validateEmail").css("color", "red");
           }, 2000);
 
         } else {
 
           $(".validateEmail").removeClass("d-none");
           $(".validateEmail").text("Your email has been successfully updated!");
-          $(".validateEmail").css("color","#465559");
+          $(".validateEmail").css("color", "#465559");
           // console.log(updatedFieldValue);
           $("#emailEditInput").attr("placeholder", updatedFieldValue);
 
           setTimeout(function() {
             $(".validateEmail").addClass("d-none");
             $(".validateEmail").text("Please choose a valid email address!");
-            $(".validateEmail").css("color","red");
+            $(".validateEmail").css("color", "red");
           }, 2000);
         }
 
@@ -615,7 +619,7 @@ $(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
 
   } else {
 
-    if($(".validateEmail").text("Please choose a valid email address!")) {
+    if ($(".validateEmail").text("Please choose a valid email address!")) {
 
       $(".validateEmail").removeClass("d-none");
 
@@ -660,64 +664,45 @@ $(document).on("click", ".userBioPicSubmitBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  // $("#userBioPicForm")[0].reset();
-  // $("#bioImagePreview").empty();
+  $(userBioPicForm).ajaxSubmit({
 
-$(userBioPicForm).ajaxSubmit({
+    error: function(err) {
+      console.log(err)
+    },
+    success: function(response) {
+      $("#userBioImage").attr("image", "image/" + response);
 
-  error: function(err) {
-    console.log(err)
-  },
-  success: function(response) {
-    $("#userBioImage").attr("image", "image/" + response);
+      console.log("image/" + response);
 
-    console.log("image/"+ response);
+      $("#userBioImage").empty();
 
-    $("#userBioImage").empty();
+      $("#bioImagePreview").addClass("d-none");
+      $("#userBioPicForm")[0].reset();
+      $("#bioImagePreview").empty();
 
-    $("#bioImagePreview").addClass("d-none");
-    $("#userBioPicForm")[0].reset();
-    $("#bioImagePreview").empty();
+      $("#userBioImage").removeClass("d-none");
 
-    $("#userBioImage").removeClass("d-none");
+      jQuery(function() {
+        jQuery(".userSettingsImage.orientation").each(function() {
+          var div = $(this);
+          loadImage(
+            div.attr("image"),
+            function(img) {
+              div.append(img);
+            }, {
+              orientation: true,
+              aspectRatio: 1 / 1
+            }
+          );
+        });
+      })
 
-    jQuery(function() {
-      jQuery(".userSettingsImage.orientation").each(function() {
-        var div = $(this);
-        loadImage(
-          div.attr("image"),
-          function(img) {
-            div.append(img);
-          }, {
-            orientation: true,
-            aspectRatio: 1 / 1
-          }
-        );
-      });
-    })
+      $(".userBioPicBtn").removeClass("d-none");
+      $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+    }
 
-    $(".userBioPicBtn").removeClass("d-none");
-    $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
-  }
-
+  });
 });
-  // let data = new FormData($(userBioPicForm).get(0));
-  //
-  // $.ajax({
-  //   url: "/userImageUpload",
-  //   type: "POST",
-  //   data: data,
-  //   contentType: false,
-  //   processData: false,
-  //   dataType: JSON
-  // }).done(function() {
-  //
-    // $(".userBioPicBtn").removeClass("d-none");
-    // $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
-  //
-  // }).fail(function(err) {
-  //   console.log(err)
-  // });
 
 $(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
   event.preventDefault();
@@ -733,70 +718,6 @@ $(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
 
 });
 
-$(document).on("click", ".userBioPicSubmitBtn", function(event) {
-  event.preventDefault();
-  event.stopPropagation();
-
-  // $("#userBioPicForm")[0].reset();
-  // $("#bioImagePreview").empty();
-
-$(userBioPicForm).ajaxSubmit({
-
-  error: function(err) {
-    console.log(err)
-  },
-  success: function(response) {
-    $("#userBioImage").attr("image", "image/" + response);
-
-    console.log("image/"+ response);
-
-    $("#userBioImage").empty();
-
-    $("#bioImagePreview").addClass("d-none");
-    $("#userBioPicForm")[0].reset();
-    $("#bioImagePreview").empty();
-
-    $("#userBioImage").removeClass("d-none");
-
-    jQuery(function() {
-      jQuery(".userSettingsImage.orientation").each(function() {
-        var div = $(this);
-        loadImage(
-          div.attr("image"),
-          function(img) {
-            div.append(img);
-          }, {
-            orientation: true,
-            aspectRatio: 1 / 1
-          }
-        );
-      });
-    })
-
-    $(".userBioPicBtn").removeClass("d-none");
-    $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
-  }
-
-});
-  // let data = new FormData($(userBioPicForm).get(0));
-  //
-  // $.ajax({
-  //   url: "/userImageUpload",
-  //   type: "POST",
-  //   data: data,
-  //   contentType: false,
-  //   processData: false,
-  //   dataType: JSON
-  // }).done(function() {
-  //
-    // $(".userBioPicBtn").removeClass("d-none");
-    // $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
-  //
-  // }).fail(function(err) {
-  //   console.log(err)
-  // });
-
-});
 
 //-------------------image preview------------------------------------------//
 
@@ -808,7 +729,7 @@ var loadFile = function(event) {
       $("#bioImagePreview").append(img);
     }, {
       orientation: true,
-      aspectRatio: 1/1
+      aspectRatio: 1 / 1
     }
   );
 
@@ -824,7 +745,7 @@ $(document).on("click", ".editBtn", function(event) {
   let currentCaptionHeight = $("#" + "cpt" + editBtnEntryId).outerHeight();
   let currentCaptionWidth = $("#" + "cpt" + editBtnEntryId).outerWidth();
   let numberLineHeight = parseInt($("#" + "cpt" + editBtnEntryId).css("lineHeight"));
-  let rows = Math.ceil(currentCaptionHeight / numberLineHeight) + 1;
+  let rows = Math.ceil(currentCaptionHeight / numberLineHeight)+1;
 
   $("#" + "editCptTA" + editBtnEntryId).attr("rows", rows);
   $("#" + "editCptTA" + editBtnEntryId).css("width", currentCaptionWidth);

@@ -32,7 +32,7 @@ hr {
 }
 
 textarea {
-  white-space: pre-line;
+  /* white-space: pre-line; */
   color: #495057;
   border: 1px solid #ced4da;
   border-radius: .25rem;
@@ -521,9 +521,10 @@ label.btn {
 .card-text {
   white-space: pre-line;
 }
-.card-text:first-line {
+
+/* .card-text:first-line {
     line-height: 0px;
-}
+} */
 
 @media screen and (max-width: 500px) {
   .captionContainer {

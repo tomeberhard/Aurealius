@@ -1,5 +1,5 @@
 <% if(entries){ %>
-<% entries.forEach(function(entry) { %>
+<%_ entries.forEach(function(entry) { _%>
 
 <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
 <% var hide = "" %>
@@ -17,9 +17,7 @@
     <div class="uNFavIcnContainer">
       <div class="profileFllwUnFllw">
         <a href="/index" class="userProfName">
-          <h3>
-            <%= entry._user.profileName %>
-          </h3>
+          <h3><%= entry._user.profileName %></h3>
         </a>
 
         <% if (entry._user.profileName === userData.profileName) { %>
@@ -97,15 +95,13 @@
 
       <% var captionId = "cpt"+ entry._id %>
 
-      <p class="card-text" id="<%= captionId %>">
-        <%= entry.caption %>
-      </p>
+      <p class="card-text" id="<%= captionId %>"><%= entry.caption %></p>
       <div class="editEntryForm d-none">
         <form method="POST" action="/upload">
 
           <% var editCaptionFormId = "editCptTA"+ entry._id %>
 
-          <textarea class="" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%= entry.caption %></textarea>
+          <textarea class="" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%- entry.caption %></textarea>
 
           <% var editCptBtnBarId = "editCptBtnBar"+ entry._id %>
 
@@ -212,7 +208,7 @@
     </div>
   </form>
 </div>
-<% }) %>
+<%_ }) _%>
 <% } else { %>
 <p>No entries to show!</p>
 <% } %>
