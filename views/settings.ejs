@@ -1,0 +1,348 @@
+<%- include('partials/headerLoggedIn') %>
+
+<div class="container headerSpacing">
+  <div class="row">
+    <div class="col-md-9 m-auto">
+      <!-- basic user info column -->
+      <div class="card card-settings">
+        <section>
+          <h5>Basic User Information</h5>
+
+          <hr class="settingsHr" />
+        </section>
+        <div class="row">
+          <!-- biopic column -->
+          <div class="col-lg-3 m-auto">
+            <form action="/userImageUpload" method="POST" id="userBioPicForm" enctype="multipart/form-data">
+              <div id="bioPicContainer">
+                <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
+                <% var userImage = userData.bioImageFile %>
+                <% } else { %>
+                <% var userImage = "/image/" + userData.bioImageFile %>
+                <% } %>
+                <div class="userSettingsImage orientation" id="userBioImage" image="<%= userImage %>"></div>
+                <div class="userSettingsImage orientation d-none" id="bioImagePreview" image=""></div>
+                <div class="settingsContentWrapper mt-2 mb-2">
+                  <button class="btn btn-primary userBioPicBtn">Change</button>
+                  <div class="d-none" id="userBioPicSettingsBtnBar">
+                    <div class="custom-file mb-3">
+                      <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
+                    </div>
+                    <div class="editUserSettingsBtnBar">
+                      <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 userBioPicSubmitBtn" />
+                      <button type="button" class="btn btn-secondary closeEditSettingsBtn" id="closeUserBioPicEditSettingsBtn">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <!-- name & profilename column -->
+          <div class="col-lg-9">
+            <form method="POST" action="/userSettingsUpload">
+              <div class="row mb-2">
+                <div class="col-md-3 m-auto">
+                  <div class="text-center" id="profileNameLabel">
+                    <p>Profile Name</p>
+                  </div>
+                </div>
+                <div class="col-md-9 m-auto">
+                  <div class="settingsInputWBtnContainer" id="profileNameSettingsInputWBtnContainer">
+                    <div class="settingsInfoText">
+                      <p class="settingInputText" id="profileNameSettingsContent">
+                        <%= userData.profileName %>
+                      </p>
+                    </div>
+                    <div class="settingsBtnContainer" id="profileNameEditBtn">
+                      <button class="btn btn-primary editSettingsBtn" value="profileName">Edit</button>
+                    </div>
+                  </div>
+                  <input type="text" maxlength="12" class="d-none userFieldInput" rows="" name="" id="profileNameEditInput" placeholder="<%= userData.profileName %>"/>
+                </div>
+              </div>
+              <div class="row mb-2 d-none" id="profileNameEditBtnContainer">
+                <div class="col-md-3 m-auto"></div>
+                <div class="col-md-9" >
+                  <div class="editUserSettingsBtnBar" id="">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="profileNameSubmitBtn" />
+                    <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="profileName">Close</button>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+              <form method="POST" action="/userSettingsUpload">
+              <div class="row mb-2">
+                <div class="col-md-3 m-auto">
+                  <div class="text-center" id="firstNameLabel">
+                    <p>First Name</p>
+                  </div>
+                </div>
+                <div class="col-md-9 m-auto">
+                  <div class="settingsInputWBtnContainer" id="firstNameSettingsInputWBtnContainer">
+                    <div class="settingsInfoText">
+                      <p class="settingInputText" id="firstNameSettingsContent">
+                        <%= userData.firstName %>
+                      </p>
+                    </div>
+                    <div class="settingsBtnContainer" id="firstNameEditBtn">
+                      <button class="btn btn-primary editSettingsBtn" value="firstName">Edit</button>
+                    </div>
+                  </div>
+                  <input type="text" maxlength="12" class="d-none userFieldInput" rows="" name="" id="firstNameEditInput" placeholder="<%= userData.firstName %>"/>
+                </div>
+              </div>
+              <div class="row mb-2 d-none" id="firstNameEditBtnContainer">
+                <div class="col-md-3 m-auto"></div>
+                <div class="col-md-9" >
+                  <div class="editUserSettingsBtnBar" id="">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="firstNameSubmitBtn" />
+                    <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="firstName">Close</button>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+              <form method="POST" action="/userSettingsUpload">
+              <div class="row mb-2">
+                <div class="col-md-3 m-auto">
+                  <div class="text-center" id="lastNameLabel">
+                    <p>Last Name</p>
+                  </div>
+                </div>
+                <div class="col-md-9 m-auto">
+                  <div class="settingsInputWBtnContainer" id="lastNameSettingsInputWBtnContainer">
+                    <div class="settingsInfoText">
+                      <p class="settingInputText" id="lastNameSettingsContent">
+                        <%= userData.lastName %>
+                      </p>
+                    </div>
+                    <div class="settingsBtnContainer" id="lastNameEditBtn">
+                      <button class="btn btn-primary editSettingsBtn" value="lastName">Edit</button>
+                    </div>
+                  </div>
+                  <input type="text" maxlength="12" class="d-none userFieldInput" rows="" name="" id="lastNameEditInput" placeholder="<%= userData.lastName %>"/>
+                </div>
+              </div>
+              <div class="row mb-2 d-none" id="lastNameEditBtnContainer">
+                <div class="col-md-3 m-auto"></div>
+                <div class="col-md-9" >
+                  <div class="editUserSettingsBtnBar" id="">
+                    <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="lastNameSubmitBtn" />
+                    <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="lastName">Close</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+      <br />
+
+      <!-- login section -->
+      <div class="card card-settings">
+        <section>
+          <h5>Login Information</h5>
+
+          <hr class="settingsHr" />
+        </section>
+
+          <form method="POST" action="/userSettingsUpload">
+            <div class="row mb-2">
+              <div class="col-md-3 m-auto">
+                <div class="text-center" id="">
+                  <p>Email</p>
+                </div>
+              </div>
+              <div class="col-md-9 m-auto">
+                <div class="settingsInputWBtnContainer" id="emailSettingsInputWBtnContainer">
+                  <div class="login settingsInfoText" id="">
+                    <p class="settingInputText" id="emailSettingsContent">
+                      <%= userData.email %>
+                    </p>
+                  </div>
+                  <div class="settingsBtnContainer" id="emailEditBtn">
+                    <button class="btn btn-primary editEmailSettingsBtn" value="email">Edit</button>
+                  </div>
+                </div>
+                <input type="email" maxlength="" class="d-none userFieldInput" rows="" name="" id="emailEditInput" placeholder="<%= userData.email %>"/>
+                <div class="validateEmail validateWarning d-none">
+                    Please choose a valid email address!
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2 d-none" id="emailEditBtnContainer">
+              <div class="col-md-3 m-auto"></div>
+              <div class="col-md-9" >
+                <div class="editUserSettingsBtnBar" id="">
+                  <input type="submit" value="Submit" class="btn btn-primary btn-block mr-1 submitEmailEditSettingsBtn" id="emailSubmitBtn" />
+                  <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="email">Close</button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <form method="POST" action="/changePassword">
+
+            <div class="collapse" id="changePWContainer">
+                <div class="row">
+                  <div class="col-md-12 m-auto">
+                    <div class="row mb-3">
+                      <div class="col-md-4 m-auto">
+                        <div class="text-center" id="currentPWSection">
+                          <div class="form-group">
+                            <label for="currentPW">Current Password</label>
+                            <input type="password" class="form-control" id="currentPW" name="oldpassword" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4 m-auto">
+                        <div class="text-center" id="newPW1Section">
+                          <div class="form-group">
+                            <label for="newPW1">New Password</label>
+                            <input type="password" class="form-control" id="newPW1" name="newPW4Validation" disabled/>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4 m-auto">
+                        <div class="text-center" id="newPW2Section">
+                          <div class="form-group">
+                            <label for="newPW2">Confirm New Password</label>
+                            <input type="password" class="form-control" id="newPW2" name="newpassword" disabled/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="editUserSettingsBtnBar" id="">
+                  <input type="submit" value="Submit" class="btn btn-primary btn-block mr-1 submitPWEditSettingsBtn" id="pWSubmitBtn" />
+                  <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="pW">Close</button>
+                </div> -->
+              <!-- <button class="btn btn-block btn-primary mt-2 mb-2">Save</button> -->
+              <!-- </form> -->
+              <div class="validatePW validateWarning text-center d-none">
+                  Passwords don't match. Please try again.
+              </div>
+              <p class="changePWMsg text-center"></p>
+            </div>
+            <!-- <p class="changePWMsg"></p> -->
+            <div class="editUserSettingsBtnBar" id="subClosePWBtnContainer">
+              <input type="submit" value="Submit" class="btn btn-primary btn-block mr-1 submitPWEditSettingsBtn d-none" id="pWSubmitBtn" />
+              <button type="button" class="btn btn-primary btn-block closeEditSettingsBtn" id="changePWToggleBtn" value="pW" data-toggle="collapse" href="#changePWContainer" role="button" aria-expanded="false" aria-controls="changePWContainer">Change Password</button>
+            </div>
+          </form>
+
+        <!-- <button class="btn btn-block btn-primary mt-2 mb-2" id="changePWToggleBtn" data-toggle="collapse" href="#changePWContainer" role="button" aria-expanded="false" aria-controls="changePWContainer"">Change Password</button> -->
+
+      </div>
+
+      <br />
+
+      <div class="card card-settings">
+        <section>
+          <div id="reminderSettings">
+            <h5>Email Reminders</h5>
+            <div class="text-right settingsToggleCotainer">
+              <input type="checkbox" data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger" name="status" data-width="20" checked value="On">
+            </div>
+          </div>
+          <hr class="settingsHr" />
+        </section>
+        <div class="row">
+          <div class="col-md-12 m-auto">
+            <div class="row mb-3">
+              <div class="col-md-4 m-auto">
+                <div class="text-center" id="">
+                  <div class="form-group">
+                    <label for="emailFrequency">Frequency</label>
+                    <select class="form-control" id="emailFrequency">
+                      <option>Daily</option>
+                      <option>Weekly</option>
+                      <option>Monthly</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 m-auto">
+                <div class="text-center" id="userNameLabel">
+                  <div class="form-group" disabled>
+                    <label for="dayOfWeek">Day of Week</label>
+                    <select class="form-control" id="dayOfWeek">
+                      <option>Monday</option>
+                      <option>Tuesday</option>
+                      <option>Wednesday</option>
+                      <option>Thursday</option>
+                      <option>Friday</option>
+                      <option>Saturday</option>
+                      <option>Sunday</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 m-auto">
+                <div class="text-center" id="userNameLabel">
+                  <div class="form-group">
+                    <label for="timepicker1">Time of Day</label>
+                    <div class="input-group bootstrap-timepicker timepicker">
+                      <input id="timepicker1" type="text" class="form-control input-small">
+                      <div class="input-group-append">
+                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                      </div>
+                    </div>
+                  </div>
+                  <script type="text/javascript">
+                    $('#timepicker1').timepicker({
+                        defaultTime: "8:30 PM",
+                        minuteStep: 15
+                      });
+                  </script>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br />
+
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
+
+<!-- <form action="/userUpload" method="POST" id="userBioForm" enctype="multipart/form-data">
+    <div class="form-group">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <div class="userImagePreviewContainer">
+              <div class="userImageframe">
+                <div class="userImagePreview orientation" id="bioImage" image="= userImage %>"></div>
+                <img id="bioImagePreview" class="userImagePreview d-none"/>
+              </div>
+            </div>
+            <div class="custom-file mb-3">
+              <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
+            </div>
+          </div>
+          <div class="col-6">
+            <label for="editProfileName">Username</label>
+            <input class="form-control" name="userProfileName" id="editProfileName" placeholder=" userInfo.profileName %>"></input>
+            <label for="editFistName">First Name</label>
+            <input class="form-control" name="userFName" id="editFirstName" placeholder=" userInfo.firstName %>"></input>
+            <label for="editFistName">Last Name</label>
+            <input class="form-control" name="userLName" id="editLastName" placeholder=" userInfo.lastName %>"></input> -->
+<!-- <label for="editUserEmail">Email</label>
+            <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
+<!-- <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
+            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password" </input>
+            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
+          </div>
+        </div>
+      </div>
+    </div>
+</form> -->

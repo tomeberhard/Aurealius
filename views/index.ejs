@@ -1,179 +1,127 @@
 <%- include('partials/headerLoggedIn') %>
 
-<title>Aurealius</title>
-
-<div class="container">
+<div class="container headerSpacing">
   <div class="row">
 
-    <div class="col-sm-3 center-block">
+    <div class="col-md-3 center-block">
       <div class="userContainer">
-
-        <div class="profilePicContainer">
-          <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
-          <% var userImage = userData.bioImageFile %>
-          <% } else { %>
-          <% var userImage = "/image/" + userData.bioImageFile %>
-          <% } %>
-          <div class="userProfilePic orientation" image="<%= userImage %>"></div>
-        </div>
-        <br />
-        <div class="userInfo">
-          <div class="profileInfo">
-            <h2>
-              <%= userData.profileName %>
-            </h2>
-            <h4 class="inline">
-              <%= userData.firstName %>
-              <%= userData.lastName %>
-            </h4>
-            <form action="/userUpload" class="inline" method="POST" id="userBioForm" enctype="multipart/form-data">
-              <button type="button" class="settingsIcn" data-toggle="modal" data-target="#userInfoModal">
-                <i class="fas fa-cog"></i>
-              </button>
-              <div class="modal" id="userInfoModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Edit Your Settings</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <div class="container-fluid">
-                          <div class="row">
-                            <div class="col">
-                              <div class="userImagePreviewContainer">
-                                <div class="userImageframe">
-                                  <div class="userImagePreview orientation" id="bioImage" image="<%= userImage %>"></div>
-                                  <img id="bioImagePreview" class="userImagePreview d-none" />
-                                </div>
-                              </div>
-                              <div class="custom-file mb-3">
-                                <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)" />
-                              </div>
-                            </div>
-                            <div class="col-6">
-                              <label for="editProfileName">Username</label>
-                              <input class="form-control" name="userProfileName" id="editProfileName" placeholder="<%= userData.profileName %>"></input>
-                              <label for="editFistName">First Name</label>
-                              <input class="form-control" name="userFName" id="editFirstName" placeholder="<%= userData.firstName %>"></input>
-                              <label for="editFistName">Last Name</label>
-                              <input class="form-control" name="userLName" id="editLastName" placeholder="<%= userData.lastName %>"></input>
-                              <!-- <label for="editUserEmail">Email</label>
-                                <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
-                              <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
-                              <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password"</input>
-                              <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <input type="submit" value="Save" class="btn btn-primary btn-block" />
-                      <button type="button" class="btn btn-secondary" id="userProfileEditClose" onclick="abortPreview(event)" data-dismiss="modal">Close</button>
-                    </div>
-                  </div>
+        <div class="container-fluid mobilePaddingReduction">
+          <div class="row userBoxPadding align-items-center">
+            <div class="col-md-12 align-items-center userColumnLeft">
+              <div class="profilePicContainer">
+                <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
+                <% var userImage = userData.bioImageFile %>
+                <% } else { %>
+                <% var userImage = "/image/" + userData.bioImageFile %>
+                <% } %>
+                <div class="userProfilePic orientation" image="<%= userImage %>"></div>
+              </div>
+              <br />
+            </div>
+            <div class="col-md-12 userColumnRight">
+              <div class="userInfoCard">
+                <div class="profileInfo">
+                  <h2>
+                    <%= userData.profileName %>
+                  </h2>
+                  <h4 class="inline">
+                    <%= userData.firstName %>
+                    <%= userData.lastName %>
+                  </h4>
+                  <a href="/settings" class="settingsIcn inline">
+                    <i class="fas fa-cog"></i>
+                  </a>
+                </div>
+                <div class="expndCrdContainer">
+                  <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#userColumnFollow" aria-expanded="false" aria-controls="userColumnFollows">
+                    <i class="fas fa-chevron-down" id="collapseExpanduserColumnFollowIcon"></i>
+                  </button>
                 </div>
               </div>
-            </form>
-          </div>
-          <div class="expndCrdContainer">
-            <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#userColumnFollow" aria-expanded="false" aria-controls="userColumnFollows">
-              <i class="fas fa-chevron-down" id="collapseExpanduserColumnFollowIcon"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="collapse" id="userColumnFollow">
-
-          <div class="followContainer">
-            <div class="followBoxHeader">
-              <h4 class="inline">Following (<%= userData.following.length %>)</h4>
-              <div class="expndCrdContainer rightSide">
-                <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
-                  <i class="fas fa-chevron-left" id="followingChevronLftToDwn"></i>
-                </button>
-              </div>
-            </div>
-            <div class="followLinkContainer collapse" id="followLinklist">
-
-              <% if(userData.following.length > 0){ %>
-              <% userData.following.forEach(function(usersFollowed) {%>
-
-              <div class="followLinkBox">
-
-                <% if(usersFollowed.bioImageFile === "/assets/defaultusericon.png") { %>
-                <% var userImage = usersFollowed.bioImageFile %>
-                <% } else { %>
-                <% var userImage = "/image/" + usersFollowed.bioImageFile %>
-                <% } %>
-                <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                <h5 class=" vertCtrAlign">
-                  <%= usersFollowed.profileName %>
-                </h5>
-              </div>
-                <% }) %>
-                <% } else { %>
-              <h5>Not Following Anyone</h5>
-                <% } %>
             </div>
           </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="collapse show" id="userColumnFollow">
+                <div class="followContainer followingContainer text-center">
+                  <div class="followBoxHeader">
 
-          <br />
+                    <h5 class="inline" id="followNum">
+                      Following (
+                      <%= userData._following.length %>)
+                    </h5>
+                  </div>
+                  <div class="expndCrdContainer">
+                    <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
+                      <i class="fas fa-chevron-down" id="followingChevronLftToDwn"></i>
+                    </button>
+                  </div>
+                  <div class="followLinkContainer collapse" id="followLinklist">
 
-          <div class="followContainer">
-            <div class="followBoxHeader">
-              <h4 class="inline">Followers (<%= userData.followers.length %>)</h4>
-              <div class="expndCrdContainer rightSide">
-                <button class="expndFollowerBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
-                  <i class="fas fa-chevron-left" id="followerChevronLftToDwn"></i>
-                </button>
+                    <%- include('partials/followPanel') %>
+
+                  </div>
+                </div>
+                <div class="followContainer text-center">
+                  <div class="followBoxHeader">
+                    <h5 class="inline">
+                      Followers (
+                      <%= userData._followers.length %>)
+                    </h5>
+                  </div>
+                  <div class="expndCrdContainer">
+                    <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
+                      <i class="fas fa-chevron-down" id="followerChevronLftToDwn"></i>
+                    </button>
+                  </div>
+                  <div class="followLinkContainer collapse" id="followerLinklist">
+
+                    <% if(userFollowers.length > 0){ %>
+                    <% userFollowers.forEach(function(followingUsers) {%>
+
+                    <div class="btn btn-primary followLinkBox">
+                      <% if(followingUsers.bioImageFile === "/assets/defaultusericon.png") { %>
+                      <% var userImage = followingUsers.bioImageFile %>
+                      <% } else { %>
+                      <% var userImage = "/image/" + followingUsers.bioImageFile %>
+                      <% } %>
+                      <div class="followingPrvw orientation" image="<%= userImage %>"></div>
+                      <h5 class="followTxt">
+                        <%= followingUsers.profileName %>
+                      </h5>
+                    </div>
+                    <% }) %>
+                    <% } else { %>
+                    <p class="noFollowTxt">No Followers</p>
+                    <% } %>
+                  </div>
+                </div>
+
+                <br />
+
               </div>
-            </div>
-            <div class="followLinkContainer collapse" id="followerLinklist">
-
-              <% if(userData.followers.length > 0){ %>
-              <% userData.followers.forEach(function(followingUsers) {%>
-
-              <div class="followLinkBox">
-                <% if(followingUsers.bioImageFile === "/assets/defaultusericon.png") { %>
-                <% var userImage = followingUsers.bioImageFile %>
-                <% } else { %>
-                <% var userImage = "/image/" + followingUsers.bioImageFile %>
-                <% } %>
-                <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                <h5 class="vertCtrAlign">
-                  <%= followingUsers.profileName %>
-                </h5>
-              </div>
-                <% }) %>
-                <% } else { %>
-            <h5>No Followers</h5>
-                <% } %>
             </div>
           </div>
-
-          <br />
 
         </div>
 
       </div>
     </div>
 
-    <div class="col-sm-8">
+    <div class="col-md-8">
       <div class="entryContainer entryFormCard">
         <form action="/upload" method="POST" enctype="multipart/form-data">
           <div class="form-group entry-form">
             <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
             <div class="upldToggleContainer expandable d-none">
-              <div class="custom-file mb-3 upldToggleContainerWidth">
-                <input type="file" name="file" id="file" class="" />
-              </div>
+              <!-- <div class="custom-file mb-3 upldToggleContainerWidth"> -->
+              <label class="btn fileBtn" for="my-file-selector">
+                <input id="my-file-selector" type="file" name="file" class="" style="display:none" onchange="$('#upload-file-info').html(this.files[0].name)">
+                Add Image
+              </label>
+              <div class='inline label label-info' id="upload-file-info"></div>
               <div class="toggleCotainer">
-                <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-height="20" data-width="90" checked value="private">
+                <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-width="100" checked value="private">
               </div>
             </div>
           </div>
@@ -219,166 +167,14 @@
       </div>
       <hr />
 
-      <% if(entries){ %>
-      <% entries.forEach(function(entry) { %>
+      <div id="renderedEntryContainer">
 
-      <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
-      <% var hide = "" %>
-      <% var cardClass = "cardWOImg" %>
-      <% } else { %>
-      <% var hide = "/image/" + entry.imageFile %>
-      <% var cardClass = "cardWImg" %>
-      <% } %>
+        <%- include('partials/everyoneEntries') %>
 
-      <div class="card card-body mb-3 cushion <%= cardClass %>">
-        <div class="orientation" image="<%= hide %>"></div>
-        <div class="capPad">
-          <div class="uNFavIcnContainer">
-            <div class="profileFllwUnFllw">
-              <div class="userProfName">
-                <h3><%= entry.userProfile %></h3>
-              </div>
-
-              <% if (entry.userProfile === userData.profileName) { %>
-              <% var hide = "d-none" %>
-              <% } else { %>
-              <% var hide = "" %>
-              <% } %>
-
-              <% if (userFollowing.includes(entry.userId)) { %>
-              <% var folUnfol = "Unfollow" %>
-              <% } else { %>
-              <% var folUnfol = "Follow" %>
-              <% } %>
-
-              <div class="flwUnflw <%= hide %>">
-                <form method="POST" action="/follow">
-                  <button class="followBtn btn" name="followButton" id="followUnfollowBtn" value="<%= entry.userId %>">
-                    <%= folUnfol %>
-                  </button>
-                </form>
-              </div>
-
-            </div>
-
-            <div class="favShare">
-              <div class="shareBtnContainer">
-
-                <% var collapseShareID = "a" + JSON.stringify(entry._id).replace(/"/g, "") %>
-
-                <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
-                  <i class="fas fa-share fa-2x"></i>
-                </button>
-              </div>
-
-              <div class="favBtnContainer">
-                <form method="POST" action="/favorite">
-
-                  <% var heartBtnEntryId = "e"+ entry._id%>
-
-                  <button class="favBtn" name="favoriteButton" id="<%= heartBtnEntryId %>" value="<%= entry._id %>">
-
-                    <% var favs = JSON.stringify(entry.favoriteUsers) %>
-                    <% if (favs.includes(userData._id)) { %>
-                    <% var faved = "" %>
-                    <% var notFaved = "d-none" %>
-                    <% } else { %>
-                    <% var faved = "d-none" %>
-                    <% var notFaved = "" %>
-                    <% } %>
-
-                    <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
-                    <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div class="aFSMIconContainer collapse" id="<%= collapseShareID %>">
-            <span class="aFSMIcons border rounded">
-              <i class="fab fa-facebook"></i>
-              <i class="fab fa-instagram"></i>
-              <i class="fab fa-twitter"></i>
-              <i class="fas fa-external-link-alt"></i>
-            </span>
-          </div>
-          <div class="captionContainer">
-            <p class="card-text">
-              <%= entry.caption %>
-            </p>
-          </div>
-
-          <% var collapseExpandID = "b" + collapseShareID %>
-          <% var collapseExpandIconID = "c" + collapseExpandID %>
-
-          <div class="expndCrdContainer">
-            <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
-              <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
-            </button>
-          </div>
-
-          <div class="collapse" id="<%= collapseExpandID %>">
-            <form method="POST" action="/report">
-              <button type="button" class="report" data-toggle="modal" data-target="#reportModal">
-                <i class="fas fa-exclamation-circle"></i>
-              </button>
-
-              <div class="modal" id="reportModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Report Entry</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <label for="reportRuleSelector">Which Rule Does this Entry Break?</label>
-                        <div class="form-check" id="reportRuleSelector">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector1" value="Entry must be based in gratitude" checked>
-                          <label class="form-check-label" for="reportRuleSelector1">
-                            Entry must be based in gratitude
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector2" value="Gratitude cannot be at expense of the well-being of another">
-                          <label class="form-check-label" for="reportRuleSelector2">
-                            Gratitude cannot be at expense of the well-being of another
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector3" value="No politics">
-                          <label class="form-check-label" for="reportRuleSelector3">
-                            No politics
-                          </label>
-                        </div>
-
-                        <br />
-
-                        <textarea class="form-control" rows="3" name="reportComments" placeholder="Comments"></textarea>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="submit" class="btn btn-primary btn-block" value="<%= entry._id %>" name="reportButton">Submit</button>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-
-        </div>
       </div>
-      <% }) %>
-      <% } else { %>
-      <p>No entries to show!</p>
-      <% } %>
     </div>
 
   </div>
 </div>
-
 
 <%- include('partials/footer') %>

@@ -1,17 +1,27 @@
 body {
-  background: url(/assets/backgroundCanvas.jpg) no-repeat center center fixed;
+  /* background: url(/assets/backgroundCanvas.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-size: cover;
+  background-size: cover; */
+  /* background-color: #f3ecd3;
+background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png"); */
+/* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+
+background-color: #f3ecd3;
+/* background-image: url("https://www.transparenttextures.com/patterns/clean-textile.png"); */
+background-image: url("https://www.transparenttextures.com/patterns/fabric-1-light.png");
 }
 
-h1,h2,h3,h4,h5 {
+
+h1, h2, h3, h4, h5 {
   font-family: 'Sansita', sans-serif;
+  color: #1b224f;
 }
 
 p {
   font-family: 'IM Fell Great Primer', serif;
+  color:#465559;
 }
 
 hr {
@@ -21,120 +31,74 @@ hr {
   width: 95%;
 }
 
-/* responsively apply fixed position */
-@media (min-width: 801px){
-  .userContainer {
-    position: fixed;
-    /* top: 0; */
-    /* bottom: 0; */
-  }
-}
-
-.container {
-  margin-top: 100px;
-  z-index: 2;
-  }
-
-.entryFormCard {
-  background-color: #fafcfd;
-}
-
-.form-control {
-  font-size: 1.2rem;
+textarea {
+  white-space: pre-line;
+  color: #495057;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
   font-family: 'IM Fell Great Primer', serif;
 }
 
-.entryContainer {
-  padding: 2rem;
-  border-radius: .25rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  }
-
-.card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+label {
+  font-family: 'IM Fell Great Primer', serif;
 }
 
-.card-body {
-  padding:2rem;
+input {
+  font-family: 'IM Fell Great Primer', serif;
 }
 
-.cardWImg {
-  /* background-color: #f3f9fb; */
-  background-color: #fafcfd;
+
+.btn:focus {
+  outline: 0;
+  box-shadow: none;
 }
 
-.cardWOImg {
-  /* background-color: #f3f9fb; */
-    background-image: url(/assets/lightpaperfibers_@2X.png);
+/*---------------------------- Viewsize------------------------------ */
+
+.windowHeightMin {
+  min-height:835px;
 }
 
-.captionContainer {
-font-size: 1.35rem;
-/* font-family: 'Permanent Marker', cursive; */
-/* font-family: 'Kalam', cursive; */
-font-family: 'IM Fell Great Primer', serif;
-}
+/*---------------------------- header & footer------------------------------ */
 
-.btn {
-  font-family: 'Sansita', sans-serif;
-}
-
-.btn-primary {
-  color: #474f85;
-  background-color: #51e3d4;
-  border-color: #474f85;
-  /* font-family: 'Sansita', sans-serif; */
-}
-
-.btn-primary:hover {
-  color: white;
-  background-color: #474f85;
-  border-color: #51e3d4;
-}
-
-.custom-file {
-  font-family: 'Sansita', sans-serif;
+.headerSpacing {
+  margin-top: 100px;
+  z-index: 2;
 }
 
 .header {
   position: fixed;
   height: 75px;
   width: 100%;
-  top:0;
-  /* background-color: #474f85; */
-  background: rgb(35,39,66);
-  background: linear-gradient(0deg, rgba(49,55,93,1) 0%, rgba(71,79,133,1) 86%, rgba(35,39,66,1) 100%);
-  z-index:1;
+  top: 0;
+  background-color: #474f85;
+  background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+
+
+  /* background: rgb(35, 39, 66);
+  background: linear-gradient(0deg, rgba(49, 55, 93, 1) 0%, rgba(71, 79, 133, 1) 86%, rgba(35, 39, 66, 1) 100%); */
+
+
+  box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1;
   font-family: 'Sansita', sans-serif;
 }
 
-.footer {
-  position: relative;
-  height: 75px;
-  width: 100%;
-  bottom: 0;
-  /* background-color: #474f85; */
-  background: rgb(35,39,66);
-  background: linear-gradient(180deg, rgba(49,55,93,1) 0%, rgba(71,79,133,1) 86%, rgba(35,39,66,1) 100%);
-  z-index:1;
-  font-family: 'Sansita', sans-serif;
-}
-
-.headerlinks {
+.headerLinks {
   position: absolute;
   bottom: 0;
 }
 
-.lftlinks {
-  height:100%;
-  line-height:59px;
-  left: 5%;
+.lftLinks {
+  height: 100%;
+  line-height: 59px;
+  left: 10%;
   vertical-align: bottom;
 }
 
-.rghtlinks {
-  height:100%;
-  line-height:59px;
+.rghtLinks {
+  height: 100%;
+  line-height: 59px;
   right: 5%;
   vertical-align: bottom;
 }
@@ -144,7 +108,7 @@ nav ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-    vertical-align: bottom;
+  vertical-align: bottom;
 }
 
 nav li {
@@ -157,20 +121,31 @@ nav li a {
   color: #f3f9fb;
   text-align: center;
   padding-top: 14px;
-  padding-left:16px;
+  padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
-  border-width: 5px;
+  text-shadow: 0 0 25px black;
+  /* border-width: 5px; */
 }
 
-
 nav li:hover {
-border-bottom-style: solid;
-border-bottom-color: #51e3d4;
-border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: #51e3d4;
+  border-bottom-width: 2px;
+}
+
+nav li.activePage {
+  border-bottom-style: solid;
+  border-bottom-color: #51e3d4;
+  border-bottom-width: 2px;
 }
 
 nav a:hover {
+  color: #51e3d4;
+  text-decoration: none;
+}
+
+nav a.activePage {
   color: #51e3d4;
   text-decoration: none;
 }
@@ -181,21 +156,269 @@ nav.footer li a:hover {
   border-top-width: 2px;
 }
 
-/* -----------------------expand entry form------------------------------- */
-.expandTA  {
-  height: 1em;
-  padding: 3px;
-    /* transition: all 0.5s ease; */
+nav.footer li a:hover {
+  border-top-style: solid;
+  border-top-color: #51e3d4;
+  border-top-width: 2px;
+}
+
+.footer {
+  position: relative;
+  height: 75px;
+  width: 100%;
+  bottom: 0;
+  background: rgb(35, 39, 66);
+  background: linear-gradient(180deg, rgba(49, 55, 93, 1) 0%, rgba(71, 79, 133, 1) 86%, rgba(35, 39, 66, 1) 100%);
+  box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  font-family: 'Sansita', sans-serif;
+}
+
+.inline {
+  display: inline-block;
+}
+
+.settingsIcn {
+  color: darkgray;
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+  margin-left: 2%;
+}
+
+.settingsIcn:hover {
+  color: #474f85;
+}
+
+.settingsIcn:focus {
+  outline: 0;
+}
+
+@media screen and (max-width: 500px) {
+
+  /*----------header navbar & footer Mobile formatting--------------*/
+  .header {
+    height: 38px;
+  }
+
+  .headerSpacing {
+    margin-top: 55px;
+    z-index: 2;
+  }
+
+  .lftLinks {
+    line-height: 29px;
+    left: 5%;
+  }
+
+  .rghtLinks {
+    line-height: 29px;
+  }
+
+  nav li a {
+    font-size: .8rem;
+    color: #f3f9fb;
+    padding-top: 7px;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-shadow: 0 0 17px black;
+  }
+
+
+  .footer {
+    height: 50px;
+  }
+
+  /*-------------------userCard Mobile formatting-----------------*/
+
+  h2 {
+    font-size: 1.4rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+  h4 {
+    font-size: 1.1rem;
+  }
+
+  .settingsIcn {
+    align-items: top;
+    font-size: 1rem;
+  }
+
 }
 
 
-/* -----------------------upload-private/public toggle------------------------------- */
+/*---------------------------buttons--------------------------------------- */
 
+.btn {
+  font-family: 'Sansita', sans-serif;
+}
+
+
+
+@media screen and (max-width: 500px) {
+  .btn {
+    font-size: .9rem;
+  }
+}
+
+.btn-primary {
+  color: #474f85;
+  background-color: #51e3d4;
+  border-color: #474f85;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #474f85;
+  border-color: #51e3d4;
+}
+
+.custom-file {
+  font-family: 'Sansita', sans-serif;
+}
+
+
+.form-control {
+  font-size: 1.2rem;
+  font-family: 'IM Fell Great Primer', serif;
+}
+
+@media screen and (max-width: 500px) {
+  .form-control {
+    font-size: .9rem;
+  }
+}
+
+/* -----------------------settings Page------------------------------- */
+.card-settings {
+  padding: 1rem 1rem;
+}
+
+.settingsHr {
+width: 100%;
+}
+
+.row {
+  min-height: 35px;
+}
+
+.settingsContentWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settingsLabelContainer {
+ /* position: absolute; */
+ /* top: 50%; */
+ /* transform: translateY(-50%); */
+}
+
+.settingsInputWBtnContainer {
+  position: relative;
+  width: 100%;
+  height: 40px;
+}
+
+.settingsInfoText {
+  position: absolute;
+  color: #495057;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  width: 80%;
+  height: 38px;
+  top: 0;
+  left: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .login.settingsInfoText {
+    width: 85%;
+  }
+}
+.settingInputText {
+  margin-top: 2%;
+  padding-left: 5%;
+}
+
+.settingsBtnContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.userSettingsImage {
+  width: 75%;
+  margin: auto;
+}
+
+.changePwdBtnContainer {
+  width: 95%;
+}
+
+#reminderSettings {
+  height: 36px;
+  position: relative;
+}
+
+.settingsToggleCotainer {
+  position: absolute;
+  top: 0;
+  right:0;
+}
+
+/* .validateEmail {
+  font-family: 'IM Fell Great Primer', serif;
+  color: red;
+} */
+
+.validateWarning {
+  font-family: 'IM Fell Great Primer', serif;
+  color: red;
+}
+
+/* -----------------------expand entry form------------------------------- */
+.expandTA {
+  height: 1em;
+  padding: 3px;
+  /* transition: all 0.5s ease; */
+}
+
+/* -----------------------upload-private/public toggle------------------------------- */
 .upldToggleContainer {
   display: inline-block;
   position: relative;
   width: 100%;
   height: 35px;
+}
+
+.fileBtn {
+  color: #474f85;
+  border-style: solid;
+  border-color: #474f85;
+  border-width: 1px;
+  padding: .15rem .5rem;
+}
+
+@media screen and (min-width: 768px) {
+.fileBtn {
+  height: 100%;
+  }
+}
+
+.fileBtn:hover {
+  color: white;
+  border-style: solid;
+  border-color: #51e3d4;
+  background-color: #474f85;
+  border-width: 1px;
+}
+
+.label {
+  font-family: 'IM Fell Great Primer', serif;
 }
 
 .upldToggleContainerWidth {
@@ -205,15 +428,37 @@ nav.footer li a:hover {
   width: 75%;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .toggleCotainer {
   position: absolute;
   top: 0;
   right: 0;
   width: 25%;
   text-align: right;
-
+}
+@media screen and (max-width: 500px) {
+  .toggleCotainer {
+    width: 40%;
+  }
+}
+@media screen and (max-width: 500px) {
+.toggle.btn {
+  min-height: 1.75rem;
+  }
 }
 
+@media screen and (max-width: 500px) {
+label.toggle-on.btn {
+  padding-top: 2px;
+  }
+}
+
+label.btn {
+  padding-top: 4px;
+}
 
 /* -----------------------user page view choice------------------------------- */
 .userBtnBar {
@@ -223,11 +468,74 @@ nav.footer li a:hover {
 
 /* -----------------------activity feed cards------------------------------- */
 
+.entryFormCard {
+  /* background-color: #fafcfd; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
+}
+
+.entryContainer {
+  border-radius: .25rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 1.5rem 2rem 1.25rem 2rem;
+}
+
+@media screen and (max-width: 500px) {
+  .entryContainer {
+    border-radius: .25rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: .75rem 1rem;
+  }
+}
+
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-image: url(/assets/lightpaperfibers_@2X.png);
+}
+
+.card-body {
+  padding: 2rem 2rem 1.0rem 2rem;
+}
+
+@media screen and (max-width: 500px) {
+  .card-body {
+    padding: 1rem;
+  }
+}
+
+.cardWImg {
+  background-color: #fafcfd;
+}
+
+.cardWOImg {
+  /* background-color: #f3f9fb; */
+  /* background-image: url(/assets/lightpaperfibers_@2X.png); */
+  /* text-shadow: 0 0 2px rgba(0, 0, 0, 0.5); */
+}
+
+.captionContainer {
+  font-size: 1.35rem;
+  font-family: 'IM Fell Great Primer', serif;
+}
+
+.card-text {
+  white-space: pre-line;
+}
+.card-text:first-line {
+    line-height: 0px;
+}
+
+@media screen and (max-width: 500px) {
+  .captionContainer {
+    font-size: 1rem;
+  }
+}
+
 .entry-text {
-text-align: center;
-font-size: 2rem;
-color: #fff;
-background-color: #000;
+  text-align: center;
+  font-size: 2rem;
+  color: #fff;
+  background-color: #000;
 }
 
 .uNFavIcnContainer {
@@ -236,41 +544,58 @@ background-color: #000;
   padding-bottom: 50px;
 }
 
+@media screen and (max-width: 500px) {
+  .uNFavIcnContainer {
+  padding-bottom: 30px;
+  }
+}
+
 .profileFllwUnFllw {
-  width: 88%;
+  /* width: 88%;
   height: 30px;
-  left:0;
-  top: 0;
+  left: 0;
+  top: 0; */
 }
 
 .userProfName {
   display: inline-block;
 }
 
+.userProfName h3 {
+  color:#474f85;
+}
+
+a.userProfName {
+  color:#474f85;
+}
+
 .followBtn {
-  color: darkgray;
+  color: #474f85;
   border-style: solid;
-  border-color: darkgray;
+  border-color: #474f85;
   border-width: 1px;
-  padding:.15rem .5rem;
+  /* height: 1rem; */
+  padding: .15rem .5rem;
+  margin-bottom: 20%;
 }
 
 .followBtn:hover {
   color: white;
   border-style: solid;
   border-color: #51e3d4;
-  background-color:#474f85;
+  background-color: #474f85;
   border-width: 1px;
 }
 
-/* .bigger {
-  font-size: 1.5rem;
+/* .followBtn:focus {
+  outline: 0;
 } */
 
 .flwUnflw {
   padding-left: 2%;
   display: inline-block;
-  vertical-align: top;
+  /* vertical-align: middle; */
+
 }
 
 .favShare {
@@ -282,6 +607,50 @@ background-color: #000;
   text-align: right;
 }
 
+.editBtn {
+  background: none;
+  border: none;
+  color: darkgray;
+}
+
+.editBtn:hover {
+  color: #474f85;
+  text-shadow: 0px 0px 5px #51e3d4;
+}
+
+.editBtn:focus {
+  outline: 0;
+}
+
+
+@media screen and (max-width: 500px) {
+  .editBtn {
+  font-size: .75rem;
+  }
+}
+
+.editEntryBtnBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding:1rem 1rem 0 1rem;
+}
+
+.editUserSettingsBtnBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding:.5rem;
+}
+
+.userFieldInput {
+  font-family: 'IM Fell Great Primer', serif;
+  color: #495057;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  padding: 1.5% 4%;
+}
+
 .shareBtnContainer {
   display: inline-block;
 }
@@ -290,6 +659,13 @@ background-color: #000;
   background: none;
   border: none;
   color: darkgray;
+}
+
+
+@media screen and (max-width: 500px) {
+  .shareBtn {
+  font-size: .75rem;
+  }
 }
 
 .shareBtn:hover {
@@ -312,9 +688,19 @@ background-color: #000;
   color: #474f85;
 }
 
+@media screen and (max-width: 500px) {
+  .favBtn {
+  font-size: .75rem;
+  }
+}
+
 .favBtn:hover {
   color: #474f85;
   text-shadow: 0px 0px 5px #51e3d4;
+}
+
+.favBtn:focus {
+  outline: 0;
 }
 
 .aFSMIconContainer {
@@ -323,13 +709,14 @@ background-color: #000;
 }
 
 .aFSMIcons {
-word-spacing: 1.00rem;
-padding: 1%;
-font-size: 1.5rem;
+  word-spacing: 1.00rem;
+  padding: 1%;
+  font-size: 1.5rem;
 }
 
 .orientation canvas {
   width: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 .expndCrdContainer {
@@ -338,11 +725,21 @@ font-size: 1.5rem;
   text-align: center;
 }
 
+.expandCrdCusion {
+  padding-top: 2%;
+}
+
 .followBoxHeader {
   position: relative;
-
   padding: 2%;
 }
+
+@media screen and (max-width: 500px) {
+  .followBoxHeader h5 {
+  font-size: 1rem;
+  }
+}
+
 .rightSide {
   position: absolute;
   top: 20%;
@@ -364,7 +761,11 @@ font-size: 1.5rem;
   outline: 0;
 }
 
-.report {
+.entryTrayContainer {
+  position: relative;
+}
+
+.entryContainerBtn {
   font-size: 1.75rem;
   padding-top: 1%;
   background: none;
@@ -372,20 +773,46 @@ font-size: 1.5rem;
   color: darkgray;
 }
 
-.report:hover {
-  color: red;
+.reportIcnContainer {
+
 }
 
-/* -----------------------user column  edit------------------------------- */
-.userContainer {
-  width: 250px;
+@media screen and (max-width: 500px) {
+  .entryContainerBtn {
+  font-size: 1.25rem;
+  }
 }
 
-.userInfo {
-  background-color: #fafcfd;
+/* -----------------------user column  edit-------------------r------------ */
+/* @media screen and (min-width: 768px) and (max-width: 900px) {
+  .userContainer {
+    position: fixed;
+    width: 200px;
+    left: 3%;
+  }
+}
+
+@media screen and (min-width: 901px) and (max-width: 1200px) {
+  .userContainer {
+    position: fixed;
+    width: 225px;
+    left: 5%;
+  }
+}
+
+@media screen and (min-width: 1201px) {
+  .userContainer {
+    position: fixed;
+    width: 250px;
+  }
+} */
+
+.userInfoCard {
+  background-image: url(/assets/lightpaperfibers_@2X.png);
   padding: 2%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /* margin-bottom: 1.5rem; */
 }
 
 .profileInfo {
@@ -393,10 +820,25 @@ font-size: 1.5rem;
 }
 
 .profilePicContainer {
-  background-color: #fafcfd;
-  /* padding: 2%; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
+  padding: 2%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.align-items-center {
+  display: flex;
+  align-items: center;  /*Aligns vertically center */
+  justify-content: center; /*Aligns horizontally center */
+}
+
+.mobilePaddingReduction {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.userBoxPadding {
+  margin-bottom: 5%;
 }
 
 .userProfilePic {
@@ -409,58 +851,79 @@ font-size: 1.5rem;
   margin: auto;
   padding: 4%;
   /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+}
 
+@media only screen and (max-width: 768px) {
+  .userColumnLeft {
+    width: 50%;
+  }
+
+  .userColumnRight {
+    width: 50%;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .userColumnLeft {
+    margin-bottom: 7%;
+  }
 }
 
 .followContainer {
-  background-color: #fafcfd;
+  /* background-color: #fafcfd; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
   padding: 2%;
+  margin-top: 5%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
+@media screen and (max-width: 750px) {
+  .followingContainer {
+  margin-top: 0;
+  }
+}
+
 .followLinkBox {
   display: flex;
+  /* justify-content: center;   */
   align-items: center;
   border-style: solid;
-  margin: 2%;
-  border-color: lightgray;
+  color: #474f85;
+  margin: 4%;
+  /* font-size: 2rem;  */
+  background-color: #fafcfd;
+  border-color: #474f85;
   border-width: 1px;
   border-radius: .25rem;
-  padding:.25rem .25rem;
+  padding: .25rem .25rem;
+}
+
+h5.followTxt {
+  font-size: 1rem;
+  margin-top: inherit;
+  margin-bottom: inherit;
+  border-color: #474f85;
+  color:#474f85;
+}
+
+.followLinkBox:hover h5.followTxt  {
+  color: #fff;
 }
 
 .followingPrvw {
   width: 30px;
   height: 30px;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
+  border-color: #474f85;
   border-radius: 50%;
   overflow: hidden;
-  margin-right: 10px;
+  margin: 0 10px 0 10px;
 }
 
-.vertCtrAlign {
-  margin: auto 0 auto 0;
-}
-
-.inline {
-  display: inline-block;
-}
-
-.settingsIcn {
+.noFollowTxt {
   color: darkgray;
-  font-size: 1.25rem;
-  background: none;
-  border: none;
-}
-
-.settingsIcn:hover {
-  color: #474f85;
-}
-
-.settingsIcn:focus {
-  outline: 0;
 }
 
 .expndFollowerBtn {
@@ -477,18 +940,14 @@ font-size: 1.5rem;
   outline: 0;
 }
 
-.fixIt{
-  position:fixed;
-}
 
 /* -----------------------user profile edit------------------------------- */
-
-.form-padding {
-  padding-top:5%;
+/* .form-padding {
+  padding-top: 5%;
 }
 
 .form-button-spacing {
-  margin-top:5%;
+  margin-top: 5%;
   margin-bottom: 5%;
 }
 
@@ -499,24 +958,15 @@ font-size: 1.5rem;
 .userImageContainer {
   padding-top: 25px;
   padding-bottom: 25px;
-}
+} */
 
-.userImage {
-  height: 200px;
-  width:200px;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: auto;
-  }
 
-.userInfo {
+/* .userInfo {
   margin-bottom: 1.5rem;
 }
 
-.userImageframe{
-  height:150px;
+.userImageframe {
+  height: 150px;
   width: 150px;
   border-style: solid;
   border-width: 2px;
@@ -524,14 +974,14 @@ font-size: 1.5rem;
   overflow: hidden;
   margin: auto;
   margin-bottom: 15%;
-}
+} */
 
 /* -------------------CANT GET THIS TO WORK--------------------------------- */
 .userImagePreview.orientation canvas {
   width: 150%;
 }
 
-.capPad {
+.cardWImg {
   padding-top: 10px;
 }
 
@@ -549,13 +999,13 @@ font-size: 1.5rem;
 
 .collectionHeadingEdit {
   position: absolute;
-  top:30%;
-  bottom:70%;
-  right:0;
+  top: 30%;
+  bottom: 70%;
+  right: 0;
 }
 
 .collectionSocialBar {
-  width:75%;
+  width: 75%;
   margin: auto;
   text-align: left;
   position: relative;
@@ -572,55 +1022,66 @@ font-size: 1.5rem;
 
 .usercollectionDelete {
   position: absolute;
-  right:1%;
+  right: 1%;
   font-size: 1.5rem;
   cursor: pointer;
 }
 
 .cltDContainer {
   position: absolute;
-  right:1%;
+  right: 1%;
   top: 50%;
   transform: translateY(-50%);
   /* vertical-align: middle; */
 }
 
-.deleteIcn {
-  font-size: 1.25rem;
-  background: none;
-  border: none;
+.deleteIcnContainer {
+  position: absolute;
+  right:0;
+  bottom:0;
 }
 
-.deleteIcn:hover {
+.editIcnContainer {
+  position: absolute;
+  width:50%;
+  height: 100%;
+  left: 25%;
+  right:25%;
+  padding-top: 0.5%;
+  bottom: 0;
+  text-align: center;
+}
+
+.warning:hover {
   color: red;
 }
 
 .collectionBackStop {
   position: relative;
   padding-bottom: 75%;
-  height:0;
+  height: 0;
   width: 75%;
   margin: auto;
   overflow: hidden;
 }
 
 .collectionImg {
-  position:absolute;
-  left:-25px;
+  position: absolute;
+  left: -25px;
   margin: auto;
   width: 135%;
 }
 
 .collectionButton {
-  position:absolute;
+  position: absolute;
   height: 100%;
-  width:100%;
+  width: 100%;
   font-size: 2rem;
   color: white;
-  background-color: rgba(128,128,128,.5);
+  background-color: rgba(128, 128, 128, .5);
   border-width: 1px;
   border-color: lightgray;
   border-style: solid;
-  left:0;
-  top:0;
+  left: 0;
+  top: 0;
 }
