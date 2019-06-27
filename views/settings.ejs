@@ -22,7 +22,7 @@
                 <% } %>
                 <div class="userSettingsImage orientation" id="userBioImage" image="<%= userImage %>"></div>
                 <div class="userSettingsImage orientation d-none" id="bioImagePreview" image=""></div>
-                <div class="settingsContentWrapper mt-2 mb-2">
+                <div class="settingsContentWrapper mt-2 mb-3">
                   <button class="btn btn-primary userBioPicBtn">Change</button>
                   <div class="d-none" id="userBioPicSettingsBtnBar">
                     <div class="custom-file mb-3">
@@ -242,82 +242,92 @@
       <br />
 
       <div class="card card-settings">
-        <section>
-          <div id="reminderSettings">
-            <h5>Email Reminders</h5>
-            <div class="text-right settingsToggleCotainer">
+        <form class="emailReminderFrm" method="POST" action="/userEMSttings">
+          <section>
+            <div id="reminderSettings">
+              <h5>Email Reminders</h5>
 
               <% var loadReminderStatus = userData.reminderSettings.status %>
-              <% if (loadReminderStatus === "off") { %>
-
-                <% var checkOnOff = "" %>
-                <% var formFieldOnOff = "disabled" %>
-
-              <% } else { %>
-
+              <% if (loadReminderStatus === "on") { %>
                 <% var checkOnOff = "checked" %>
-                <% var formFieldOnOff = "" %>
-
+              <% } else { %>
+                <% var checkOnOff = "" %>
               <% }%>
 
-              <input type="checkbox" data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger" name="remidnerStatus" data-width="20" value="<%= loadReminderStatus  %>" <%= checkOnOff  %>>
+              <div class="text-right settingsToggleCotainer" id="toggleValueChanger" value="<%= loadReminderStatus %>">
+                <input type="checkbox" class="emailReminderFrm reminderStatusBox" id="" data-toggle="toggle" data-on="On" data-off="Off" data-onstyle="success" data-offstyle="danger" name="reminderStatus" data-width="20" <%= checkOnOff %>/>
+              </div>
             </div>
-          </div>
-          <hr class="settingsHr" />
-        </section>
-        <div class="row">
-          <div class="col-md-12 m-auto">
-            <div class="row mb-3">
-              <div class="col-md-4 m-auto">
-                <div class="text-center" id="">
-                  <div class="form-group">
-                    <label for="emailFrequency">Frequency</label>
-                    <select class="form-control" id="emailFrequency" <%= formFieldOnOff %>>
-                      <option>Daily</option>
-                      <option>Weekly</option>
-                      <option>Monthly</option>
-                    </select>
+            <hr class="settingsHr" />
+          </section>
+          <!-- </form> -->
+          <div class="row">
+            <div class="col-md-12 m-auto">
+              <div class="row mb-3">
+                <div class="col-md-4 m-auto">
+                  <div class="text-center" id="">
+                    <!-- <form method="POST" action="/userEMSttings"> -->
+                    <div class="form-group">
+                      <label for="emailFrequency">Frequency</label>
+
+                      <% var loadFrequency = userData.reminderSettings.frequency %>
+
+                      <select class="form-control emailReminderFrm dayOfWeekOnOff" id="emailFrequency" name="<%= loadFrequency %>">
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                      </select>
+                    </div>
+                    <!-- </form> -->
                   </div>
                 </div>
-              </div>
-              <div class="col-md-4 m-auto">
-                <div class="text-center" id="userNameLabel">
-                  <div class="form-group" disabled>
-                    <label for="dayOfWeek">Day of Week</label>
-                    <select class="form-control" id="dayOfWeek" <%= formFieldOnOff %>>
-                      <option>Monday</option>
-                      <option>Tuesday</option>
-                      <option>Wednesday</option>
-                      <option>Thursday</option>
-                      <option>Friday</option>
-                      <option>Saturday</option>
-                      <option>Sunday</option>
-                    </select>
+                <div class="col-md-4 m-auto">
+                  <div class="text-center" id="">
+                  <!-- <form method="POST" action="/userEMSttings"> -->
+                    <div class="form-group" disabled>
+                      <label for="dayOfWeek">Day of Week</label>
+
+                      <% var loadDayOfWeek = userData.reminderSettings.dayOfWeek %>
+
+                      <select class="form-control emailReminderFrm" id="dayOfWeek" name="<%= loadDayOfWeek %>">
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                        <option value="Sunday">Sunday</option>
+                      </select>
+                    </div>
+                    <!-- </form> -->
                   </div>
                 </div>
-              </div>
-              <div class="col-md-4 m-auto">
-                <div class="text-center" id="userNameLabel">
-                  <div class="form-group">
-                    <label for="timepicker1">Time of Day</label>
-                    <div class="input-group bootstrap-timepicker timepicker">
-                      <input id="timepicker1" type="text" class="form-control input-small" <%= formFieldOnOff %>>
-                      <div class="input-group-append">
-                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                <div class="col-md-4 m-auto">
+                  <div class="text-center" id="">
+                  <!-- <form method="POST" action="/userEMSttings"> -->
+                    <div class="form-group">
+                      <label for="timepicker1">Time of Day</label>
+                      <div class="input-group bootstrap-timepicker timepicker">
+                        <input id="timepicker1" type="text" class="form-control input-small" >
+                        <div class="input-group-append">
+                          <span class="input-group-text"><i class="far fa-clock"></i></span>
+                        </div>
                       </div>
                     </div>
+                    <!-- </form> -->
+
+                    <script type="text/javascript">
+                      $('#timepicker1').timepicker({
+                          defaultTime: "<%= userData.reminderSettings.timeOfDay %>",
+                          minuteStep: 15
+                        });
+                    </script>
                   </div>
-                  <script type="text/javascript">
-                    $('#timepicker1').timepicker({
-                        defaultTime: "8:30 PM",
-                        minuteStep: 15
-                      });
-                  </script>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
 
       <br />

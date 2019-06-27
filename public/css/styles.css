@@ -41,12 +41,12 @@ textarea {
 
 label {
   font-family: 'IM Fell Great Primer', serif;
+  color: #465559;
 }
 
 input {
   font-family: 'IM Fell Great Primer', serif;
 }
-
 
 .btn:focus {
   outline: 0;
@@ -194,6 +194,8 @@ nav.footer li a:hover {
   outline: 0;
 }
 
+/* ---------------------Mobile Phone formatting------------------------------ */
+
 @media screen and (max-width: 500px) {
 
   /*----------header navbar & footer Mobile formatting--------------*/
@@ -242,10 +244,55 @@ nav.footer li a:hover {
     font-size: 1.1rem;
   }
 
+
+  i {
+    font-size: 1.5rem;
+  }
+
   .settingsIcn {
     align-items: top;
     font-size: 1rem;
   }
+
+}
+
+/* ---------------------Tablet formatting------------------------------ */
+@media screen and (min-width: 501px) and (max-width: 1000px) {
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+  }
+
+  h4 {
+    font-size: .9rem;
+  }
+
+  h5 {
+    font-size: .85rem;
+  }
+
+  i {
+    font-size: 1.5rem;
+  }
+
+  .settingsIcn {
+    align-items: top;
+    font-size: .85rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  textarea.form-control  {
+    font-size: 1rem;
+    /* font-family: 'IM Fell Great Primer', serif; */
+  }
+
 
 }
 
@@ -286,7 +333,7 @@ nav.footer li a:hover {
   font-family: 'IM Fell Great Primer', serif;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 800px) {
   .form-control {
     font-size: .9rem;
   }
@@ -303,6 +350,10 @@ width: 100%;
 
 .row {
   min-height: 35px;
+}
+
+.userBioPicBtn {
+  width: 75%;
 }
 
 .settingsContentWrapper {
@@ -378,6 +429,12 @@ width: 100%;
 .validateWarning {
   font-family: 'IM Fell Great Primer', serif;
   color: red;
+}
+
+@media screen and (max-width: 1000px) {
+  .timepicker i {
+    font-size: 1rem;
+  }
 }
 
 /* -----------------------expand entry form------------------------------- */
@@ -656,6 +713,17 @@ a.userProfName {
   display: inline-block;
 }
 
+.shareBtnContainer i {
+  font-size: 2rem;
+}
+
+@media screen and (min-width: 501px) and (max-width: 768px) {
+
+  .shareBtnContainer i {
+    font-size: 1.5rem;
+  }
+}
+
 .shareBtn {
   background: none;
   border: none;
@@ -680,6 +748,17 @@ a.userProfName {
 
 .favBtnContainer {
   display: inline-block;
+}
+
+.favBtnContainer i {
+  font-size: 2rem;
+}
+
+@media screen and (min-width: 501px) and (max-width: 1000px) {
+
+  .favBtnContainer i {
+    font-size: 1.5rem;
+  }
 }
 
 .favBtn {
@@ -819,6 +898,15 @@ a.userProfName {
 .profileInfo {
   text-align: center;
 }
+
+
+@media screen and (max-width: 1000px) {
+
+  .profileInfo i {
+    font-size: .85rem;
+  }
+}
+
 
 .profilePicContainer {
   background-image: url(/assets/lightpaperfibers_@2X.png);

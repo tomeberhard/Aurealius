@@ -275,23 +275,6 @@ app.get("/settings", function(req, res) {
   }
 });
 
-// app.get("/settings/:currentUserId", function(req, res) {
-//
-//   const userIdentifier = req.user;
-//
-//   AurealiusUser.findOne({
-//     _id: userIdentifier._id
-//   }, function(err, userData) {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       res.render("settings", {
-//         userInfo: userData
-//       });
-//     }
-//   });
-// });
-
 
 app.get("/user", function(req, res) {
 
@@ -525,8 +508,8 @@ app.post("/register", function(req, res) {
 
   const emailStngObj = {
     status: "on",
-    frequency: "daily",
-    dayOfWeek: "thursday",
+    frequency: "Daily",
+    dayOfWeek: "Thursday",
     timeOfDay: "8:30pm",
   };
 
@@ -734,6 +717,31 @@ app.post("/userImageUpload", upload.single("file"), function(req, res) {
 
   res.status(200);
   res.end(userFileExists());
+
+});
+
+app.post("/userEMSttings", function(req, res) {
+
+  let emailSettingsDataObj = req.body;
+  console.log(emailSettingsDataObj);
+
+  AurealiusUser.findOneAndUpdate({
+    _id: req.user.id
+  }, {
+    $set: {
+      reminderSettings:  emailSettingsDataObj
+    }
+  },{
+    new: true
+  }, function(err, success) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("Succesfully updated email reminder settings.");
+      res.status(200);
+      res.end();
+    }
+  });
 
 });
 

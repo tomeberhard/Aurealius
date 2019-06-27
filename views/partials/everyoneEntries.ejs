@@ -53,7 +53,7 @@
           <% var collapseShareID = "a" + JSON.stringify(entry._id).replace(/"/g, "") %>
 
           <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
-            <i class="fas fa-share fa-2x"></i>
+            <i class="fas fa-share "></i>
           </button>
         </div>
 
@@ -76,8 +76,8 @@
             <% } %>
 
             <button class="favBtn <%= clicked %>" name="favoriteButton" id="<%= heartBtnEntryId %>" value="<%= entry._id %>">
-              <i id="unfav" class="far fa-heart fa-2x <%= notFaved %>"></i>
-              <i id="Fav" class="fas fa-heart fa-2x <%= faved %>"></i>
+              <i id="unfav" class="far fa-heart <%= notFaved %>"></i>
+              <i id="Fav" class="fas fa-heart  <%= faved %>"></i>
             </button>
           </form>
         </div>

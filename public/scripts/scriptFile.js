@@ -86,6 +86,99 @@ $(document).on("mouseenter", ".favBtn", function() {
   }
 });
 
+//-----------------------------editEntryBtn----------------------------------//
+
+$(document).on("click", ".editBtn", function(event) {
+  let editBtnEntryId = $(this).attr("value");
+  let currentCaptionHeight = $("#" + "cpt" + editBtnEntryId).outerHeight();
+  let currentCaptionWidth = $("#" + "cpt" + editBtnEntryId).outerWidth();
+  let numberLineHeight = parseInt($("#" + "cpt" + editBtnEntryId).css("lineHeight"));
+  let rows = Math.ceil(currentCaptionHeight / numberLineHeight)+1;
+
+  $("#" + "editCptTA" + editBtnEntryId).attr("rows", rows);
+  $("#" + "editCptTA" + editBtnEntryId).css("width", currentCaptionWidth);
+  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").removeClass("d-none");
+  $("#" + "cpt" + editBtnEntryId).addClass("d-none");
+
+}).on("click", ".closeEditBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  let editBtnEntryId = $(this).attr("value");
+  let currentCaptionText = $("#" + "cpt" + editBtnEntryId).text();
+  console.log(currentCaptionText);
+  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+
+  $(this).closest("form").get(0).reset();
+
+  $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+});
+
+$(document).on("click", ".submitEditBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let updatedCaption = $(this).closest(".editEntryForm").find("textarea").val();
+  // console.log(updatedCaption);
+
+  let editCaptionFormId = $(this).parent().attr("id");
+  let editBtnEntryId = editCaptionFormId.slice(13);
+  // console.log(editBtnEntryId);
+
+  let data = JSON.stringify({
+    _id: editBtnEntryId,
+    caption: updatedCaption
+  });
+  $.ajax({
+    url: "/update",
+    type: "POST",
+    contentType: "application/json",
+    data: data
+  }).done(function() {
+    $("#" + "cpt" + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
+    $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+    $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+  }).fail(function(err) {
+    console.log(err)
+  });
+});
+
+//----------------------User collection pop-up field controls----------------//
+$("#collectionTextArea").on("keyup", function() {
+
+  let textInput = $("#collectionTextArea").val();
+
+  $("#collectionTextArea").attr("name", "grouping");
+
+  if (textInput != "") {
+    $("#collectionSelector").prop("disabled", true);
+  } else {
+    $("#collectionSelector").prop("disabled", false);
+  }
+
+});
+
+$("#collectionSelector").on("change", function() {
+
+  let selectionMade = $("#collectionSelector :selected").text();
+
+  console.log(selectionMade);
+
+  if (selectionMade) {
+    $("#collectionTextArea").attr("name", "");
+  } else {
+    $("#collectionTextArea").attr("name", "grouping");
+  }
+
+});
+
+//--------------------------user page view selection--------------------------//
+$(".viewerChoice").click(function() {
+  let btnClicked = $(this);
+
+  userViewChoice(btnClicked);
+});
+
+
 //-----------------------------infinite scroll ----------------------------------//
 
 let totalSeenIds = [];
@@ -193,8 +286,6 @@ $(document).on("click", ".reportSubmitBtn", function(event) {
       $("#" + entryId).empty();
       $("#" + entryId).append("<p style='text-align:center'>Thank you for reporting this entry.<br> We will review and let you know what we decide.</p>");
 
-
-
     })
     .fail(function(err) {
       console.log(err)
@@ -297,7 +388,109 @@ function updateFollowing(followPanel) {
   $("#followLinklist").html(followPanel)
 }
 
-//-----------------------------editSettings----------------------------------//
+//-------------------edit settings bioImage------------------------------------------//
+
+$(document).on("click", ".userBioPicBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  $(this).addClass("d-none");
+  $(this).next("#userBioPicSettingsBtnBar").removeClass("d-none");
+
+});
+
+$(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  $("#userBioPicForm")[0].reset();
+  $("#bioImagePreview").empty();
+  $("#bioImagePreview").addClass("d-none");
+  $("#userBioImage").removeClass("d-none");
+
+  $(".userBioPicBtn").removeClass("d-none");
+  $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+
+});
+
+$(document).on("click", ".userBioPicSubmitBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  $(userBioPicForm).ajaxSubmit({
+
+    error: function(err) {
+      console.log(err)
+    },
+    success: function(response) {
+      $("#userBioImage").attr("image", "image/" + response);
+
+      console.log("image/" + response);
+
+      $("#userBioImage").empty();
+
+      $("#bioImagePreview").addClass("d-none");
+      $("#userBioPicForm")[0].reset();
+      $("#bioImagePreview").empty();
+
+      $("#userBioImage").removeClass("d-none");
+
+      jQuery(function() {
+        jQuery(".userSettingsImage.orientation").each(function() {
+          var div = $(this);
+          loadImage(
+            div.attr("image"),
+            function(img) {
+              div.append(img);
+            }, {
+              orientation: true,
+              aspectRatio: 1 / 1
+            }
+          );
+        });
+      })
+
+      $(".userBioPicBtn").removeClass("d-none");
+      $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+    }
+
+  });
+});
+
+$(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  $("#userBioPicForm")[0].reset();
+  $("#bioImagePreview").empty();
+  $("#bioImagePreview").addClass("d-none");
+  $("#userBioImage").removeClass("d-none");
+
+  $(".userBioPicBtn").removeClass("d-none");
+  $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+
+});
+
+
+//------------------new bioImage preview------------------------------------------//
+
+var loadFile = function(event) {
+
+  loadImage(
+    event.target.files[0],
+    function(img) {
+      $("#bioImagePreview").append(img);
+    }, {
+      orientation: true,
+      aspectRatio: 1 / 1
+    }
+  );
+
+  $("#bioImagePreview").removeClass("d-none");
+  $("#userBioImage").addClass("d-none");
+}
+
+//-----------------------------edituserSettings------------------------------//
 
 $(document).on("click", ".editSettingsBtn", function(event) {
   event.preventDefault();
@@ -335,14 +528,10 @@ $(document).on("click", ".submitEditSettingsBtn", function(event) {
   let updatedFieldValue = $("#" + fieldName + "EditInput").val();
   // console.log(updatedFieldValue);
 
-
   let userEditObj = new Object();
 
   userEditObj[fieldName] = updatedFieldValue;
-
-
-  console.log(userEditObj);
-
+  // console.log(userEditObj);
 
   let data = JSON.stringify({
     data: userEditObj
@@ -511,7 +700,7 @@ $(document).on("click", ".editEmailSettingsBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  let userField = $(this).attr("value")
+  let userField = $(this).attr("value");
 
   $("#" + userField + "EditInput").css("width", "100%").removeClass("d-none");
   $("#" + userField + "EditBtnContainer").removeClass("d-none");
@@ -579,7 +768,7 @@ $(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
         $("#" + fieldName + "EditInput").addClass("d-none");
         $("#" + fieldName + "EditInput").val("");
         $("#" + fieldName + "EditBtnContainer").addClass("d-none");
-        $("#" + fieldName + "EditInput").closet("form").get(0).reset();
+        $("#" + fieldName + "EditInput").closest("form").get(0).reset();
         $("#" + fieldName + "SettingsInputWBtnContainer").removeClass("d-none");
         $("#" + fieldName + "SettingsContent").text(updatedFieldValue);
         // console.log(updatedFieldValue);
@@ -635,200 +824,125 @@ $(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
 
 });
 
-//-------------------edit bioImage------------------------------------------//
 
-$(document).on("click", ".userBioPicBtn", function(event) {
-  event.preventDefault();
-  event.stopPropagation();
+//-----------------------------editreminderSettings-----------------------------//
 
-  $(this).addClass("d-none");
-  $(this).next("#userBioPicSettingsBtnBar").removeClass("d-none");
+if (window.location.pathname === "/settings") {
 
-});
+  let loadStatus = $("#toggleValueChanger").attr("value");
+  // console.log(loadStatus);
+  let loadFrequency = $("#emailFrequency").attr("name");
+  let loadDayOfWeek = $("#dayOfWeek").attr("name");
 
-$(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
-  event.preventDefault();
-  event.stopPropagation();
+  $("#emailFrequency option[value = " + loadFrequency + "]").attr("selected", "selected");
+  $("#dayOfWeek option[value = " + loadDayOfWeek + "]").attr("selected", "selected");
 
-  $("#userBioPicForm")[0].reset();
-  $("#bioImagePreview").empty();
-  $("#bioImagePreview").addClass("d-none");
-  $("#userBioImage").removeClass("d-none");
-
-  $(".userBioPicBtn").removeClass("d-none");
-  $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
-
-});
-
-$(document).on("click", ".userBioPicSubmitBtn", function(event) {
-  event.preventDefault();
-  event.stopPropagation();
-
-  $(userBioPicForm).ajaxSubmit({
-
-    error: function(err) {
-      console.log(err)
-    },
-    success: function(response) {
-      $("#userBioImage").attr("image", "image/" + response);
-
-      console.log("image/" + response);
-
-      $("#userBioImage").empty();
-
-      $("#bioImagePreview").addClass("d-none");
-      $("#userBioPicForm")[0].reset();
-      $("#bioImagePreview").empty();
-
-      $("#userBioImage").removeClass("d-none");
-
-      jQuery(function() {
-        jQuery(".userSettingsImage.orientation").each(function() {
-          var div = $(this);
-          loadImage(
-            div.attr("image"),
-            function(img) {
-              div.append(img);
-            }, {
-              orientation: true,
-              aspectRatio: 1 / 1
-            }
-          );
-        });
-      })
-
-      $(".userBioPicBtn").removeClass("d-none");
-      $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
+  if(loadStatus === "off") {
+    $("#emailFrequency").attr("disabled","disabled");
+    $("#dayOfWeek").attr("disabled","disabled");
+    $("#timepicker1").attr("disabled","disabled");
+  } else {
+    if(loadFrequency === "Daily") {
+      $("#dayOfWeek").attr("disabled","disabled");
     }
+  }
 
-  });
-});
-
-$(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
-  event.preventDefault();
-  event.stopPropagation();
-
-  $("#userBioPicForm")[0].reset();
-  $("#bioImagePreview").empty();
-  $("#bioImagePreview").addClass("d-none");
-  $("#userBioImage").removeClass("d-none");
-
-  $(".userBioPicBtn").removeClass("d-none");
-  $(".userBioPicBtn").next("#userBioPicSettingsBtnBar").addClass("d-none");
-
-});
-
-
-//-------------------image preview------------------------------------------//
-
-var loadFile = function(event) {
-
-  loadImage(
-    event.target.files[0],
-    function(img) {
-      $("#bioImagePreview").append(img);
-    }, {
-      orientation: true,
-      aspectRatio: 1 / 1
-    }
-  );
-
-  $("#bioImagePreview").removeClass("d-none");
-  $("#userBioImage").addClass("d-none");
 }
 
 
-//-----------------------------editEntryBtn----------------------------------//
+//------ajax email request----------------//
 
-$(document).on("click", ".editBtn", function(event) {
-  let editBtnEntryId = $(this).attr("value");
-  let currentCaptionHeight = $("#" + "cpt" + editBtnEntryId).outerHeight();
-  let currentCaptionWidth = $("#" + "cpt" + editBtnEntryId).outerWidth();
-  let numberLineHeight = parseInt($("#" + "cpt" + editBtnEntryId).css("lineHeight"));
-  let rows = Math.ceil(currentCaptionHeight / numberLineHeight)+1;
-
-  $("#" + "editCptTA" + editBtnEntryId).attr("rows", rows);
-  $("#" + "editCptTA" + editBtnEntryId).css("width", currentCaptionWidth);
-  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").removeClass("d-none");
-  $("#" + "cpt" + editBtnEntryId).addClass("d-none");
-
-}).on("click", ".closeEditBtn", function(event) {
-  event.preventDefault();
-  event.stopPropagation();
-  let editBtnEntryId = $(this).attr("value");
-  let currentCaptionText = $("#" + "cpt" + editBtnEntryId).text();
-  console.log(currentCaptionText);
-  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
-
-  $(this).closest("form").get(0).reset();
-
-  $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
-});
-
-$(document).on("click", ".submitEditBtn", function(event) {
+$(document).on("change", ".emailReminderFrm", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  let updatedCaption = $(this).closest(".editEntryForm").find("textarea").val();
-  // console.log(updatedCaption);
 
-  let editCaptionFormId = $(this).parent().attr("id");
-  let editBtnEntryId = editCaptionFormId.slice(13);
-  // console.log(editBtnEntryId);
+  let fieldChanged = $(this).attr("class");
+  // console.log(fieldChanged);
+  // console.log(fieldChanged.includes("reminderStatusBox"));
 
-  let data = JSON.stringify({
-    _id: editBtnEntryId,
-    caption: updatedCaption
-  });
+  if (fieldChanged.includes("reminderStatusBox")) {
+
+    if ($("#toggleValueChanger").attr("value") === "on") {
+      $("#toggleValueChanger").attr("value", "off");
+      $("#emailFrequency").attr("disabled", "disabled");
+      $("#dayOfWeek").attr("disabled", "disabled");
+      $("#timepicker1").attr("disabled", "disabled");
+
+    } else {
+      $("#toggleValueChanger").attr("value", "on");
+      $("#emailFrequency").removeAttr("disabled", "disabled");
+      $("#timepicker1").removeAttr("disabled", "disabled");
+
+      if($("#emailFrequency").val() != "Daily") {
+      $("#dayOfWeek").removeAttr("disabled", "disabled");
+      }
+
+    }
+
+    if ($("#reminderStatusBox").attr("checked")) {
+        $("#reminderStatusBox").removeAttr("checked");
+    } else {
+      $("#reminderStatusBox").attr("checked");
+
+  }
+}
+
+if (fieldChanged.includes("dayOfWeekOnOff")) {
+  // console.log($("#emailFrequency").val());
+
+  if($("#emailFrequency").val() === "Daily") {
+
+  $("#dayOfWeek").attr("disabled", "disabled");
+
+  } else {
+
+    $("#dayOfWeek").removeAttr("disabled", "disabled");
+
+  }
+
+}
+
+  let statusSetting = $("#toggleValueChanger").attr("value");
+  // console.log(statusSetting);
+  let frequencySetting = $("#emailFrequency").val();
+  // console.log(frequencySetting);
+  let dayOfWeekSetting = $("#dayOfWeek").val();
+  // console.log(dayOfWeekSetting);
+  let timeOfDaySetting = $("#timepicker1").val();
+  // console.log(timeOfDaySetting);
+
+  let emailSettingsObj = new Object();
+
+  emailSettingsObj = {
+    status: statusSetting,
+    frequency: frequencySetting,
+    dayOfWeek: dayOfWeekSetting,
+    timeOfDay: timeOfDaySetting
+  };
+
+  // console.log(emailSettingsObj);
+
+  let data = JSON.stringify(emailSettingsObj);
+
   $.ajax({
-    url: "/update",
+    url: "/userEMSttings",
     type: "POST",
     contentType: "application/json",
     data: data
   }).done(function() {
-    $("#" + "cpt" + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
-    $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
-    $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+
+    // setDayOfWeek();
+
+    // console.log("Successfully updated email reminder settings.")
+
   }).fail(function(err) {
     console.log(err)
   });
-});
-
-//----------------------User collection pop-up field controls----------------//
-$("#collectionTextArea").on("keyup", function() {
-
-  let textInput = $("#collectionTextArea").val();
-
-  $("#collectionTextArea").attr("name", "grouping");
-
-  if (textInput != "") {
-    $("#collectionSelector").prop("disabled", true);
-  } else {
-    $("#collectionSelector").prop("disabled", false);
-  }
 
 });
 
-$("#collectionSelector").on("change", function() {
 
-  let selectionMade = $("#collectionSelector :selected").text();
-
-  console.log(selectionMade);
-
-  if (selectionMade) {
-    $("#collectionTextArea").attr("name", "");
-  } else {
-    $("#collectionTextArea").attr("name", "grouping");
-  }
-
-});
-
-//--------------------------user page view selection--------------------------//
-$(".viewerChoice").click(function() {
-  let btnClicked = $(this);
-
-  userViewChoice(btnClicked);
-});
 
 
 //----------------------------functions--------------------------------------//
