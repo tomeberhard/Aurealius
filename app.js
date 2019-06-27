@@ -28,6 +28,8 @@ const app = express();
 
 app.set("view engine", "ejs");
 
+// import 'simplebar/dist/simplebar.css'
+
 //-----------------------Middleware-----------------------------------//
 app.use(express.static("public"));
 
@@ -503,7 +505,8 @@ app.post("/register", function(req, res) {
   const registeredLName = req.body.lName;
   const slicedLName = registeredLName.slice(0, 1);
   const dateNow = Date.now();
-  const timeStamp = JSON.stringify(dateNow).slice(0, 4);
+  const dateNowString = JSON.stringify(dateNow);
+  const timeStamp = dateNowString.substr(dateNowString.length - 4);
   const createdProfileName = registeredFName + slicedLName + timeStamp;
 
   const emailStngObj = {
@@ -1017,20 +1020,41 @@ app.post("/follow", function(req, res) {
 
 app.post("/update", function(req, res) {
 
-  Entry.updateOne({
-    _id: req.body._id,
-  }, {
-    $set: {
-      caption: req.body.caption
-    }
-  }, function(err, success) {
-    if (err) {
+  AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
+    if(err) {
       console.log(err);
     } else {
-      console.log("Successfully updated entry caption.");
-      res.status(200);
-      res.end();
+      Entry.findOne({_id: req.body._id}, function(err, foundEntry) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user)) {
+
+            Entry.updateOne({
+              _id: req.body._id,
+            }, {
+              $set: {
+                caption: req.body.caption
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully updated entry caption.");
+                res.status(200);
+                res.end();
+              }
+            });
+
+          } else {
+            res.status(200);
+            res.end("Invalid User!");
+          }
+        }
+      });
     }
+
   });
 
 });
@@ -1202,48 +1226,111 @@ app.post("/report", function(req, res) {
 
 app.post("/delete", function(req, res) {
 
-  const deleteBtnData = req.body.deleteButton;
-  const deleteBtnEntryId = deleteBtnData.slice(0, deleteBtnData.indexOf(" "));
-  // console.log(deleteBtnEntryId.indexOf(" "));
-  const deleteBtnimageFile = deleteBtnData.slice(deleteBtnData.indexOf(" ") + 1, deleteBtnData.length);
-  // console.log(deleteBtnimageFile);
+  let deleteBtnEntryId = req.body.entryId;
+  console.log(deleteBtnEntryId);
+  let deleteBtnimageFile = req.body.fileName;
+  console.log(deleteBtnimageFile);
 
-  AurealiusUser.findOneAndUpdate({
-    _id: req.user.id
-  }, {
-    $pullAll: {
-      _entries: [mongoose.Types.ObjectId(deleteBtnEntryId)]
-    }
-  }, {
-    new: true
-  }, function(err, success) {
+  AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
+    if(err) {
+      console.log(err);
+    } else {
+      Entry.findOne({_id: deleteBtnEntryId}, function(err, foundEntry) {
+        if (err) {
+          console.log(err);
+        } else {
 
-    console.log("Successfully removed entry from user entries.");
+          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user)) {
 
-    Entry.deleteOne({
-      _id: deleteBtnEntryId
-    }, function(err, success) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Successfully deleted entry.");
+            AurealiusUser.findOneAndUpdate({
+              _id: req.user.id
+            }, {
+              $pullAll: {
+                _entries: [mongoose.Types.ObjectId(deleteBtnEntryId)]
+              }
+            }, {
+              new: true
+            }, function(err, success) {
 
-        gfs.remove({
-          filename: deleteBtnimageFile,
-          root: "uploads"
-        }, function(err, success) {
-          if (err) {
-            return res.status(404).json({
-              err: err
+              console.log("Successfully removed entry from user entries.");
+
+              Entry.deleteOne({
+                _id: deleteBtnEntryId
+              }, function(err, success) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Successfully deleted entry.");
+
+                  gfs.remove({
+                    filename: deleteBtnimageFile,
+                    root: "uploads"
+                  }, function(err, success) {
+                    if (err) {
+                      console.log(err);
+                    } else {
+                      console.log("Successfully deleted entry upload.")
+                      res.status(200);
+                      res.end();
+                    }
+                  });
+                }
+              });
             });
+
           } else {
-            console.log("Successfully deleted entry upload.")
-            res.redirect("back");
+            res.status(200);
+            res.end("Invalid User!");
           }
-        });
-      }
-    });
+        }
+      });
+    }
+
   });
+
+
+  // const deleteBtnData = req.body.deleteButton;
+  // const deleteBtnEntryId = deleteBtnData.slice(0, deleteBtnData.indexOf(" "));
+  // // console.log(deleteBtnEntryId.indexOf(" "));
+  // const deleteBtnimageFile = deleteBtnData.slice(deleteBtnData.indexOf(" ") + 1, deleteBtnData.length);
+  // // console.log(deleteBtnimageFile);
+  //
+  // AurealiusUser.findOneAndUpdate({
+  //   _id: req.user.id
+  // }, {
+  //   $pullAll: {
+  //     _entries: [mongoose.Types.ObjectId(deleteBtnEntryId)]
+  //   }
+  // }, {
+  //   new: true
+  // }, function(err, success) {
+  //
+  //   console.log("Successfully removed entry from user entries.");
+  //
+  //   Entry.deleteOne({
+  //     _id: deleteBtnEntryId
+  //   }, function(err, success) {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       console.log("Successfully deleted entry.");
+  //
+  //       gfs.remove({
+  //         filename: deleteBtnimageFile,
+  //         root: "uploads"
+  //       }, function(err, success) {
+  //         if (err) {
+  //           return res.status(404).json({
+  //             err: err
+  //           });
+  //         } else {
+  //           console.log("Successfully deleted entry upload.")
+  //           res.redirect("back");
+  //         }
+  //       });
+  //     }
+  //   });
+  // });
 
 });
 

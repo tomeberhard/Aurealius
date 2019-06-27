@@ -32,6 +32,30 @@ switch (navPage) {
     break;
 }
 
+//-------------------follower/following collapse placement------------------//
+
+if ($(window).width() < 500 ) {
+
+$(".mobileExpd").removeClass("d-none");
+$(".nonMobileExpd").addClass("d-none");
+
+} else {
+
+  $(".mobileExpd").addClass("d-none");
+  $(".nonMobileExpd").removeClass("d-none");
+
+}
+
+if ($(window).width() > 501 && $(window).width() < 770) {
+
+$(".followingPrvw").addClass("d-none");
+
+} else {
+
+$(".followingPrvw").removeClass("d-none");
+
+}
+
 //-------------------entry form input expand--------------------------------//
 $(document).on("click", function(event) {
 
@@ -105,7 +129,7 @@ $(document).on("click", ".editBtn", function(event) {
   event.stopPropagation();
   let editBtnEntryId = $(this).attr("value");
   let currentCaptionText = $("#" + "cpt" + editBtnEntryId).text();
-  console.log(currentCaptionText);
+  // console.log(currentCaptionText);
   $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
 
   $(this).closest("form").get(0).reset();
@@ -133,10 +157,28 @@ $(document).on("click", ".submitEditBtn", function(event) {
     type: "POST",
     contentType: "application/json",
     data: data
-  }).done(function() {
-    $("#" + "cpt" + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
-    $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
-    $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+  }).done(function(response) {
+
+    if(response) {
+
+      $("#eID" + editBtnEntryId).append("<h3 class='text-center invalidUser validateWarning'></h3>");
+
+      $(".invalidUser").text(response);
+
+      $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+      $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+      $(".editIcnContainer").addClass("d-none");
+
+      setTimeout(function() {
+        $(".invalidUser").remove();
+      }, 3000);
+
+    } else {
+      $("#" + "cpt" + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
+      $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+      $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+    }
+
   }).fail(function(err) {
     console.log(err)
   });
@@ -253,7 +295,64 @@ function updateEveryoneEntries(everyoneEntries) {
 
 }
 
+//-----------------------------delete Entry AJAX----------------------------------//
+
+$(document).on("click", "#deleteButton", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let deleteBtnData = $(this).val();
+  console.log(deleteBtnData);
+
+  let deleteBtnEntryId = deleteBtnData.slice(0, deleteBtnData.indexOf(" "));
+  let deleteBtnimageFile = deleteBtnData.slice(deleteBtnData.indexOf(" ") + 1, deleteBtnData.length);
+
+  let data = JSON.stringify({
+    entryId: deleteBtnEntryId,
+    fileName: deleteBtnimageFile
+  });
+  $.ajax({
+      url: "/delete",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function(response) {
+
+      if(response) {
+
+        $("#eID" + deleteBtnEntryId).append("<h3 class='text-center invalidUser validateWarning'></h3>");
+
+        $(".invalidUser").text(response);
+
+        $("#" + "editCptTA" + deleteBtnEntryId).parents(":eq(1)").addClass("d-none");
+        $("#" + "cpt" + deleteBtnEntryId).removeClass("d-none");
+        $(".deleteIcnContainer").addClass("d-none");
+
+        setTimeout(function() {
+          $(".invalidUser").remove();
+        }, 3000);
+
+      } else {
+
+        $("#eID" + deleteBtnEntryId).empty();
+        $("#eID" + deleteBtnEntryId).append("<p style='text-align:center'>Your entry has been succesfully deleted.</p>");
+
+        setTimeout(function(){
+          $("#eID" + deleteBtnEntryId).remove();
+        }, 2500);
+
+      }
+
+    })
+    .fail(function(err) {
+      console.log(err)
+    });
+});
+
+
+
 //-----------------------------report Entry AJAX----------------------------------//
+
 $(document).on("click", ".reportSubmitBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();

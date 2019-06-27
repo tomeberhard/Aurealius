@@ -39,37 +39,44 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="collapse show" id="userColumnFollow">
-                <div class="followContainer followingContainer text-center">
+                <div class="followContainer followingContainer">
                   <div class="followBoxHeader">
 
                     <h5 class="inline" id="followNum">
-                      Following (
-                      <%= userData._following.length %>)
+                      Following (<%= userData._following.length %>)
                     </h5>
                   </div>
-                  <div class="expndCrdContainer">
+
+                  <div class="expndFollowContainer mobileExpd">
                     <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
-                      <i class="fas fa-chevron-down" id="followingChevronLftToDwn"></i>
+                      <i class="fas fa-chevron-down" id="mfollowingChevronLftToDwn"></i>
                     </button>
                   </div>
+
                   <div class="followLinkContainer collapse" id="followLinklist">
 
                     <%- include('partials/followPanel') %>
 
                   </div>
-                </div>
-                <div class="followContainer text-center">
-                  <div class="followBoxHeader">
-                    <h5 class="inline">
-                      Followers (
-                      <%= userData._followers.length %>)
-                    </h5>
-                  </div>
-                  <div class="expndCrdContainer">
-                    <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
-                      <i class="fas fa-chevron-down" id="followerChevronLftToDwn"></i>
+                  <div class="expndFollowContainer nonMobileExpd">
+                    <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followLinklist" aria-expanded="false" aria-controls="followLinklist">
+                      <i class="fas fa-chevron-down" id="nMfollowingChevronLftToDwn"></i>
                     </button>
                   </div>
+                </div>
+                <div class="followContainer">
+                  <div class="followBoxHeader">
+                    <h5 class="inline">
+                      Followers (<%= userData._followers.length %>)
+                    </h5>
+                  </div>
+
+                  <div class="expndFollowContainer mobileExpd">
+                    <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
+                      <i class="fas fa-chevron-down" id="mfollowerChevronLftToDwn"></i>
+                    </button>
+                  </div>
+
                   <div class="followLinkContainer collapse" id="followerLinklist">
 
                     <% if(userFollowers.length > 0){ %>
@@ -91,9 +98,12 @@
                     <p class="noFollowTxt">No Followers</p>
                     <% } %>
                   </div>
+                  <div class="expndFollowContainer nonMobileExpd">
+                    <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
+                      <i class="fas fa-chevron-down" id="nMfollowerChevronLftToDwn"></i>
+                    </button>
+                  </div>
                 </div>
-
-                <br />
 
               </div>
             </div>

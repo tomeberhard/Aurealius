@@ -101,7 +101,7 @@
 
           <% var editCaptionFormId = "editCptTA"+ entry._id %>
 
-          <textarea class="" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%- entry.caption %></textarea>
+          <textarea class="captionContainer" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%- entry.caption %></textarea>
 
           <% var editCptBtnBarId = "editCptBtnBar"+ entry._id %>
 
@@ -150,12 +150,11 @@
 
       <div class="deleteIcnContainer <%= show %>">
         <form method="POST" action="/delete">
-          <button class="entryContainerBtn warning " value="<%= entry._id %> <%= entry.imageFile %>" name="deleteButton">
+          <button class="entryContainerBtn warning " value="<%= entry._id %> <%= entry.imageFile %>" id="deleteButton" name="deleteButton">
             <i class="fas fa-trash"></i>
           </button>
         </form>
       </div>
-
     </div>
 
   </div>

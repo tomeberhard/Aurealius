@@ -48,9 +48,38 @@ input {
   font-family: 'IM Fell Great Primer', serif;
 }
 
+:focus {
+outline: 0;
+box-shadow: none;
+}
+
 .btn:focus {
   outline: 0;
   box-shadow: none;
+}
+
+/*---------------------------custom scroller------------------------------ */
+
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  opacity: 0.5;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #474f85;
 }
 
 /*---------------------------- Viewsize------------------------------ */
@@ -226,7 +255,6 @@ nav.footer li a:hover {
     text-shadow: 0 0 17px black;
   }
 
-
   .footer {
     height: 50px;
   }
@@ -257,7 +285,7 @@ nav.footer li a:hover {
 }
 
 /* ---------------------Tablet formatting------------------------------ */
-@media screen and (min-width: 501px) and (max-width: 1000px) {
+@media screen and (min-width: 501px) and (max-width: 900px) {
 
   h2 {
     font-size: 1.25rem;
@@ -285,14 +313,12 @@ nav.footer li a:hover {
   }
 
   p {
-    font-size: 1rem;
+    font-size: .82rem;
   }
 
   textarea.form-control  {
     font-size: 1rem;
-    /* font-family: 'IM Fell Great Primer', serif; */
   }
-
 
 }
 
@@ -303,9 +329,7 @@ nav.footer li a:hover {
   font-family: 'Sansita', sans-serif;
 }
 
-
-
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 900px) {
   .btn {
     font-size: .9rem;
   }
@@ -331,6 +355,15 @@ nav.footer li a:hover {
 .form-control {
   font-size: 1.2rem;
   font-family: 'IM Fell Great Primer', serif;
+}
+
+.form-control:focus {
+border: 1px solid #ced4da;
+box-shadow: 0 0 0 0.2rem rgb(	81, 227, 212,.25)
+}
+
+textarea:focus {
+box-shadow: 0 0 0 0.2rem rgb(	81, 227, 212,.25)
 }
 
 @media screen and (max-width: 800px) {
@@ -406,6 +439,15 @@ width: 100%;
   margin: auto;
 }
 
+@media screen and (max-width: 900px) {
+  .userSettingsImage {
+    width: 50%;
+  }
+  .userBioPicBtn {
+    width: 50%;
+  }
+}
+
 .changePwdBtnContainer {
   width: 95%;
 }
@@ -421,17 +463,12 @@ width: 100%;
   right:0;
 }
 
-/* .validateEmail {
-  font-family: 'IM Fell Great Primer', serif;
-  color: red;
-} */
-
 .validateWarning {
   font-family: 'IM Fell Great Primer', serif;
   color: red;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 900px) {
   .timepicker i {
     font-size: 1rem;
   }
@@ -544,7 +581,6 @@ label.btn {
   }
 }
 
-
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   background-image: url(/assets/lightpaperfibers_@2X.png);
@@ -564,12 +600,6 @@ label.btn {
   background-color: #fafcfd;
 }
 
-.cardWOImg {
-  /* background-color: #f3f9fb; */
-  /* background-image: url(/assets/lightpaperfibers_@2X.png); */
-  /* text-shadow: 0 0 2px rgba(0, 0, 0, 0.5); */
-}
-
 .captionContainer {
   font-size: 1.35rem;
   font-family: 'IM Fell Great Primer', serif;
@@ -578,10 +608,6 @@ label.btn {
 .card-text {
   white-space: pre-line;
 }
-
-/* .card-text:first-line {
-    line-height: 0px;
-} */
 
 @media screen and (max-width: 500px) {
   .captionContainer {
@@ -645,10 +671,6 @@ a.userProfName {
   border-width: 1px;
 }
 
-/* .followBtn:focus {
-  outline: 0;
-} */
-
 .flwUnflw {
   padding-left: 2%;
   display: inline-block;
@@ -680,7 +702,6 @@ a.userProfName {
   outline: 0;
 }
 
-
 @media screen and (max-width: 500px) {
   .editBtn {
   font-size: .75rem;
@@ -694,6 +715,12 @@ a.userProfName {
   padding:1rem 1rem 0 1rem;
 }
 
+@media screen and (max-width: 900px) {
+
+  .editEntryForm  textarea {
+    font-size: .82rem;
+  }
+}
 .editUserSettingsBtnBar {
   display: flex;
   align-items: center;
@@ -717,7 +744,7 @@ a.userProfName {
   font-size: 2rem;
 }
 
-@media screen and (min-width: 501px) and (max-width: 768px) {
+@media screen and (max-width: 900px) {
 
   .shareBtnContainer i {
     font-size: 1.5rem;
@@ -754,7 +781,7 @@ a.userProfName {
   font-size: 2rem;
 }
 
-@media screen and (min-width: 501px) and (max-width: 1000px) {
+@media screen and (max-width: 900px) {
 
   .favBtnContainer i {
     font-size: 1.5rem;
@@ -841,6 +868,12 @@ a.userProfName {
   outline: 0;
 }
 
+@media screen and (max-width: 900px) {
+  .expndCrdBtn i {
+    font-size: 1rem;
+  }
+}
+
 .entryTrayContainer {
   position: relative;
 }
@@ -900,8 +933,7 @@ a.userProfName {
 }
 
 
-@media screen and (max-width: 1000px) {
-
+@media screen and (max-width: 900px) {
   .profileInfo i {
     font-size: .85rem;
   }
@@ -930,16 +962,20 @@ a.userProfName {
   margin-bottom: 5%;
 }
 
+@media screen and (max-width: 500px) {
+  .userBoxPadding {
+    margin-bottom: 0;
+  }
+}
+
 .userProfilePic {
-  /* height: 200px; */
   width: 90%;
-  /* border-style: solid;
-  border-width: 2px;
-  border-radius: 50%;
-  overflow: hidden; */
   margin: auto;
   padding: 4%;
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+}
+
+#userColumnFollow {
+  margin-bottom: 5%;
 }
 
 @media only screen and (max-width: 768px) {
@@ -958,34 +994,62 @@ a.userProfName {
   }
 }
 
+.expndFollowContainer {
+  text-align: center;
+}
+
 .followContainer {
   /* background-color: #fafcfd; */
   background-image: url(/assets/lightpaperfibers_@2X.png);
-  padding: 2%;
+  padding: 2% 2% 5% 2%;
   margin-top: 5%;
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 @media screen and (max-width: 750px) {
-  .followingContainer {
-  margin-top: 0;
+  .followContainer {
+  width: 100%;
+  text-align: left;
+  display: inline-block;
   }
+
+  .followBoxHeader {
+  width: 85%;
+  display: inline-flex;
+  }
+
+  .expndFollowContainer {
+  width: auto;
+  display: inline;
+  text-align: right;
+  }
+
+}
+
+.followLinkContainer {
+  max-height: 150px;
+  width: 90%;
+  margin: auto;
+  overflow:auto;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: .25rem;
+  border-color: lightgray;
+
 }
 
 .followLinkBox {
   display: flex;
-  /* justify-content: center;   */
   align-items: center;
   border-style: solid;
   color: #474f85;
   margin: 4%;
-  /* font-size: 2rem;  */
   background-color: #fafcfd;
   border-color: #474f85;
-  border-width: 1px;
-  border-radius: .25rem;
   padding: .25rem .25rem;
+
 }
 
 h5.followTxt {
@@ -994,6 +1058,18 @@ h5.followTxt {
   margin-bottom: inherit;
   border-color: #474f85;
   color:#474f85;
+}
+
+@media screen and (min-width: 501px) and (max-width: 992px) {
+
+  h5.followTxt {
+    font-size: .85rem;
+  }
+
+  .followLinkBox {
+    justify-content: center;
+  }
+
 }
 
 .followLinkBox:hover h5.followTxt  {
@@ -1027,47 +1103,6 @@ h5.followTxt {
 
 .expndFollowerBtn:focus {
   outline: 0;
-}
-
-
-/* -----------------------user profile edit------------------------------- */
-/* .form-padding {
-  padding-top: 5%;
-}
-
-.form-button-spacing {
-  margin-top: 5%;
-  margin-bottom: 5%;
-}
-
-.userBio {
-  text-align: center;
-}
-
-.userImageContainer {
-  padding-top: 25px;
-  padding-bottom: 25px;
-} */
-
-
-/* .userInfo {
-  margin-bottom: 1.5rem;
-}
-
-.userImageframe {
-  height: 150px;
-  width: 150px;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: auto;
-  margin-bottom: 15%;
-} */
-
-/* -------------------CANT GET THIS TO WORK--------------------------------- */
-.userImagePreview.orientation canvas {
-  width: 150%;
 }
 
 .cardWImg {
