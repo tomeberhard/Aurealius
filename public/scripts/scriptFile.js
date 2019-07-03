@@ -116,9 +116,7 @@ $(document).on("click", ".editBtn", function(event) {
 
   let editBtnEntryId = $(this).attr("value");
 
-  let pathName = path;
-  let userPagePath = userPageDesignator(pathName);
-  console.log(userPagePath);
+  let userPagePath = userPageDesignator(path);
 
   let currentCaptionHeight = $("#" + "cpt" + userPagePath + editBtnEntryId).outerHeight();
   let currentCaptionWidth = $("#" + "cpt" + userPagePath  + editBtnEntryId).outerWidth();
@@ -135,9 +133,7 @@ $(document).on("click", ".editBtn", function(event) {
   event.stopPropagation();
   let editBtnEntryId = $(this).attr("value");
 
-  let pathName = path;
-  let userPagePath = userPageDesignator(pathName);
-  console.log(userPagePath);
+  let userPagePath = userPageDesignator(path);
 
   let currentCaptionText = $("#" + "cpt" + userPagePath + editBtnEntryId).text();
   // console.log(currentCaptionText);
@@ -156,8 +152,7 @@ $(document).on("click", ".submitEditBtn", function(event) {
   let updatedCaption = $(this).closest(".editEntryForm").find("textarea").val();
   // console.log(updatedCaption);
 
-  let pathName = path;
-  let userPagePath = userPageDesignator(pathName);
+  let userPagePath = userPageDesignator(path);
   // console.log(userPagePath);
 
   let editBtnEntryId = $(this).attr("value");
@@ -244,7 +239,7 @@ $("#favoriteEntriesContainer").addClass("d-none");
     updateUserEntries(result);
 
     jQuery(function() {
-      jQuery(".userEntryImg.orientation").each(function() {
+      jQuery(".userEntriesImg.orientation").each(function() {
         var div = $(this);
         loadImage(
           div.attr("image"),
@@ -282,57 +277,51 @@ console.log(renderContainerChoice);
 let imgClass = renderContainerChoice + "Img";
 console.log(imgClass);
 
+
 let containerID = ("#"+ renderContainerChoice + "Container");
 let containerStatus = $(containerID +" > div").length;
 // let containerStatus = ("#"+ renderContainerChoice + "Container").children().length;
 console.log(containerStatus);
 
+$("#userBtnBarContainer").find(".customActive").removeClass("customActive");
 let userBtnID = ("#show"+ renderContainerChoice);
+$(userBtnID).addClass("customActive");
 
-if(containerStatus != 0) {
+  $.ajax({
+    url: routeChoice,
+    type: "GET",
+    contentType: "application/json"
+  }).done(function(returnedEntries) {
 
-  $("#renderingContainer").find(".active").removeClass("active").addClass("d-none");
-  $("#userBtnBarContainer").find(".customActive").removeClass("customActive")
-  $(containerID).removeClass("d-none").addClass("active");
-  $(userBtnID).addClass("customActive");
+    $("#renderingContainer").find(".active").empty();
+    $("#renderingContainer").find(".active").removeClass("active").addClass("d-none");
+    $(containerID).removeClass("d-none").addClass("active");
 
-} else {
+    $(containerID).append(returnedEntries);
+    //
+    // updateUserEntries(returnedEntries);
 
-    $.ajax({
-      url: routeChoice,
-      type: "GET",
-      contentType: "application/json"
-    }).done(function(returnedEntries) {
-
-      $("#renderingContainer").find(".active").removeClass("active").addClass("d-none");
-      $(containerID).removeClass("d-none").addClass("active");
-
-      $(containerID).append(returnedEntries);
-      //
-      // updateUserEntries(returnedEntries);
-
-      jQuery(function() {
-        jQuery("."+ imgClass + ".orientation").each(function() {
-          var div = $(this);
-          loadImage(
-            div.attr("image"),
-            function(img) {
-              div.append(img);
-            }, {
-              orientation: true,
-            }
-          );
-        });
-        // $(".appendedBelow").remove();
+    jQuery(function() {
+      jQuery("."+ imgClass + ".orientation").each(function() {
+        var div = $(this);
+        loadImage(
+          div.attr("image"),
+          function(img) {
+            div.append(img);
+          }, {
+            orientation: true,
+          }
+        );
       });
-
-    }).fail(function(err) {
-      console.log(err);
+      // $(".appendedBelow").remove();
     });
-  }
+
+  }).fail(function(err) {
+    console.log(err);
+  });
+
 
 });
-
 
 // function renderEntries(returnedEntries) {
 //
@@ -425,8 +414,7 @@ $(document).on("click", "#deleteButton", function(event) {
   let deleteBtnData = $(this).val();
   // console.log(deleteBtnData);
 
-  let pathName = path;
-  let userPagePath = userPageDesignator(pathName);
+  let userPagePath = userPageDesignator(path);
 
   let deleteBtnEntryId = deleteBtnData.slice(0, deleteBtnData.indexOf(" "));
   let deleteBtnimageFile = deleteBtnData.slice(deleteBtnData.indexOf(" ") + 1, deleteBtnData.length);
@@ -484,8 +472,7 @@ $(document).on("click", ".reportSubmitBtn", function(event) {
   let reportedEntryId = this.id.substr(6);
   console.log(reportedEntryId);
 
-  let pathName = path;
-  let userPagePath = userPageDesignator(pathName);
+  let userPagePath = userPageDesignator(path);
 
   let entryId = $("#eID" + userPagePath + reportedEntryId).closest(".card-body").attr("id");
   console.log(entryId);

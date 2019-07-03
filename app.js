@@ -552,7 +552,41 @@ app.get("/user/:currentUserId", function(req, res) {
   });
 });
 
-app.get("/user/:currentUserId/collections/:grouping", function(req, res) {
+app.get("/collections", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let userInfo = req.user;
+
+    AurealiusUser.findOne({
+        _id: userInfo._id
+      })
+      .populate({
+        path: "_entries",
+        model: "entry"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          let uniqueGroupings = [...new Set(foundUser._entries.map(item => item.grouping))];
+
+          res.render("collections", {
+            userData: userInfo,
+            groupings: uniqueGroupings
+          });
+
+        }
+      });
+
+    }
+
+});
+
+
+
+app.get("/user/collections/:grouping", function(req, res) {
 
   const userIdentifier = req.params.currentUserId;
   const grouping = req.params.grouping;
