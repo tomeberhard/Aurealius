@@ -12,7 +12,7 @@
         </section>
         <div class="row">
           <!-- biopic column -->
-          <div class="col-lg-3 m-auto">
+          <div class="col-lg-4 m-auto">
             <form action="/userImageUpload" method="POST" id="userBioPicForm" enctype="multipart/form-data">
               <div id="bioPicContainer">
                 <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
@@ -25,9 +25,15 @@
                 <div class="settingsContentWrapper mt-2 mb-3">
                   <button class="btn btn-primary userBioPicBtn">Change</button>
                   <div class="d-none" id="userBioPicSettingsBtnBar">
-                    <div class="custom-file mb-3">
-                      <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
-                    </div>
+                    <!-- <div class="custom-file mb-3"> -->
+                      <!-- <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/> -->
+                      <!-- <input type="file" name="file" id="bioFile" class="form-control-file" onchange=""/> -->
+                    <!-- </div> -->
+                    <label class="btn fileBtn bioPicFileBtn" for="bioFile">
+                      <input type="file" name="file" id="bioFile" class="" style="display:none" onchange="loadFile(event); $('#upload-file-info').html(this.files[0].name);">
+                      Add Image
+                    </label>
+                    <div class="label label-info bioPicFileBtn" id="upload-file-info"></div>
                     <div class="editUserSettingsBtnBar">
                       <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 userBioPicSubmitBtn" />
                       <button type="button" class="btn btn-secondary closeEditSettingsBtn" id="closeUserBioPicEditSettingsBtn">Close</button>
@@ -38,15 +44,15 @@
             </form>
           </div>
           <!-- name & profilename column -->
-          <div class="col-lg-9">
+          <div class="col-lg-8">
             <form method="POST" action="/userSettingsUpload">
               <div class="row mb-2">
-                <div class="col-md-3 m-auto">
-                  <div class="text-center" id="profileNameLabel">
+                <div class="col-md-4 m-auto">
+                  <div class="settingsLabel" id="profileNameLabel">
                     <p>Profile Name</p>
                   </div>
                 </div>
-                <div class="col-md-9 m-auto">
+                <div class="col-md-8 m-auto">
                   <div class="settingsInputWBtnContainer" id="profileNameSettingsInputWBtnContainer">
                     <div class="settingsInfoText">
                       <p class="settingInputText" id="profileNameSettingsContent">
@@ -61,8 +67,8 @@
                 </div>
               </div>
               <div class="row mb-2 d-none" id="profileNameEditBtnContainer">
-                <div class="col-md-3 m-auto"></div>
-                <div class="col-md-9" >
+                <div class="col-md-4 m-auto"></div>
+                <div class="col-md-8" >
                   <div class="editUserSettingsBtnBar" id="">
                     <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="profileNameSubmitBtn" />
                     <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="profileName">Close</button>
@@ -73,12 +79,12 @@
 
               <form method="POST" action="/userSettingsUpload">
               <div class="row mb-2">
-                <div class="col-md-3 m-auto">
-                  <div class="text-center" id="firstNameLabel">
+                <div class="col-md-4 m-auto">
+                  <div class="settingsLabel" id="firstNameLabel">
                     <p>First Name</p>
                   </div>
                 </div>
-                <div class="col-md-9 m-auto">
+                <div class="col-md-8 m-auto">
                   <div class="settingsInputWBtnContainer" id="firstNameSettingsInputWBtnContainer">
                     <div class="settingsInfoText">
                       <p class="settingInputText" id="firstNameSettingsContent">
@@ -93,8 +99,8 @@
                 </div>
               </div>
               <div class="row mb-2 d-none" id="firstNameEditBtnContainer">
-                <div class="col-md-3 m-auto"></div>
-                <div class="col-md-9" >
+                <div class="col-md-4 m-auto"></div>
+                <div class="col-md-8" >
                   <div class="editUserSettingsBtnBar" id="">
                     <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="firstNameSubmitBtn" />
                     <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="firstName">Close</button>
@@ -105,12 +111,12 @@
 
               <form method="POST" action="/userSettingsUpload">
               <div class="row mb-2">
-                <div class="col-md-3 m-auto">
-                  <div class="text-center" id="lastNameLabel">
+                <div class="col-md-4 m-auto">
+                  <div class="settingsLabel" id="lastNameLabel">
                     <p>Last Name</p>
                   </div>
                 </div>
-                <div class="col-md-9 m-auto">
+                <div class="col-md-8 m-auto">
                   <div class="settingsInputWBtnContainer" id="lastNameSettingsInputWBtnContainer">
                     <div class="settingsInfoText">
                       <p class="settingInputText" id="lastNameSettingsContent">
@@ -125,8 +131,8 @@
                 </div>
               </div>
               <div class="row mb-2 d-none" id="lastNameEditBtnContainer">
-                <div class="col-md-3 m-auto"></div>
-                <div class="col-md-9" >
+                <div class="col-md-4 m-auto"></div>
+                <div class="col-md-8" >
                   <div class="editUserSettingsBtnBar" id="">
                     <input type="submit" value="Save" class="btn btn-primary btn-block mr-1 submitEditSettingsBtn" id="lastNameSubmitBtn" />
                     <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="lastName">Close</button>
@@ -151,12 +157,12 @@
 
           <form method="POST" action="/userSettingsUpload">
             <div class="row mb-2">
-              <div class="col-md-3 m-auto">
-                <div class="text-center" id="">
+              <div class="col-md-4 m-auto">
+                <div class="settingsLabel" id="emailLabel">
                   <p>Email</p>
                 </div>
               </div>
-              <div class="col-md-9 m-auto">
+              <div class="col-md-8 m-auto">
                 <div class="settingsInputWBtnContainer" id="emailSettingsInputWBtnContainer">
                   <div class="login settingsInfoText" id="">
                     <p class="settingInputText" id="emailSettingsContent">
@@ -174,8 +180,8 @@
               </div>
             </div>
             <div class="row mb-2 d-none" id="emailEditBtnContainer">
-              <div class="col-md-3 m-auto"></div>
-              <div class="col-md-9" >
+              <div class="col-md-4 m-auto"></div>
+              <div class="col-md-8" >
                 <div class="editUserSettingsBtnBar" id="">
                   <input type="submit" value="Submit" class="btn btn-primary btn-block mr-1 submitEmailEditSettingsBtn" id="emailSubmitBtn" />
                   <button type="button" class="btn btn-secondary closeEditSettingsBtn" value="email">Close</button>

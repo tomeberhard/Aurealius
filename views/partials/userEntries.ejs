@@ -1,0 +1,193 @@
+<% if(entries){ %>
+<%_ entries.forEach(function(entry) { _%>
+
+<% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
+<% var hide = "" %>
+<% var cardClass = "cardWOImg" %>
+<% } else { %>
+<% var hide = "/image/" + entry.imageFile %>
+<% var cardClass = "cardWImg" %>
+<% } %>
+
+<% var cardId = "eIDuserEntries" + entry._id %>
+
+<div class="card card-body mb-3 cushion" id="<%= cardId %>">
+  <div class="userEntryImg orientation" image="<%= hide %>"></div>
+  <div class="<%= cardClass %>">
+    <div class="uNFavIcnContainer">
+      <div class="profileFllwUnFllw">
+        <a href="/index" class="userProfName">
+          <h3><%= entry._user.profileName %></h3>
+        </a>
+
+        <% if(entry.viewStatus === "public") { %>
+        <% var public = "" %>
+        <% var private = "d-none" %>
+        <% } else { %>
+        <% var public = "d-none" %>
+        <% var private = "" %>
+        <% } %>
+
+        <% var pubPriDDId = "dd" + entry._id %>
+        <% var pubPriModalDDId = "ddModal" + entry._id %>
+
+        <div class="dropdown inline pubPriUserBtn ml-2">
+          <button class="btn btn-pubPri dropdown-toggle" type="button" id="<%= pubPriDDId %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="inline currentOption pubPritoggle">
+              <div class="public <%= public %>">
+                <i class="inline fas fa-eye"></i>
+                <p class="inline">Public</p>
+              </div>
+              <div class="private <%= private %>">
+                <i class="inline fas fa-eye-slash"></i>
+                <p class="inline">Private</p>
+              </div>
+            </div>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="<%= pubPriDDId %>">
+            <div class="dropdown-item">
+              <%var pubPriFormId = "formDD" + entry._id %>
+              <form method="POST" action="/updatePrivacy" id="<%= pubPriFormId %>">
+                <div class="inline dDoption pubPritoggle" data-toggle="modal" data-target="#<%= pubPriModalDDId %>">
+                  <div class="public <%= private %>">
+                    <i class="inline fas fa-eye"></i>
+                    <p class="inline">Public</p>
+                  </div>
+                  <div class="private <%= public %>">
+                    <i class="inline fas fa-eye-slash"></i>
+                    <p class="inline">Private</p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+
+
+
+      </div>
+
+      <div class="favShare">
+        <div class="shareBtnContainer">
+
+          <% var collapseShareID = "auserEntries" + JSON.stringify(entry._id).replace(/"/g, "") %>
+
+          <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
+            <i class="fas fa-share "></i>
+          </button>
+        </div>
+
+        <div class="favBtnContainer">
+
+          <% var favFormEntryId = "favFormuserEntries"+ entry._id%>
+
+          <form method="POST" action="/favorite" id="<%= favFormEntryId %>">
+
+            <% var heartBtnEntryId = "euserEntries"+ entry._id%>
+            <% var favs = JSON.stringify(entry._favoriteUsers) %>
+            <% if (favs.includes(userData._id)) { %>
+            <% var faved = "" %>
+            <% var notFaved = "d-none" %>
+            <% var clicked = "clicked" %>
+            <% } else { %>
+            <% var faved = "d-none" %>
+            <% var notFaved = "" %>
+            <% var clicked = "" %>
+            <% } %>
+
+            <button class="favBtn <%= clicked %>" name="favoriteButton" id="<%= heartBtnEntryId %>" value="<%= entry._id %>">
+              <i id="unfav" class="far fa-heart <%= notFaved %>"></i>
+              <i id="Fav" class="fas fa-heart  <%= faved %>"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="aFSMIconContainer collapse" id="<%= collapseShareID %>">
+      <span class="aFSMIcons border rounded">
+        <i class="fab fa-facebook"></i>
+        <i class="fab fa-instagram"></i>
+        <i class="fab fa-twitter"></i>
+        <i class="fas fa-external-link-alt"></i>
+      </span>
+    </div>
+    <div class="captionContainer">
+
+      <% var captionId = "cptuserEntries"+ entry._id %>
+
+      <p class="card-text" id="<%= captionId %>"><%= entry.caption %></p>
+      <div class="editEntryForm d-none">
+        <form method="POST" action="/upload">
+
+          <% var editCaptionFormId = "editCptTAuserEntries"+ entry._id %>
+
+          <textarea class="captionContainer" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%- entry.caption %></textarea>
+
+          <% var editCptBtnBarId = "editCptBtnBaruserEntries"+ entry._id %>
+
+          <div class="editEntryBtnBar" id="<%= editCptBtnBarId %>">
+            <button type="submit" class="btn btn-primary btn-block mr-1 submitEditBtn" value="<%= entry._id %>">Save</button>
+            <button type="button" class="btn btn-secondary closeEditBtn" value="<%= entry._id %>">Close</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <% var collapseExpandID = "b" + collapseShareID %>
+    <% var collapseExpandIconID = "c" + collapseExpandID %>
+
+    <div class="expndCrdContainer expandCrdCusion">
+      <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
+        <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
+      </button>
+    </div>
+
+    <div class="collapse userEntriesEntryTrayContainer" id="<%= collapseExpandID %>">
+
+      <div class="editIcnContainer ">
+        <button class="editBtn entryContainerBtn" value="<%= entry._id %>" name="entryToUpdate">
+          <i class="fas fa-edit"></i>
+        </button>
+      </div>
+
+      <div class="userEntriesDeleteIcnContainer">
+        <form method="POST" action="/delete">
+          <button class="entryContainerBtn warning " value="<%= entry._id %> <%= entry.imageFile %>" id="deleteButton" name="deleteButton">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal" id="<%= pubPriModalDDId %>" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Are You Sure?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <p>Changing the privacy setting will impact who can see this entry!</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="sbmt<%= pubPriModalDDId %>" value="<%= entry._id %> <%= entry.viewStatus %>" class="btn btn-primary btn-block pubPriSubmitBtn">Yes. Let's Do it!</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<%_ }) _%>
+<% } else { %>
+<p>No entries to show!</p>
+<% } %>

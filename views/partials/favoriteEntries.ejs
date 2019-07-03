@@ -9,10 +9,10 @@
 <% var cardClass = "cardWImg" %>
 <% } %>
 
-<% var cardId = "eID" + entry._id %>
+<% var cardId = "eIDfavoriteEntries" + entry._id %>
 
 <div class="card card-body mb-3 cushion" id="<%= cardId %>">
-  <div class="everyOneImg orientation" image="<%= hide %>"></div>
+  <div class="favoriteEntriesImg orientation" image="<%= hide %>"></div>
   <div class="<%= cardClass %>">
     <div class="uNFavIcnContainer">
       <div class="profileFllwUnFllw">
@@ -34,7 +34,7 @@
         <% var folUnfol = "Follow" %>
         <% } %>
 
-        <% var followbtnUName = "flwBtn" + entry._user.profileName %>
+        <% var followbtnUName = "flwBtnfavoriteEntries" + entry._user.profileName %>
 
         <div class="flwUnflw <%= hide %>">
           <form method="POST" action="/follow">
@@ -50,7 +50,7 @@
       <div class="favShare">
         <div class="shareBtnContainer">
 
-          <% var collapseShareID = "a" + JSON.stringify(entry._id).replace(/"/g, "") %>
+          <% var collapseShareID = "afavoriteEntries" + JSON.stringify(entry._id).replace(/"/g, "") %>
 
           <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
             <i class="fas fa-share "></i>
@@ -59,11 +59,11 @@
 
         <div class="favBtnContainer">
 
-          <% var favFormEntryId = "favForm"+ entry._id%>
+          <% var favFormEntryId = "favFormfavoriteEntries"+ entry._id%>
 
           <form method="POST" action="/favorite" id="<%= favFormEntryId %>">
 
-            <% var heartBtnEntryId = "e"+ entry._id%>
+            <% var heartBtnEntryId = "efavoriteEntries"+ entry._id%>
             <% var favs = JSON.stringify(entry._favoriteUsers) %>
             <% if (favs.includes(userData._id)) { %>
             <% var faved = "" %>
@@ -93,17 +93,17 @@
     </div>
     <div class="captionContainer">
 
-      <% var captionId = "cpt"+ entry._id %>
+      <% var captionId = "cptfavoriteEntries"+ entry._id %>
 
       <p class="card-text" id="<%= captionId %>"><%= entry.caption %></p>
       <div class="editEntryForm d-none">
         <form method="POST" action="/upload">
 
-          <% var editCaptionFormId = "editCptTA"+ entry._id %>
+          <% var editCaptionFormId = "editCptTAfavoriteEntries"+ entry._id %>
 
           <textarea class="captionContainer" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%- entry.caption %></textarea>
 
-          <% var editCptBtnBarId = "editCptBtnBar"+ entry._id %>
+          <% var editCptBtnBarId = "editCptBtnBarfavoriteEntries"+ entry._id %>
 
           <div class="editEntryBtnBar" id="<%= editCptBtnBarId %>">
             <button type="submit" class="btn btn-primary btn-block mr-1 submitEditBtn" value="<%= entry._id %>">Save</button>
@@ -126,7 +126,7 @@
     <div class="collapse entryTrayContainer" id="<%= collapseExpandID %>">
       <div class="reportIcnContainer">
 
-          <% var rptModalId = "rptModal" + entry._id %>
+          <% var rptModalId = "rptModalfavoriteEntries" + entry._id %>
 
         <button class="entryContainerBtn warning" data-toggle="modal" data-target="#<%= rptModalId %>">
           <i class="fas fa-exclamation-circle"></i>
@@ -196,7 +196,7 @@
               <textarea class="form-control reportTA" rows="3" name="reportComments" placeholder="Comments"></textarea>
             </div>
           </div>
-          <% var rptSubmitBtn = "rptBtn" + entry._id %>
+          <% var rptSubmitBtn = "rptBtnfavoriteEntries" + entry._id %>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary reportSubmitBtn"  id="<%= rptSubmitBtn %>" name="reportButton">Submit</button>
             <button type="button" id="modalCloseBtn" class="btn btn-secondary inline" data-dismiss="modal">Close</button>

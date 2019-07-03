@@ -81,7 +81,7 @@ $(document).on("click", function(event) {
 
 //--------------------------expand card flip--------------------------------//
 
-$(".expndCrdBtn").click(function() {
+$(document).on("click",".expndCrdBtn", function() {
   let getId = $(this).children().attr("id");
   $("#" + getId).toggleClass("fa-rotate-180");
 
@@ -113,28 +113,40 @@ $(document).on("mouseenter", ".favBtn", function() {
 //-----------------------------editEntryBtn----------------------------------//
 
 $(document).on("click", ".editBtn", function(event) {
+
   let editBtnEntryId = $(this).attr("value");
-  let currentCaptionHeight = $("#" + "cpt" + editBtnEntryId).outerHeight();
-  let currentCaptionWidth = $("#" + "cpt" + editBtnEntryId).outerWidth();
-  let numberLineHeight = parseInt($("#" + "cpt" + editBtnEntryId).css("lineHeight"));
+
+  let pathName = path;
+  let userPagePath = userPageDesignator(pathName);
+  console.log(userPagePath);
+
+  let currentCaptionHeight = $("#" + "cpt" + userPagePath + editBtnEntryId).outerHeight();
+  let currentCaptionWidth = $("#" + "cpt" + userPagePath  + editBtnEntryId).outerWidth();
+  let numberLineHeight = parseInt($("#" + "cpt" + userPagePath + editBtnEntryId).css("lineHeight"));
   let rows = Math.ceil(currentCaptionHeight / numberLineHeight)+1;
 
-  $("#" + "editCptTA" + editBtnEntryId).attr("rows", rows);
-  $("#" + "editCptTA" + editBtnEntryId).css("width", currentCaptionWidth);
-  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").removeClass("d-none");
-  $("#" + "cpt" + editBtnEntryId).addClass("d-none");
+  $("#" + "editCptTA" + userPagePath + editBtnEntryId).attr("rows", rows);
+  $("#" + "editCptTA" + userPagePath + editBtnEntryId).css("width", currentCaptionWidth);
+  $("#" + "editCptTA"  + userPagePath + editBtnEntryId).parents(":eq(1)").removeClass("d-none");
+  $("#" + "cpt" + userPagePath + editBtnEntryId).addClass("d-none");
 
 }).on("click", ".closeEditBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
   let editBtnEntryId = $(this).attr("value");
-  let currentCaptionText = $("#" + "cpt" + editBtnEntryId).text();
+
+  let pathName = path;
+  let userPagePath = userPageDesignator(pathName);
+  console.log(userPagePath);
+
+  let currentCaptionText = $("#" + "cpt" + userPagePath + editBtnEntryId).text();
   // console.log(currentCaptionText);
-  $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+
+  $("#" + "editCptTA" + userPagePath + editBtnEntryId).parents(":eq(1)").addClass("d-none");
 
   $(this).closest("form").get(0).reset();
 
-  $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+  $("#" + "cpt" + userPagePath + editBtnEntryId).removeClass("d-none");
 });
 
 $(document).on("click", ".submitEditBtn", function(event) {
@@ -144,8 +156,11 @@ $(document).on("click", ".submitEditBtn", function(event) {
   let updatedCaption = $(this).closest(".editEntryForm").find("textarea").val();
   // console.log(updatedCaption);
 
-  let editCaptionFormId = $(this).parent().attr("id");
-  let editBtnEntryId = editCaptionFormId.slice(13);
+  let pathName = path;
+  let userPagePath = userPageDesignator(pathName);
+  // console.log(userPagePath);
+
+  let editBtnEntryId = $(this).attr("value");
   // console.log(editBtnEntryId);
 
   let data = JSON.stringify({
@@ -161,12 +176,12 @@ $(document).on("click", ".submitEditBtn", function(event) {
 
     if(response) {
 
-      $("#eID" + editBtnEntryId).append("<h3 class='text-center invalidUser validateWarning'></h3>");
+      $("#eID" + userPagePath + editBtnEntryId).append("<h3 class='text-center invalidUser validateWarning'></h3>");
 
       $(".invalidUser").text(response);
 
-      $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
-      $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+      $("#" + "editCptTA" + userPagePath + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+      $("#" + "cpt" + userPagePath + editBtnEntryId).removeClass("d-none");
       $(".editIcnContainer").addClass("d-none");
 
       setTimeout(function() {
@@ -174,9 +189,9 @@ $(document).on("click", ".submitEditBtn", function(event) {
       }, 3000);
 
     } else {
-      $("#" + "cpt" + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
-      $("#" + "editCptTA" + editBtnEntryId).parents(":eq(1)").addClass("d-none");
-      $("#" + "cpt" + editBtnEntryId).removeClass("d-none");
+      $("#" + "cpt" + userPagePath + editBtnEntryId).closest(".captionContainer").find(".card-text").text(updatedCaption);
+      $("#" + "editCptTA" + userPagePath + editBtnEntryId).parents(":eq(1)").addClass("d-none");
+      $("#" + "cpt" + userPagePath + editBtnEntryId).removeClass("d-none");
     }
 
   }).fail(function(err) {
@@ -213,12 +228,118 @@ $("#collectionSelector").on("change", function() {
 
 });
 
-//--------------------------user page view selection--------------------------//
-$(".viewerChoice").click(function() {
-  let btnClicked = $(this);
+//--------------------------user page rendered entries------------------------//
 
-  userViewChoice(btnClicked);
+if (path === "/index2") {
+
+$("#userEntriesContainer").addClass("active");
+$("#followingEntriesContainer").addClass("d-none");
+$("#favoriteEntriesContainer").addClass("d-none");
+
+  $.ajax({
+    url: "/userEntries",
+    type: "GET",
+    contentType: "application/json"
+  }).done(function(result) {
+    updateUserEntries(result);
+
+    jQuery(function() {
+      jQuery(".userEntryImg.orientation").each(function() {
+        var div = $(this);
+        loadImage(
+          div.attr("image"),
+          function(img) {
+            div.append(img);
+          }, {
+            orientation: true,
+          }
+        );
+      });
+      // $(".appendedBelow").remove();
+    });
+
+  }).fail(function(err) {
+    console.log(err);
+  });
+
+}
+
+function updateUserEntries(userEntries) {
+
+  // $("#renderedEntryContainer").append("<div class='appendedBelow'></div>");
+  $("#userEntriesContainer").append(userEntries);
+  // $("div.appendedBelow").nextAll().children().addClass("scrollImages");
+}
+
+//--------------------------user page render------------------------//
+
+$(document).on("click",".userBtnBar", function(event) {
+
+let routeChoice = $(this).val();
+console.log(routeChoice);
+let renderContainerChoice = routeChoice.substring(1,routeChoice.length);
+console.log(renderContainerChoice);
+let imgClass = renderContainerChoice + "Img";
+console.log(imgClass);
+
+let containerID = ("#"+ renderContainerChoice + "Container");
+let containerStatus = $(containerID +" > div").length;
+// let containerStatus = ("#"+ renderContainerChoice + "Container").children().length;
+console.log(containerStatus);
+
+let userBtnID = ("#show"+ renderContainerChoice);
+
+if(containerStatus != 0) {
+
+  $("#renderingContainer").find(".active").removeClass("active").addClass("d-none");
+  $("#userBtnBarContainer").find(".customActive").removeClass("customActive")
+  $(containerID).removeClass("d-none").addClass("active");
+  $(userBtnID).addClass("customActive");
+
+} else {
+
+    $.ajax({
+      url: routeChoice,
+      type: "GET",
+      contentType: "application/json"
+    }).done(function(returnedEntries) {
+
+      $("#renderingContainer").find(".active").removeClass("active").addClass("d-none");
+      $(containerID).removeClass("d-none").addClass("active");
+
+      $(containerID).append(returnedEntries);
+      //
+      // updateUserEntries(returnedEntries);
+
+      jQuery(function() {
+        jQuery("."+ imgClass + ".orientation").each(function() {
+          var div = $(this);
+          loadImage(
+            div.attr("image"),
+            function(img) {
+              div.append(img);
+            }, {
+              orientation: true,
+            }
+          );
+        });
+        // $(".appendedBelow").remove();
+      });
+
+    }).fail(function(err) {
+      console.log(err);
+    });
+  }
+
 });
+
+
+// function renderEntries(returnedEntries) {
+//
+//   // $("#renderedEntryContainer").append("<div class='appendedBelow'></div>");
+//   $("#" + renderContainerChoice + "Container").append(returnedEntries);
+//   // $("div.appendedBelow").nextAll().children().addClass("scrollImages");
+// }
 
 
 //-----------------------------infinite scroll ----------------------------------//
@@ -226,7 +347,7 @@ $(".viewerChoice").click(function() {
 let totalSeenIds = [];
 let isWorking = 0;
 
-if (window.location.pathname != "/settings") {
+if (path == "/index") {
   $(window).scroll(function() {
 
     var scrollPercent = Math.round(($(window).scrollTop()) / ($(document).height() - $(window).height()) * 100);
@@ -302,7 +423,10 @@ $(document).on("click", "#deleteButton", function(event) {
   event.stopPropagation();
 
   let deleteBtnData = $(this).val();
-  console.log(deleteBtnData);
+  // console.log(deleteBtnData);
+
+  let pathName = path;
+  let userPagePath = userPageDesignator(pathName);
 
   let deleteBtnEntryId = deleteBtnData.slice(0, deleteBtnData.indexOf(" "));
   let deleteBtnimageFile = deleteBtnData.slice(deleteBtnData.indexOf(" ") + 1, deleteBtnData.length);
@@ -320,12 +444,12 @@ $(document).on("click", "#deleteButton", function(event) {
 
       if(response) {
 
-        $("#eID" + deleteBtnEntryId).append("<h3 class='text-center invalidUser validateWarning'></h3>");
+        $("#eID" + userPagePath + deleteBtnEntryId).append("<h3 class='text-center invalidUser validateWarning'></h3>");
 
         $(".invalidUser").text(response);
 
-        $("#" + "editCptTA" + deleteBtnEntryId).parents(":eq(1)").addClass("d-none");
-        $("#" + "cpt" + deleteBtnEntryId).removeClass("d-none");
+        $("#" + "editCptTA" + userPagePath + deleteBtnEntryId).parents(":eq(1)").addClass("d-none");
+        $("#" + "cpt" + userPagePath + deleteBtnEntryId).removeClass("d-none");
         $(".deleteIcnContainer").addClass("d-none");
 
         setTimeout(function() {
@@ -334,11 +458,11 @@ $(document).on("click", "#deleteButton", function(event) {
 
       } else {
 
-        $("#eID" + deleteBtnEntryId).empty();
-        $("#eID" + deleteBtnEntryId).append("<p style='text-align:center'>Your entry has been succesfully deleted.</p>");
+        $("#eID" + userPagePath + deleteBtnEntryId).empty();
+        $("#eID" + userPagePath + deleteBtnEntryId).append("<p style='text-align:center'>Your entry has been succesfully deleted.</p>");
 
         setTimeout(function(){
-          $("#eID" + deleteBtnEntryId).remove();
+          $("#eID" + userPagePath + deleteBtnEntryId).remove();
         }, 2500);
 
       }
@@ -359,7 +483,11 @@ $(document).on("click", ".reportSubmitBtn", function(event) {
 
   let reportedEntryId = this.id.substr(6);
   console.log(reportedEntryId);
-  let entryId = $("#eID" + reportedEntryId).closest(".card-body").attr("id");
+
+  let pathName = path;
+  let userPagePath = userPageDesignator(pathName);
+
+  let entryId = $("#eID" + userPagePath + reportedEntryId).closest(".card-body").attr("id");
   console.log(entryId);
   let checkedOption = $(".form-check-input:checked").val();
   console.log(checkedOption);
@@ -487,6 +615,54 @@ function updateFollowing(followPanel) {
   $("#followLinklist").html(followPanel)
 }
 
+//-----------------------------userEntry privacy change AJAX----------------------------------//
+
+$(document).on("click", ".pubPriSubmitBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let pubPriSubmitvalue = $(this).attr("value");
+
+  let pubPriEntryId = pubPriSubmitvalue.slice(0, pubPriSubmitvalue.indexOf(" "));
+  let pubPriEntryViewStatus = pubPriSubmitvalue.slice(pubPriSubmitvalue.indexOf(" ") + 1, pubPriSubmitvalue.length);
+
+  function toggleViewStatus() {
+    if (pubPriEntryViewStatus === "public") {
+      pubPriEntryViewStatus = "private";
+    } else {
+      pubPriEntryViewStatus = "public";
+    }
+    return pubPriEntryViewStatus
+  }
+
+  let data = JSON.stringify({
+    entryId: pubPriEntryId,
+    viewStatus: toggleViewStatus()
+  });
+  $.ajax({
+      url: "/updateEPrivacy",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function() {
+      $("#ddModal" + pubPriEntryId).modal("hide");
+      $("body").removeClass("modal-open");
+      $("body").removeAttr("style");
+      $(".modal-backdrop").remove();
+
+      $("#sbmtddModal" + pubPriEntryId).val(pubPriEntryId + " " + pubPriEntryViewStatus);
+      $("#dd" + pubPriEntryId).click();
+
+      $("#dd" + pubPriEntryId).find(".currentOption").children().toggleClass("d-none");
+      $("#formDD" + pubPriEntryId).find(".dDoption").children().toggleClass("d-none");
+
+
+    })
+    .fail(function(err) {
+      console.log(err)
+    });
+});
+
 //-------------------edit settings bioImage------------------------------------------//
 
 $(document).on("click", ".userBioPicBtn", function(event) {
@@ -562,6 +738,7 @@ $(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
 
   $("#userBioPicForm")[0].reset();
   $("#bioImagePreview").empty();
+  $("#upload-file-info").text("");
   $("#bioImagePreview").addClass("d-none");
   $("#userBioImage").removeClass("d-none");
 
@@ -926,7 +1103,7 @@ $(document).on("click", ".submitEmailEditSettingsBtn", function(event) {
 
 //-----------------------------editreminderSettings-----------------------------//
 
-if (window.location.pathname === "/settings") {
+if (path === "/settings") {
 
   let loadStatus = $("#toggleValueChanger").attr("value");
   // console.log(loadStatus);
@@ -1060,23 +1237,15 @@ function defineNavPage() {
   }
 }
 
-function userViewChoice(btnClicked) {
-
-  let viewSelection = $(btnClicked).attr("id");
-
-  if (viewSelection === "showActvityFeed") {
-    $(".activity").removeClass("d-none");
-    $(".favoritesActvity").addClass("d-none");
-    $(".userCollections").addClass("d-none");
+function userPageDesignator(pathName) {
+  let uPP;
+  if (pathName === "/index2") {
+    uPP =  $("#renderingContainer").find(".active").attr("value");
+    console.log(path);
+    console.log(uPP);
   } else {
-    if (viewSelection === "showCollections") {
-      $(".activity").addClass("d-none");
-      $(".favoritesActvity").addClass("d-none");
-      $(".userCollections").removeClass("d-none");
-    } else {
-      $(".activity").addClass("d-none");
-      $(".favoritesActvity").removeClass("d-none");
-      $(".userCollections").addClass("d-none");
-    }
+    uPP = "";
+    console.log("nope");
   }
+  return uPP;
 }

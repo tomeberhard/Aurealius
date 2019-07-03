@@ -212,7 +212,7 @@ app.get("/index", function(req, res) {
           if (req.isAuthenticated()) {
 
             let userInfo = req.user;
-            let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
+            // let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
             let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
@@ -245,6 +245,7 @@ app.get("/index", function(req, res) {
                     userFollowing: foundUserFollow._following,
                     userFollowers: foundUserFollow._followers
                   });
+
                 }
               });
 
@@ -252,6 +253,185 @@ app.get("/index", function(req, res) {
         }
       }
     });
+});
+
+app.get("/index2", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let userInfo = req.user;
+    let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
+
+    AurealiusUser.findOne({
+      _id: userInfo._id
+    })
+    .populate({
+      path: "_following",
+      model: "aurealiusUser"
+    })
+    .populate({
+      path: "_followers",
+      model: "aurealiusUser"
+    })
+    .populate({
+      path: "_entries",
+      model: "entry"
+    })
+    .exec(function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
+
+        let uniqueGroupings = [...new Set(foundUser._entries.map(item => item.grouping))];
+
+        res.render("index2", {
+          userData: userInfo,
+          groupings: uniqueGroupings,
+          userFollowing: foundUser._following,
+          userFollowers: foundUser._followers
+        });
+
+      }
+    });
+  }
+
+});
+
+app.get("/userEntries", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let userInfo = req.user;
+
+    AurealiusUser.findOne({
+      _id: userInfo._id
+    })
+    .populate({
+      path: "_entries",
+      match: { reportStatus: "Open"},
+      options: {
+        populate: {
+          path: "_user",
+          model: "aurealiusUser"
+        },
+        limit: 10,
+        sort: {createdAt: -1},
+    },
+      model: "entry"
+    })
+    .exec(function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
+
+        res.render("partials/userEntries", {
+          userData: userInfo,
+          entries: foundUser._entries
+        });
+      }
+    });
+  }
+
+});
+
+app.get("/favoriteEntries", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let userInfo = req.user;
+
+    AurealiusUser.findOne({
+      _id: userInfo._id
+    })
+    .populate({
+      path: "_following",
+      model: "aurealiusUser"
+    })
+    .populate({
+      path: "_favorites",
+      options: {
+        populate: {
+          path: "_user",
+          model: "aurealiusUser"
+        },
+        limit: 10,
+        sort: {createdAt: -1},
+      },
+      match: {
+        reportStatus: "Open"
+      },
+      model: "entry"
+    })
+    .exec(function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
+
+        let filteredFavs = foundUser._favorites.filter(function(result){
+
+          if (result.viewStatus === "private" && JSON.stringify(result._user._id) !== JSON.stringify(foundUser._id)) {
+          return false
+          }
+          return true
+
+        });
+
+        res.render("partials/favoriteEntries", {
+          userData: userInfo,
+          entries: filteredFavs,
+          userFollowing: foundUser._following,
+        });
+      }
+    });
+  }
+
+});
+
+app.get("/followingEntries", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let userInfo = req.user;
+
+    AurealiusUser.findOne({
+        _id: userInfo._id
+      },function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          Entry.find({
+            viewStatus: "public",
+            reportStatus: "Open",
+            _user: {
+              $in: foundUser._following
+            }
+          })
+          .limit(10)
+          .sort({
+            createdAt: -1
+          })
+          .populate({
+            path: "_user",
+            model: "aurealiusUser"
+          })
+          .exec(function(err, foundEntries) {
+            if (err) {
+              console.log(err);
+            } else {
+
+            res.status(200);
+            res.render("partials/followingEntries", {
+              userData: userInfo,
+              entries: foundEntries,
+              userFollowing: foundUser._following,
+            });
+            }
+          });
+        }
+      });
+    }
+
 });
 
 app.get("/settings", function(req, res) {
@@ -538,9 +718,6 @@ app.post("/register", function(req, res) {
 
 app.post("/changePassword", function(req, res) {
 
-  // console.log(req.body.oldpassword);
-  // console.log(req.body.newpassword);
-
   if (req.isAuthenticated()) {
 
   AurealiusUser.findOne({
@@ -794,6 +971,8 @@ app.post("/userSettingsUpload", function(req, res) {
 app.post("/moreEEntries", function(req, res) {
 
   let seenEntryIds = req.body.totalSeenIds;
+  // console.log(typeof seenEntryIds);
+  // console.log(seenEntryIds);
 
   Entry.find({
       viewStatus: "public",
@@ -818,7 +997,7 @@ app.post("/moreEEntries", function(req, res) {
           if (req.isAuthenticated()) {
 
             let userInfo = req.user;
-            let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
+            // let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
             let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
             // let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];
@@ -1018,6 +1197,59 @@ app.post("/follow", function(req, res) {
 
 });
 
+app.post("/updateEPrivacy", function(req, res) {
+
+  let entryId = req.body.entryId;
+  // console.log(entryId);
+  let viewStatus = req.body.viewStatus;
+  // console.log(viewStatus);
+
+  AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
+    if(err) {
+      console.log(err);
+    } else {
+      Entry.findOne({
+        _id: entryId
+      })
+      .populate({
+        path: "_user",
+        model: "aurealiusUser"
+      })
+      .exec(function(err, foundEntry) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user._id)) {
+
+            Entry.updateOne({
+              _id: entryId,
+            }, {
+              $set: {
+                viewStatus: viewStatus
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully updated entry privacy.");
+                res.status(200);
+                res.end();
+              }
+            });
+
+          } else {
+            res.status(200);
+            res.end("Invalid User!");
+          }
+        }
+      });
+    }
+
+  });
+
+});
+
 app.post("/update", function(req, res) {
 
   AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
@@ -1029,7 +1261,7 @@ app.post("/update", function(req, res) {
           console.log(err);
         } else {
 
-          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user)) {
+          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user._id)) {
 
             Entry.updateOne({
               _id: req.body._id,
@@ -1227,9 +1459,9 @@ app.post("/report", function(req, res) {
 app.post("/delete", function(req, res) {
 
   let deleteBtnEntryId = req.body.entryId;
-  console.log(deleteBtnEntryId);
+  // console.log(deleteBtnEntryId);
   let deleteBtnimageFile = req.body.fileName;
-  console.log(deleteBtnimageFile);
+  // console.log(deleteBtnimageFile);
 
   AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
     if(err) {
@@ -1287,50 +1519,6 @@ app.post("/delete", function(req, res) {
     }
 
   });
-
-
-  // const deleteBtnData = req.body.deleteButton;
-  // const deleteBtnEntryId = deleteBtnData.slice(0, deleteBtnData.indexOf(" "));
-  // // console.log(deleteBtnEntryId.indexOf(" "));
-  // const deleteBtnimageFile = deleteBtnData.slice(deleteBtnData.indexOf(" ") + 1, deleteBtnData.length);
-  // // console.log(deleteBtnimageFile);
-  //
-  // AurealiusUser.findOneAndUpdate({
-  //   _id: req.user.id
-  // }, {
-  //   $pullAll: {
-  //     _entries: [mongoose.Types.ObjectId(deleteBtnEntryId)]
-  //   }
-  // }, {
-  //   new: true
-  // }, function(err, success) {
-  //
-  //   console.log("Successfully removed entry from user entries.");
-  //
-  //   Entry.deleteOne({
-  //     _id: deleteBtnEntryId
-  //   }, function(err, success) {
-  //     if (err) {
-  //       console.log(err);
-  //     } else {
-  //       console.log("Successfully deleted entry.");
-  //
-  //       gfs.remove({
-  //         filename: deleteBtnimageFile,
-  //         root: "uploads"
-  //       }, function(err, success) {
-  //         if (err) {
-  //           return res.status(404).json({
-  //             err: err
-  //           });
-  //         } else {
-  //           console.log("Successfully deleted entry upload.")
-  //           res.redirect("back");
-  //         }
-  //       });
-  //     }
-  //   });
-  // });
 
 });
 

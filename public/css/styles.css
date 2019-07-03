@@ -7,7 +7,6 @@ body {
   /* background-color: #f3ecd3;
 background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png"); */
 /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
-
 background-color: #f3ecd3;
 /* background-image: url("https://www.transparenttextures.com/patterns/clean-textile.png"); */
 background-image: url("https://www.transparenttextures.com/patterns/fabric-1-light.png");
@@ -48,15 +47,29 @@ input {
   font-family: 'IM Fell Great Primer', serif;
 }
 
-:focus {
+button:focus {
 outline: 0;
 box-shadow: none;
 }
 
-.btn:focus {
-  outline: 0;
-  box-shadow: none;
+.btn.focus, .btn:focus, .btn:active  {
+    color: none;
+    background-color: none;
+    border-color: none;
+    outline: 0;
+    box-shadow: none!important;
 }
+
+/* .btn-outline-primary:not(:disabled):not(.disabled):active {
+  color: none;
+  background-color: none;
+  border-color: none;
+} */
+
+/* .btn.focus, .btn:focus {
+    outline: 0;
+    box-shadow: none!important;
+} */
 
 /*---------------------------custom scroller------------------------------ */
 
@@ -102,12 +115,6 @@ box-shadow: none;
   top: 0;
   background-color: #474f85;
   background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
-
-
-  /* background: rgb(35, 39, 66);
-  background: linear-gradient(0deg, rgba(49, 55, 93, 1) 0%, rgba(71, 79, 133, 1) 86%, rgba(35, 39, 66, 1) 100%); */
-
-
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
   font-family: 'Sansita', sans-serif;
@@ -347,6 +354,36 @@ nav.footer li a:hover {
   border-color: #51e3d4;
 }
 
+.userBtnBar {
+  border-width: 1px;
+  border-color:darkgray;
+  background-color: #f3f9fb;
+  /* background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png"); */
+  background-image: url("https://www.transparenttextures.com/patterns/fabric-1-light.png");
+  color: #474f85;
+}
+
+.userBtnBar:hover {
+  background-color: #474f85;
+  opacity: 0.6;
+  background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+  /* background-image: url("https://www.transparenttextures.com/patterns/fabric-1-light.png"); */
+  color: #f3f9fb;
+  box-shadow: 0px 0px 5px #51e3d4;
+
+}
+
+.userBtnBar.customActive {
+  border-color: #51e3d4;
+  background-color: #474f85;
+  opacity: 0.95;
+  background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+  /* background-image: url("https://www.transparenttextures.com/patterns/fabric-1-light.png"); */
+  color: #f3f9fb;
+  box-shadow: 0px 0px 5px #51e3d4;
+}
+
+
 .custom-file {
   font-family: 'Sansita', sans-serif;
 }
@@ -389,12 +426,16 @@ width: 100%;
   width: 75%;
 }
 
+
 .settingsContentWrapper {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+#userBioPicSettingsBtnBar {
+  width: 75%;
+}
 .settingsLabelContainer {
  /* position: absolute; */
  /* top: 50%; */
@@ -412,17 +453,40 @@ width: 100%;
   color: #495057;
   border: 1px solid #ced4da;
   border-radius: .25rem;
-  width: 80%;
+  width: 75%;
   height: 38px;
   top: 0;
   left: 0;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) {
+
+  .settingsInfoText {
+    width: 85%;
+  }
+
   .login.settingsInfoText {
     width: 85%;
   }
 }
+
+@media screen and (min-width: 990px) {
+/*
+  .settingsInfoText {
+    width: 75%;
+  } */
+
+  .login.settingsInfoText {
+    width: 85%;
+  }
+}
+/*
+@media screen and (max-width: 768px) {
+  .settingsInfoText {
+    width: 87%;
+  }
+} */
+
 .settingInputText {
   margin-top: 2%;
   padding-left: 5%;
@@ -481,11 +545,23 @@ width: 100%;
   /* transition: all 0.5s ease; */
 }
 
+
+/* -----------------------new entry form------------------------------- */
+
+.entry-form {
+  margin-bottom: 0;
+}
+
+.entry-form-submitBtn {
+  margin-top: 1rem;
+}
+
 /* -----------------------upload-private/public toggle------------------------------- */
 .upldToggleContainer {
   display: inline-block;
   position: relative;
   width: 100%;
+  margin-top: 10px;
   height: 35px;
 }
 
@@ -555,10 +631,7 @@ label.btn {
 }
 
 /* -----------------------user page view choice------------------------------- */
-.userBtnBar {
-  border-width: 1px;
-  border-color: darkgray;
-}
+
 
 /* -----------------------activity feed cards------------------------------- */
 
@@ -570,7 +643,7 @@ label.btn {
 .entryContainer {
   border-radius: .25rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  padding: 1.5rem 2rem 1.25rem 2rem;
+  padding: 1.75rem 2rem;
 }
 
 @media screen and (max-width: 500px) {
@@ -728,6 +801,35 @@ a.userProfName {
   padding:.5rem;
 }
 
+#userBioPicSettingsBtnBar {
+  padding:.5rem;
+}
+
+.bioPicFileBtn {
+  margin-left: .5rem;
+}
+
+@media screen and (min-width: 770px) {
+
+  .label-info.bioPicFileBtn {
+    overflow-wrap: normal;
+  }
+}
+
+
+.settingsLabel {
+ text-align: center;
+ font-size: 1rem;
+ padding-top: 10%;
+
+}
+
+@media screen and (max-width: 768px) {
+.settingsLabel {
+ padding-top: 0 ;
+}
+}
+
 .userFieldInput {
   font-family: 'IM Fell Great Primer', serif;
   color: #495057;
@@ -876,6 +978,11 @@ a.userProfName {
 
 .entryTrayContainer {
   position: relative;
+}
+
+.userEntriesEntryTrayContainer {
+  position: relative;
+  text-align: right;
 }
 
 .entryContainerBtn {
@@ -1109,9 +1216,9 @@ h5.followTxt {
   padding-top: 10px;
 }
 
-.cushion {
+/* .cushion {
   margin-bottom: 10px;
-}
+} */
 
 .header-form-button {
   margin-right: 10px;
@@ -1165,6 +1272,12 @@ h5.followTxt {
   bottom:0;
 }
 
+.userEntriesDeleteIcnContainer {
+  /* position: absolute;
+  left:0;
+  bottom:0; */
+}
+
 .editIcnContainer {
   position: absolute;
   width:50%;
@@ -1208,4 +1321,60 @@ h5.followTxt {
   border-style: solid;
   left: 0;
   top: 0;
+}
+
+/* -----------------------userEntries stuff--------------------------------- */
+
+.btn-pubPri {
+  background-color: none;
+  border-color: #474f85;
+}
+
+.btn-pubPri:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0px 0px 5px #51e3d4;
+}
+
+.pubPriUserBtn {
+  position: absolute;
+  top: 0;
+}
+
+.pubPritoggle {
+  color:#465559;
+}
+
+/* .dDoption {
+  background: none;
+  width: 100%;
+} */
+
+.pubPritoggle p {
+  margin: 0;
+}
+
+i p .pubPriUserBtn:hover  {
+  color:#465559;
+}
+
+.dropdown-menu:hover {
+  cursor: pointer;
+}
+
+@media screen and (max-width: 900px) {
+
+  .btn-pubPri {
+    height: 30px;
+    padding: .1rem 1rem;
+  }
+
+   .btn-pubPri i {
+    font-size: 1rem;
+  }
+
+  .dDoption i {
+    font-size: 1rem;
+  }
+
+
 }
