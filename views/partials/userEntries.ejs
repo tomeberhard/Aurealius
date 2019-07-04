@@ -4,6 +4,7 @@
 <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
 <% var hide = "" %>
 <% var cardClass = "cardWOImg" %>
+<% var paddingTop = "pt-3" %>
 <% } else { %>
 <% var hide = "/image/" + entry.imageFile %>
 <% var cardClass = "cardWImg" %>
@@ -11,9 +12,18 @@
 
 <% var cardId = "eIDuserEntries" + entry._id %>
 
-<div class="card card-body mb-3 cushion" id="<%= cardId %>">
+<div class="card card-body mb-3 <%= paddingTop %>" id="<%= cardId %>">
   <div class="userEntriesImg orientation" image="<%= hide %>"></div>
   <div class="<%= cardClass %>">
+    <div class="collectionContainer">
+      <div class="collectionNameFrame"><hr /></div>
+      <div class="collectionName">
+        <a href="/collections/<%= entry.grouping %>" class="">
+          <p><%= entry.grouping %></p>
+        </a>
+      </div>
+      <div class="collectionNameFrame"><hr /></div>
+    </div>
     <div class="uNFavIcnContainer">
       <div class="profileFllwUnFllw">
         <a href="/index" class="userProfName">
@@ -144,15 +154,21 @@
       </button>
     </div>
 
-    <div class="collapse userEntriesEntryTrayContainer" id="<%= collapseExpandID %>">
+    <div class="collapse userEntryTrayContainer" id="<%= collapseExpandID %>">
+      <div class="reportIcnContainer">
+        <button class="entryContainerBtn">
+            <i class="fas fa-exclamation-circle"></i>
+            <i class="fas fa-slash overLayIcns"></i>
+        </button>
+      </div>
 
-      <div class="editIcnContainer ">
+      <div class="userEditIcnContainer">
         <button class="editBtn entryContainerBtn" value="<%= entry._id %>" name="entryToUpdate">
           <i class="fas fa-edit"></i>
         </button>
       </div>
 
-      <div class="userEntriesDeleteIcnContainer">
+      <div class="userDeleteIcnContainer">
         <form method="POST" action="/delete">
           <button class="entryContainerBtn warning " value="<%= entry._id %> <%= entry.imageFile %>" id="deleteButton" name="deleteButton">
             <i class="fas fa-trash"></i>

@@ -563,6 +563,7 @@ app.get("/collections", function(req, res) {
       })
       .populate({
         path: "_entries",
+        options: {sort: {createdAt: -1}},
         model: "entry"
       })
       .exec(function(err, foundUser) {
@@ -571,10 +572,39 @@ app.get("/collections", function(req, res) {
         } else {
 
           let uniqueGroupings = [...new Set(foundUser._entries.map(item => item.grouping))];
+          let groupingImages = [];
+          // let groupingImgData = [];
+
+          uniqueGroupings.forEach(function(cName) {
+
+            let groupingImgData = foundUser._entries.find(function(result){
+              return result._grouping === cName
+            });
+
+            console.log(groupingImgData);
+
+            groupingImages.push(groupingImgData);
+
+          });
+
+          let groupingObj = new Object();
+          groupingObj.name = "";
+          groupingObj.image = "";
+
+          uniqueGroupings.forEach(function(cName) {
+            groupingObj.name = cName;
+          });
+
+          groupingImages.forEach(function(cImg) {
+            groupingObj.image = cImg;
+          });
+
+          console.log(groupingObj);
+
 
           res.render("collections", {
             userData: userInfo,
-            groupings: uniqueGroupings
+            groupings: groupingObj
           });
 
         }

@@ -1,0 +1,19 @@
+<% if(groupings){ %>
+<% groupings.forEach(function(grouping) { %>
+
+<div class="col-md-4 m-auto">
+  <div class="card card-body mb-3 text-center">
+    <a href="/collections/<%= grouping.name %>">
+      <div class="collectionBackStop">
+        <div class="orientation collectionImg" image="/image/<%= grouping.image %>""></div>
+          <button class=" collectionButton" name="userCollectionChosen" value="<%=  grouping %>">
+          <%= grouping.name %>
+          </button>
+      </div>
+    </a>
+  </div>
+  <% }) %>
+  <% } else { %>
+  <p>No Collections to show!</p>
+  <% } %>
+</div>

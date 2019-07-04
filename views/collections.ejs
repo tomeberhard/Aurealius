@@ -1,42 +1,8 @@
 <%- include('partials/headerLoggedIn') %>
 
-<title>Your Collections</title>
-<div class="container">
+<div class="container headerSpacing">
   <div class="row">
-    <div class="col-md-6 m-auto">
-      <div class="userCollections">
-        <% if(groupings){ %>
-        <% groupings.forEach(function(userCollection) { %>
-        <form method="POST" action="/chosenCollection">
-          <div class="card card-body mb-3 text-center cushion">
-            <div class="collectionBackStop">
-              <div class="orientation collectionImg" image="/image/<%= userCollection.image %>""></div>
-                <button class=" collectionButton" name="userCollectionChosen" value="<%= userCollection.name %>">
-                <%= userCollection.name %>
-                </button>
-              </div>
-        </form>
-        <div class="collectionSocialBar">
-          <span class="collectionSocials">
-            <i class="fab fa-facebook"></i>
-            <i class="fab fa-instagram"></i>
-            <i class="fab fa-twitter"></i>
-            <i class="fas fa-external-link-alt"></i>
-          </span>
-          <span class="cltDContainer">
-            <form method="POST" action="/deleteCollection">
-              <button class="deleteIcn" value="<%= userCollection.name %>" name="deleteCollectionButton">
-                <i class="fas fa-trash"></i>
-              </button>
-            </form>
-          </span>
-        </div>
-      </div>
-      <% }) %>
-      <% } else { %>
-      <p>No Collections to show!</p>
-      <% } %>
-    </div>
+    <%- include('partials/collectionTiles') %>
   </div>
 </div>
 

@@ -990,12 +990,63 @@ a.userProfName {
   position: relative;
 }
 
-.userEntriesEntryTrayContainer {
-  position: relative;
+/* .userEntriesEntryTrayContainer {
+  position: relative;r
   text-align: right;
+} */
+
+.collectionContainer {
+  font-size: 1.35rem;
+  height: 40px;
+  color: #474f85;
+  display: flex;
+  justify-content: space-between;
 }
 
+.collectionName {
+  display: flex;
+  height: 100%;
+  align-items: baseline;
+  opacity: 0.75;
+}
+
+.collectionName:hover, a:hover {
+  color: #474f85;
+  text-decoration-color: #474f85;
+  opacity: .95;
+}
+
+.collectionNameFrame {
+  display: flex;
+  height: 100%;
+  width: 25%;
+  align-items: baseline;
+}
+
+@media screen and (min-width: 1000px) {
+  .collectionNameFrame {
+    width: 30%;
+  }
+
+}
+
+@media screen and (max-width: 500px) {
+  .collectionContainer p {
+  font-size: 1rem;
+  }
+
+}
+
+@media screen and (max-width: 900px) and (min-width: 501px) {
+  .collectionContainer p {
+  font-size: 1.15rem;
+  }
+
+}
+
+
 .entryContainerBtn {
+  position: relative;
   font-size: 1.75rem;
   padding-top: 1%;
   background: none;
@@ -1003,8 +1054,8 @@ a.userProfName {
   color: darkgray;
 }
 
-.reportIcnContainer {
-
+/* .reportIcnContainer .fa-stack i  {
+  vertical-align: middle; */
 }
 
 @media screen and (max-width: 500px) {
@@ -1235,10 +1286,6 @@ h5.followTxt {
   padding-top: 10px;
 }
 
-/* .cushion {
-  margin-bottom: 10px;
-} */
-
 .header-form-button {
   margin-right: 10px;
 }
@@ -1291,10 +1338,28 @@ h5.followTxt {
   bottom:0;
 }
 
-.userEntriesDeleteIcnContainer {
-  /* position: absolute;
-  left:0;
-  bottom:0; */
+.userEntryTrayContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.overLayIcns {
+  position: absolute;
+  left:5%;
+  top: 20%;
+}
+
+@media screen and (max-width: 768px) {
+  .overLayIcns{
+    top: 27%;
+  }
+}
+
+.userDeleteIcnContainer {
+  /* position: absolute; */
+  /* right:0; */
+  /* bottom:0; */
+  /* text-align: right; */
 }
 
 .editIcnContainer {
