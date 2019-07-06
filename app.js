@@ -573,38 +573,36 @@ app.get("/collections", function(req, res) {
 
           let uniqueGroupings = [...new Set(foundUser._entries.map(item => item.grouping))];
           let groupingImages = [];
-          // let groupingImgData = [];
 
           uniqueGroupings.forEach(function(cName) {
 
             let groupingImgData = foundUser._entries.find(function(result){
-              return result._grouping === cName
+              return JSON.stringify(result.grouping) === JSON.stringify(cName)
             });
 
-            console.log(groupingImgData);
-
-            groupingImages.push(groupingImgData);
-
+              groupingImages.push(groupingImgData.imageFile);
           });
 
-          let groupingObj = new Object();
-          groupingObj.name = "";
-          groupingObj.image = "";
+          console.log(groupingImages);
 
-          uniqueGroupings.forEach(function(cName) {
-            groupingObj.name = cName;
-          });
+          let groupingObjArray = [];
 
-          groupingImages.forEach(function(cImg) {
-            groupingObj.image = cImg;
-          });
+          var i;
+          for (i = 0; i < uniqueGroupings.length; i++) {
 
-          console.log(groupingObj);
+            let groupingObj = new Object();
+            groupingObj["grouping"] = uniqueGroupings[i];
+            groupingObj["imageFile"] = groupingImages[i];
 
+            groupingObjArray.push(groupingObj);
+
+          }
+
+          console.log(groupingObjArray);
 
           res.render("collections", {
             userData: userInfo,
-            groupings: groupingObj
+            groupings: groupingObjArray
           });
 
         }
@@ -1061,7 +1059,6 @@ app.post("/moreEEntries", function(req, res) {
           if (req.isAuthenticated()) {
 
             let userInfo = req.user;
-            // let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
             let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
             // let uniqueGroupings = [...new Set(foundEntries.map(item => item.grouping))];

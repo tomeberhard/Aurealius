@@ -3,17 +3,17 @@
 
 <div class="col-md-4 m-auto">
   <div class="card card-body mb-3 text-center">
-    <a href="/collections/<%= grouping.name %>">
+    <a href="/collections/<%= grouping.grouping %>">
       <div class="collectionBackStop">
-        <div class="orientation collectionImg" image="/image/<%= grouping.image %>""></div>
-          <button class=" collectionButton" name="userCollectionChosen" value="<%=  grouping %>">
-          <%= grouping.name %>
+        <div class="orientation collectionImg" image="/image/<%= grouping.imageFile %>""></div>
+          <button class=" collectionButton" name="userCollectionChosen" value="<%=  grouping.grouping %>">
+          <%= grouping.grouping %>
           </button>
       </div>
     </a>
   </div>
+</div>
   <% }) %>
   <% } else { %>
   <p>No Collections to show!</p>
   <% } %>
-</div>
