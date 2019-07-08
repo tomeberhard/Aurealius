@@ -60,6 +60,10 @@ box-shadow: none;
     box-shadow: none!important;
 }
 
+.whiteFont {
+  color: #fff;
+}
+
 /* .btn-outline-primary:not(:disabled):not(.disabled):active {
   color: none;
   background-color: none;
@@ -669,7 +673,7 @@ label.btn {
   background-image: url(/assets/lightpaperfibers_@2X.png);
 }
 
-.card-body {
+.card-body-2 {
   padding: 2rem 2rem 1.0rem 2rem;
 }
 
@@ -1379,32 +1383,28 @@ h5.followTxt {
 
 .collectionBackStop {
   position: relative;
-  padding-bottom: 75%;
-  height: 0;
-  width: 75%;
-  margin: auto;
-  overflow: hidden;
 }
 
-.collectionImg {
+.collectionheading {
   position: absolute;
-  left: -25px;
-  margin: auto;
-  width: 135%;
-}
-
-.collectionButton {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  font-size: 2rem;
-  color: white;
-  background-color: rgba(128, 128, 128, .5);
-  border-width: 1px;
-  border-color: lightgray;
-  border-style: solid;
-  left: 0;
   top: 0;
+  left: 0;
+  height: 97.25%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0px 0px 9px black;
+  background-color: rgb(169,169,169, 0.5);
+}
+
+.card-body-collectionTile {
+  padding: 1rem 1rem 0.25rem 1rem;
+}
+
+.firstEntryAddBtn {
+  height: 200px;
+  width: 100%;
 }
 
 /* -----------------------userEntries stuff--------------------------------- */

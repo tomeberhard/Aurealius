@@ -583,7 +583,7 @@ app.get("/collections", function(req, res) {
               groupingImages.push(groupingImgData.imageFile);
           });
 
-          console.log(groupingImages);
+          // console.log(groupingImages);
 
           let groupingObjArray = [];
 
@@ -598,7 +598,7 @@ app.get("/collections", function(req, res) {
 
           }
 
-          console.log(groupingObjArray);
+          // console.log(groupingObjArray);
 
           res.render("collections", {
             userData: userInfo,

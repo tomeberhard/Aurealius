@@ -4,7 +4,7 @@ jQuery(function() {
 
 		let imageClassList = div.attr("class");
 
-		if(imageClassList.includes("followingPrvw") || imageClassList.includes("userProfilePic") || imageClassList.includes("userSettingsImage")) {
+		if(imageClassList.includes("followingPrvw") || imageClassList.includes("userProfilePic") || imageClassList.includes("userSettingsImage") || imageClassList.includes("collectionImg")) {
 
 			loadImage(
 				div.attr("image"),

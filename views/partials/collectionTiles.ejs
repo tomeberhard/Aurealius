@@ -1,19 +1,66 @@
-<% if(groupings){ %>
+<% if(groupings.length > 0){ %>
 <% groupings.forEach(function(grouping) { %>
 
-<div class="col-md-4 m-auto">
-  <div class="card card-body mb-3 text-center">
+<div class="col-md-3">
+  <div class="card card-body-collectionTile mb-3">
     <a href="/collections/<%= grouping.grouping %>">
       <div class="collectionBackStop">
-        <div class="orientation collectionImg" image="/image/<%= grouping.imageFile %>""></div>
-          <button class=" collectionButton" name="userCollectionChosen" value="<%=  grouping.grouping %>">
-          <%= grouping.grouping %>
-          </button>
+        <% if(grouping.imageFile === "NOTHING TO SEE HERE") { %>
+        <% var collectionImage = "/assets/defaultusericon.png" %>
+        <% } else { %>
+        <% var collectionImage = "/image/" + grouping.imageFile %>
+        <% } %>
+        <div class="collectionImg orientation" image="<%= collectionImage %>"></div>
+        <div class="collectionheading"><h5 class="whiteFont"><%= grouping.grouping %></h5></div>
       </div>
     </a>
+
+    <% var originalGrouping = grouping.grouping %>
+    <% var trimmedGrouping = originalGrouping.replace(/\s/g, '').replace(/,/g, '') %>
+    <% var collapseExpandID = "b" + trimmedGrouping %>
+    <% var collapseExpandIconID = "c" + collapseExpandID %>
+
+    <div class="expndCrdContainer expandCrdCusion">
+      <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
+        <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
+      </button>
+    </div>
+
+    <div class="collapse entryTrayContainer" id="<%= collapseExpandID %>">
+      <div class="reportIcnContainer">
+        <button class="entryContainerBtn warning">
+          <i class="fas fa-exclamation-circle"></i>
+        </button>
+      </div>
+
+      <div class="editIcnContainer">
+        <button class="editBtn entryContainerBtn" value="<%= grouping.grouping %>" name="entryToUpdate">
+          <i class="fas fa-edit"></i>
+        </button>
+      </div>
+
+      <div class="deleteIcnContainer">
+        <form method="POST" action="/delete">
+          <button class="entryContainerBtn warning " value="<%= grouping.grouping %> <%= grouping.imageFile %>" id="deleteCollectionButton" name="deleteCollectionButton">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
-  <% }) %>
-  <% } else { %>
-  <p>No Collections to show!</p>
-  <% } %>
+
+<% }) %>
+<% } else { %>
+
+<div class="col-md-4">
+  <div class="card card-body mb-3">
+    <button class="btn btn-primary firstEntryAddBtn">
+      <i class="fas fa-plus fa-5x"></i>
+      <br />
+      <br />
+      <h3 class="whiteFont">Add Your First Entry!</h3>
+    </button>
+  </div>
+</div>
+<% } %>
