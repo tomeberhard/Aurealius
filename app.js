@@ -163,7 +163,6 @@ passport.use(AurealiusUser.createStrategy());
 passport.serializeUser(AurealiusUser.serializeUser());
 passport.deserializeUser(AurealiusUser.deserializeUser());
 
-
 const reportSchema = new mongoose.Schema({
   _reportingUser: {
     type: ObjectId,
@@ -212,7 +211,6 @@ app.get("/index", function(req, res) {
           if (req.isAuthenticated()) {
 
             let userInfo = req.user;
-            // let identifier = JSON.stringify(userInfo._id).replace(/"/g, "");
 
             let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
@@ -583,8 +581,6 @@ app.get("/collections", function(req, res) {
               groupingImages.push(groupingImgData.imageFile);
           });
 
-          // console.log(groupingImages);
-
           let groupingObjArray = [];
 
           var i;
@@ -598,8 +594,6 @@ app.get("/collections", function(req, res) {
 
           }
 
-          // console.log(groupingObjArray);
-
           res.render("collections", {
             userData: userInfo,
             groupings: groupingObjArray
@@ -612,42 +606,43 @@ app.get("/collections", function(req, res) {
 
 });
 
-
-
 app.get("/user/collections/:grouping", function(req, res) {
 
-  const userIdentifier = req.params.currentUserId;
-  const grouping = req.params.grouping;
+  let userInfo = req.user;
+  let grouping = req.params.grouping.replace("%20", " ");
+  console.log(userInfo._id);
+  console.log(grouping);
 
-  //---Render the entries--//
-  Entry.find({
-    userId: userIdentifier,
-    grouping: grouping
-  }).sort({
-    createdAt: -1
-  }).exec(function(err, foundEntries) {
-    if (err) {
-      console.log(err);
-    } else {
-      if (foundEntries) {
-        if (req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
+    Entry.find({
+      _user: mongoose.Types.ObjectId(userInfo._id),
+      grouping: grouping
+    })
+    .limit(10)
+    .sort({
+      createdAt: -1
+    }).exec(function(err, foundEntries) {
+      if (err) {
+        console.log(err);
+      } else {
 
-          AurealiusUser.find({
-            _id: userIdentifier
-          }, function(err, userData) {
-            if (err) {
-              console.log(err);
-            } else {
-              res.render("usercollection", {
-                entries: foundEntries,
-                userInfo: userData
-              });
-            }
-          });
-        }
+        AurealiusUser.findOne({
+          _id: userInfo._id,
+        }, function(err, foundUser) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.render("usercollection", {
+              entries: foundEntries,
+              userData: foundUser
+            });
+          }
+        });
+
       }
-    }
-  });
+    });
+  }
+
 });
 
 
