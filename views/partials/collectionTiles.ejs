@@ -1,21 +1,21 @@
-<% if(groupings.length > 0){ %>
+<% if(groupings){ %>
 <% groupings.forEach(function(grouping) { %>
 
 <div class="col-md-3">
   <div class="card card-body-collectionTile mb-3">
-    <a href="/user/collections/<%= grouping.grouping %>">
+    <a href="/user/collections/<%= grouping.groupingName %>">
       <div class="collectionBackStop">
-        <% if(grouping.imageFile === "NOTHING TO SEE HERE") { %>
+        <% if(grouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
         <% var collectionImage = "/assets/defaultusericon.png" %>
         <% } else { %>
-        <% var collectionImage = "/image/" + grouping.imageFile %>
+        <% var collectionImage = "/image/" + grouping.groupingImageFile %>
         <% } %>
         <div class="collectionImg orientation" image="<%= collectionImage %>"></div>
-        <div class="collectionheading"><h5 class="whiteFont"><%= grouping.grouping %></h5></div>
+        <div class="collectionheading"><h5 class="whiteFont"><%= grouping.groupingName %></h5></div>
       </div>
     </a>
 
-    <% var originalGrouping = grouping.grouping %>
+    <% var originalGrouping = grouping.groupingName %>
     <% var trimmedGrouping = originalGrouping.replace(/\s/g, '').replace(/,/g, '') %>
     <% var collapseExpandID = "b" + trimmedGrouping %>
     <% var collapseExpandIconID = "c" + collapseExpandID %>
@@ -34,14 +34,14 @@
       </div>
 
       <div class="editIcnContainer">
-        <button class="editBtn entryContainerBtn" value="<%= grouping.grouping %>" name="entryToUpdate">
+        <button class="editBtn entryContainerBtn" value="<%= grouping.groupingName %>" name="entryToUpdate">
           <i class="fas fa-edit"></i>
         </button>
       </div>
 
       <div class="deleteIcnContainer">
         <form method="POST" action="/delete">
-          <button class="entryContainerBtn warning " value="<%= grouping.grouping %> <%= grouping.imageFile %>" id="deleteCollectionButton" name="deleteCollectionButton">
+          <button class="entryContainerBtn warning " value="<%= grouping.groupingName %> <%= grouping._entries[0].imageFile %>" id="deleteCollectionButton" name="deleteCollectionButton">
             <i class="fas fa-trash"></i>
           </button>
         </form>

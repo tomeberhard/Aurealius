@@ -104,7 +104,10 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
-  grouping: String,
+  _grouping:  {
+    type: ObjectId,
+    ref: "grouping"
+  },
   _user: {
     type: ObjectId,
     ref: "aurealiusUser"
@@ -121,6 +124,24 @@ const entrySchema = new mongoose.Schema({
 
 const Entry = new mongoose.model("entry", entrySchema);
 
+const groupingSchema = new mongoose.Schema({
+  groupingName: String,
+  groupingImageFile: String,
+  _user: {
+    type: ObjectId,
+    ref: "aurealiusUser"
+  },
+  _entries: [{
+    type: ObjectId,
+    ref: "entry"
+  }],
+  viewStatus: String
+}, {
+  timestamps: true
+});
+
+const Grouping = new mongoose.model("grouping", groupingSchema);
+
 const userSchema = new mongoose.Schema({
   // userName: String,
   profileName: String,
@@ -136,6 +157,14 @@ const userSchema = new mongoose.Schema({
   _favorites: [{
     type: ObjectId,
     ref: "entry"
+  }],
+  _groupings: [{
+    type: ObjectId,
+    ref: "grouping"
+  }],
+  _groupingFavorites: [{
+    type: ObjectId,
+    ref: "grouping"
   }],
   _followers: [{
     type: ObjectId,
@@ -218,6 +247,10 @@ app.get("/index", function(req, res) {
                 _id: userInfo._id
               })
               .populate({
+                path: "_groupings",
+                model: "grouping"
+              })
+              .populate({
                 path: "_following",
                 model: "aurealiusUser"
               })
@@ -234,7 +267,8 @@ app.get("/index", function(req, res) {
                   console.log(err);
                 } else {
 
-                  let uniqueGroupings = [...new Set(foundUserFollow._entries.map(item => item.grouping))];
+                  let uniqueGroupings = [...new Set(foundUserFollow._groupings.map(item => item.groupingName))];
+                  // console.log(uniqueGroupings);
 
                   res.render("index", {
                     entries: foundEntries,
@@ -311,6 +345,10 @@ app.get("/userEntries", function(req, res) {
         populate: {
           path: "_user",
           model: "aurealiusUser"
+        },
+        populate: {
+          path: "_grouping",
+          model: "grouping"
         },
         limit: 10,
         sort: {createdAt: -1},
@@ -556,53 +594,105 @@ app.get("/collections", function(req, res) {
 
     let userInfo = req.user;
 
-    AurealiusUser.findOne({
-        _id: userInfo._id
-      })
-      .populate({
-        path: "_entries",
-        options: {sort: {createdAt: -1}},
-        model: "entry"
-      })
-      .exec(function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
+    Grouping.find({
+      _user: mongoose.Types.ObjectId(userInfo._id)
+    })
+    .populate({
+      path: "_user",
+      model: "aurealiusUser"
+    })
+    .populate({
+      path: "_entries",
+      options: {sort: {createdAt: -1}},
+      model: "entry"
+    })
+    .exec(function(err, foundGroupings) {
+      if (err) {
+        console.log(err);
+      } else {
+        // console.log(foundGroupings);
 
-          let uniqueGroupings = [...new Set(foundUser._entries.map(item => item.grouping))];
-          let groupingImages = [];
+        // let uniqueGroupings = [...new Set(foundGroupings._entries.map(item => item.grouping))];
+        // let groupingImages = [];
+        //
+        // uniqueGroupings.forEach(function(cName) {
+        //
+        //   let groupingImgData = foundUser._entries.find(function(result){
+        //     return JSON.stringify(result.grouping) === JSON.stringify(cName)
+        //   });
+        //
+        //     groupingImages.push(groupingImgData.imageFile);
+        // });
+        //
+        // let groupingObjArray = [];
+        //
+        // var i;
+        // for (i = 0; i < uniqueGroupings.length; i++) {
+        //
+        //   let groupingObj = new Object();
+        //   groupingObj["grouping"] = uniqueGroupings[i];
+        //   groupingObj["imageFile"] = groupingImages[i];
+        //
+        //   groupingObjArray.push(groupingObj);
+        //
+        // }
 
-          uniqueGroupings.forEach(function(cName) {
+        res.render("collections", {
+          userData: userInfo,
+          groupings: foundGroupings
+        });
+      }
 
-            let groupingImgData = foundUser._entries.find(function(result){
-              return JSON.stringify(result.grouping) === JSON.stringify(cName)
-            });
+    });
+  }
 
-              groupingImages.push(groupingImgData.imageFile);
-          });
-
-          let groupingObjArray = [];
-
-          var i;
-          for (i = 0; i < uniqueGroupings.length; i++) {
-
-            let groupingObj = new Object();
-            groupingObj["grouping"] = uniqueGroupings[i];
-            groupingObj["imageFile"] = groupingImages[i];
-
-            groupingObjArray.push(groupingObj);
-
-          }
-
-          res.render("collections", {
-            userData: userInfo,
-            groupings: groupingObjArray
-          });
-
-        }
-      });
-
-    }
+    // AurealiusUser.findOne({
+    //     _id: userInfo._id
+    //   })
+    //   .populate({
+    //     path: "_entries",
+    //     options: {sort: {createdAt: -1}},
+    //     model: "entry"
+    //   })
+    //   .exec(function(err, foundUser) {
+    //     if (err) {
+    //       console.log(err);
+    //     } else {
+    //
+    //       let uniqueGroupings = [...new Set(foundUser._entries.map(item => item.grouping))];
+    //       let groupingImages = [];
+    //
+    //       uniqueGroupings.forEach(function(cName) {
+    //
+    //         let groupingImgData = foundUser._entries.find(function(result){
+    //           return JSON.stringify(result.grouping) === JSON.stringify(cName)
+    //         });
+    //
+    //           groupingImages.push(groupingImgData.imageFile);
+    //       });
+    //
+    //       let groupingObjArray = [];
+    //
+    //       var i;
+    //       for (i = 0; i < uniqueGroupings.length; i++) {
+    //
+    //         let groupingObj = new Object();
+    //         groupingObj["grouping"] = uniqueGroupings[i];
+    //         groupingObj["imageFile"] = groupingImages[i];
+    //
+    //         groupingObjArray.push(groupingObj);
+    //
+    //       }
+    //
+    //       res.render("collections", {
+    //         userData: userInfo,
+    //         groupings: groupingObjArray
+    //       });
+    //
+    //     }
+    //   });
+    //
+    // }
 
 });
 
@@ -907,11 +997,12 @@ app.post("/upload", upload.single("file"), function(req, res) {
   const newEntry = new Entry({
     imageFile: fileExists(),
     caption: req.body.caption,
-    grouping: collectionAllocator(),
     _user: mongoose.Types.ObjectId(currentUser),
     viewStatus: statusAssignment(),
     reportStatus: "Open",
   });
+
+  newEntry.save();
 
   AurealiusUser.update({
     _id: currentUser
@@ -923,11 +1014,123 @@ app.post("/upload", upload.single("file"), function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      console.log("Successfully added entry to aurealiusUsersDB.");
+      Grouping.find({
+        _user: mongoose.Types.ObjectId(currentUser)
+      }).exec(function(err, foundGroupings) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          let uniqueGroupings = [...new Set(foundGroupings.map(item => item.groupingName))];
+
+          if(!uniqueGroupings.includes(collectionAllocator())) {
+
+            const newGrouping = new Grouping({
+              groupingName: collectionAllocator(),
+              groupingImageFile: fileExists(),
+              _user: mongoose.Types.ObjectId(currentUser),
+              _entries: [mongoose.Types.ObjectId(newEntry._id)],
+              viewStatus: statusAssignment()
+            });
+
+            newGrouping.save();
+            console.log("New grouping successfully added to Grouping Collection.");
+
+            AurealiusUser.update({
+              _id: currentUser
+            }, {
+              $push: {
+                _groupings: mongoose.Types.ObjectId(newGrouping._id)
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully added grouping to aurealiusUsers.");
+              }
+            });
+
+            Entry.update({
+              _id: newEntry._id
+            }, {
+              $push: {
+                _grouping: mongoose.Types.ObjectId(newGrouping._id)
+              }
+            }, function(err, success) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully added groupId to entry.");
+              }
+            });
+
+          } else {
+            if (fileExists() != "NOTHING TO SEE HERE") {
+
+              Grouping.findOneAndUpdate({
+                groupingName: collectionAllocator(),
+                _user: mongoose.Types.ObjectId(currentUser),
+              },{
+                $set: {
+                  groupingImageFile: fileExists()
+                },
+                $push: {
+                  _entries: mongoose.Types.ObjectId(newEntry._id)
+                }
+              }, function(err, updatedGrouping){
+                console.log("New entry added to existing Grouping.");
+                console.log("Grouping image successfully updated.");
+
+                Entry.update({
+                  _id: newEntry._id
+                }, {
+                  $push: {
+                    _grouping: mongoose.Types.ObjectId(updatedGrouping._id)
+                  }
+                }, function(err, success) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully added groupId to entry.");
+                  }
+                });
+              });
+
+            } else {
+
+              Grouping.findOneAndUpdate({
+                groupingName: collectionAllocator(),
+                _user: mongoose.Types.ObjectId(currentUser),
+              },{
+                $push: {
+                  _entries: mongoose.Types.ObjectId(newEntry._id)
+                }
+              }, function(err, updatedGrouping){
+                console.log("New entry added to existing Grouping.");
+
+                Entry.update({
+                  _id: newEntry._id
+                }, {
+                  $push: {
+                    _grouping: mongoose.Types.ObjectId(updatedGrouping._id)
+                  }
+                }, function(err, success) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully added groupId to entry.");
+                  }
+                });
+              });
+            }
+          }
+        }
+      });
     }
   });
-  newEntry.save();
+
   res.redirect("back");
+
 });
 
 app.post("/userImageUpload", upload.single("file"), function(req, res) {
