@@ -4,45 +4,57 @@
 <div class="container headerSpacing">
   <div class="row">
     <div class="col-md-8 m-auto">
-      <div class="card card-body-collectionPg">
-        <h2 class="text-center">
-          <% if(entries){ %>
-          <%= entries[0].grouping %>
-        </h2>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 m-auto">
+            <div class="card card-body">
+              <div class="orientation" image="/image/<%= groupingInfo.groupingImageFile %>"></div>
+            </div>
+          </div>
+          <div class="col-md-8 m-auto">
+            <div class="card card-body-collectionPg">
+              <h2 class="text-center">
 
-        <% var cltCollapseExpandID = "aUCllct" + entries[0].grouping.replace(",", "").replace(/ /g,"") %>
-        <% var cltCollapseExpandIconID = "bUCllct" + cltCollapseExpandID %>
+                <%= groupingInfo.groupingName %>
+              </h2>
 
-        <div class="expndCrdContainer expandCrdCusion">
-          <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= cltCollapseExpandID %>" aria-expanded="false" aria-controls="<%= cltCollapseExpandID %>">
-            <i class="fas fa-chevron-down" id="<%= cltCollapseExpandIconID %>"></i>
-          </button>
+              <% var cltCollapseExpandID = "aUCllct" + groupingInfo._id %>
+              <% var cltCollapseExpandIconID = "bUCllct" + cltCollapseExpandID %>
+
+              <div class="expndCrdContainer expandCrdCusion">
+                <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= cltCollapseExpandID %>" aria-expanded="false" aria-controls="<%= cltCollapseExpandID %>">
+                  <i class="fas fa-chevron-down" id="<%= cltCollapseExpandIconID %>"></i>
+                </button>
+              </div>
+
+              <div class="collapse userEntryTrayContainer" id="<%= cltCollapseExpandID %>">
+                <div class="reportIcnContainer">
+                  <button class="entryContainerBtn">
+                      <i class="fas fa-exclamation-circle"></i>
+                      <i class="fas fa-slash overLayIcns"></i>
+                  </button>
+                </div>
+
+                <div class="userEditIcnContainer">
+                  <button class="editBtn entryContainerBtn" value="<%=  %>" name="entryToUpdate">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+
+                <div class="userDeleteIcnContainer">
+                  <form method="POST" action="/delete">
+                    <button class="entryContainerBtn warning " value="<%= groupingInfo._id %>" id="deleteButton" name="deleteButton">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
-
-        <div class="collapse userEntryTrayContainer" id="<%= cltCollapseExpandID %>">
-          <div class="reportIcnContainer">
-            <button class="entryContainerBtn">
-                <i class="fas fa-exclamation-circle"></i>
-                <i class="fas fa-slash overLayIcns"></i>
-            </button>
-          </div>
-
-          <div class="userEditIcnContainer">
-            <button class="editBtn entryContainerBtn" value="<%= entries[0].grouping %>" name="entryToUpdate">
-              <i class="fas fa-edit"></i>
-            </button>
-          </div>
-
-          <div class="userDeleteIcnContainer">
-            <form method="POST" action="/delete">
-              <button class="entryContainerBtn warning " value="<%= entries[0].grouping %>" id="deleteButton" name="deleteButton">
-                <i class="fas fa-trash"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-
       </div>
+
 
       <hr />
 
@@ -265,9 +277,6 @@
 
       </div>
       <%_ }) _%>
-      <% } else { %>
-      <p>No entries to show!</p>
-      <% } %>
 
     </div>
   </div>

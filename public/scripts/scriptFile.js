@@ -87,7 +87,7 @@ $(document).on("click",".expndCrdBtn", function() {
 
 });
 
-//-----------------heart hover icon toggle----------------------------------//
+//-----------------heart hover icon toggle (entries)---------------------------//
 
 
 $(document).on("mouseenter", ".favBtn", function() {
@@ -100,6 +100,29 @@ $(document).on("mouseenter", ".favBtn", function() {
   }
 
 }).on("mouseleave", ".favBtn", function() {
+  let favBtnId = $(this).attr("id");
+  let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+
+  if ($("#" + favBtnId).hasClass("clicked") === false) {
+
+    $("#" + favBtnId).children().eq(1).addClass("d-none");
+    $("#" + favBtnId).children().eq(0).removeClass("d-none");
+  }
+});
+
+//-----------------heart hover icon toggle (collections)----------------------//
+
+
+$(document).on("mouseenter", ".favBtn-clt", function() {
+  let favBtnId = $(this).attr("id");
+  let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
+
+  if ($("#" + favBtnId).hasClass("clicked") === false) {
+    $("#" + favBtnId).children().eq(0).addClass("d-none");
+    $("#" + favBtnId).children().eq(1).removeClass("d-none");
+  }
+
+}).on("mouseleave", ".favBtn-clt", function() {
   let favBtnId = $(this).attr("id");
   let favUnfavId = $("#" + favBtnId).find(".d-none").attr("id");
 
@@ -544,6 +567,48 @@ $(document).on("click", ".favBtn", function(event) {
   });
 });
 
+//-----------------------------favorate collection AJAX----------------------------------//
+
+$(document).on("click", ".favBtn-clt", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let favCltBtnId = $(this).attr("id");
+  let favCltUnfavId = $("#" + favCltBtnId).find(".d-none").attr("id");
+
+  if ($("#" + favCltBtnId).hasClass("clicked")) {
+    $("#" + favCltBtnId).removeClass("clicked");
+  } else {
+    $("#" + favCltBtnId).addClass("clicked");
+  }
+
+  let favCltBtnData = $(this).attr("value");
+  // let favBtnFormID = $(this).parent().attr("id");
+  let data = JSON.stringify({
+    _id: favCltBtnData
+  });
+  $.ajax({
+    url: "/favoriteGrouping",
+    type: "POST",
+    contentType: "application/json",
+    data: data
+  }).done(function() {
+
+    if ($("#" + favCltBtnId).hasClass("clicked") === false) {
+      $("#" + favCltBtnId).children().eq(1).addClass("d-none");
+      $("#" + favCltBtnId).children().eq(0).removeClass("d-none");
+    } else {
+      $("#" + favCltBtnId).children().eq(0).addClass("d-none");
+      $("#" + favCltBtnId).children().eq(1).removeClass("d-none");
+    }
+
+  }).fail(function(err) {
+    console.log(err)
+  });
+});
+
+
+
 //-----------------------------followBtn AJAX----------------------------------//
 $(document).on("click", ".followBtn", function(event) {
   event.preventDefault();
@@ -649,6 +714,55 @@ $(document).on("click", ".pubPriSubmitBtn", function(event) {
       console.log(err)
     });
 });
+
+//-----------------------------user Collection privacy change AJAX----------------------------------//
+
+$(document).on("click", ".pubPriSubmitBtn-clt", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let pubPriSubmitvalue = $(this).attr("value");
+
+  let pubPriCltId = pubPriSubmitvalue.slice(0, pubPriSubmitvalue.indexOf(" "));
+  let pubPriCltViewStatus = pubPriSubmitvalue.slice(pubPriSubmitvalue.indexOf(" ") + 1, pubPriSubmitvalue.length);
+
+  function toggleCltViewStatus() {
+    if (pubPriCltViewStatus === "public") {
+      pubPriCltViewStatus = "private";
+    } else {
+      pubPriCltViewStatus = "public";
+    }
+    return pubPriCltViewStatus
+  }
+
+  let data = JSON.stringify({
+    collectionId: pubPriCltId,
+    viewStatus: toggleCltViewStatus()
+  });
+  $.ajax({
+      url: "/updateCltPrivacy",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function() {
+      $("#ddModal" + pubPriCltId).modal("hide");
+      $("body").removeClass("modal-open");
+      $("body").removeAttr("style");
+      $(".modal-backdrop").remove();
+
+      $("#sbmtddModal" + pubPriCltId).val(pubPriCltId + " " + pubPriCltViewStatus);
+      $("#dd" + pubPriCltId).click();
+
+      $("#dd" + pubPriCltId).find(".currentOption").children().toggleClass("d-none");
+      $("#formDD" + pubPriCltId).find(".dDoption").children().toggleClass("d-none");
+
+
+    })
+    .fail(function(err) {
+      console.log(err)
+    });
+});
+
 
 //-------------------edit settings bioImage------------------------------------------//
 
@@ -814,6 +928,76 @@ $(document).on("click", ".submitEditSettingsBtn", function(event) {
     $("#" + fieldName + "EditInput").closest("form").get(0).reset();
     $("#" + fieldName + "SettingsInputWBtnContainer").removeClass("d-none");
     $("#" + fieldName + "SettingsContent").text(updatedFieldValue);
+    // console.log(updatedFieldValue);
+
+  }).fail(function(err) {
+    console.log(err)
+  });
+});
+
+//--------------------------edit Collection Name------------------------------//
+
+$(document).on("click", ".editCltTileContainerBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let cltId = $(this).attr("value");
+
+  $("#cltId" + cltId).addClass("d-none");
+  $("#editCltId" + cltId).css("width", "100%").removeClass("d-none");
+  $("#editCltContainer" + cltId).removeClass("d-none");
+
+});
+
+$(document).on("click", ".closeEditCollectionNameBtnBar", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let cltId = $(this).attr("value")
+
+  $("#cltId" + cltId).removeClass("d-none");
+  $("#editCltId" + cltId).addClass("d-none");
+  $("#editCltId" + cltId).val("");
+  $("#editCltContainer" + cltId).addClass("d-none");
+
+});
+
+$(document).on("click", ".submitEditCollectionNameBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+
+  let cltId = $(this).parent().attr("id").replace("editCltContainer","");
+  console.log(cltId);
+  let updatedCltValue = $("#editCltId" + cltId).val();
+  console.log(updatedCltValue);
+
+  let data = JSON.stringify({
+    _id: cltId,
+    groupingName: updatedCltValue
+  });
+
+  $.ajax({
+    url: "/collectionNameUpdate",
+    type: "POST",
+    contentType: "application/json",
+    data: data
+  }).done(function() {
+
+    $("#cltId" + cltId).text(updatedCltValue);
+    $("#cltId" + cltId).removeClass("d-none");
+    $("#editCltId" + cltId).addClass("d-none");
+    $("#editCltId" + cltId).val("");
+    $("#editCltId" + cltId).attr("placeholder", updatedCltValue);;
+    $("#editCltContainer" + cltId).addClass("d-none");
+
+    // $("#" + fieldName + "EditInput").addClass("d-none");
+    // $("#" + fieldName + "EditInput").val("");
+    // $("#" + fieldName + "EditInput").attr("placeholder", updatedFieldValue);
+    // $("#" + fieldName + "EditBtnContainer").addClass("d-none");
+    // $("#" + fieldName + "EditInput").closest("form").get(0).reset();
+    // $("#" + fieldName + "SettingsInputWBtnContainer").removeClass("d-none");
+    // $("#" + fieldName + "SettingsContent").text(updatedFieldValue);
     // console.log(updatedFieldValue);
 
   }).fail(function(err) {

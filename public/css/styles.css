@@ -64,6 +64,41 @@ box-shadow: none;
   color: #fff;
 }
 
+.collectionLink:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: #fff;
+}
+
+.collectionNameInput {
+  font-family: 'Sansita', sans-serif;
+  font-size: 1.25rem;
+  text-align: center;
+  background: none;
+  color: #fff;
+  border-color: #fff;
+  border-width: 2px;
+}
+
+.collectionNameInput::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #fff;
+  text-align: center;
+  font-size: 1.25rem;
+  opacity: 1; /* Firefox */
+}
+
+.collectionNameInput:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #fff;
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.collectionNameInput::-ms-input-placeholder { /* Microsoft Edge */
+  color: #fff;
+  text-align: center;
+  font-size: 1.25rem;
+}
+
 /* .btn-outline-primary:not(:disabled):not(.disabled):active {
   color: none;
   background-color: none;
@@ -819,6 +854,14 @@ a.userProfName {
   padding:.5rem;
 }
 
+.editCollectionNameBtnBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding:.5rem;
+}
+
+
 #userBioPicSettingsBtnBar {
   padding:.5rem;
 }
@@ -911,7 +954,6 @@ a.userProfName {
 .favBtn {
   background: none;
   border: none;
-  /* color: darkgray; */
   color: #474f85;
 }
 
@@ -929,6 +971,41 @@ a.userProfName {
 .favBtn:focus {
   outline: 0;
 }
+
+/*------------------ collectiontile favorite button------------------------ */
+.favBtnContainer-clt i {
+  font-size: 1.75rem;
+}
+
+@media screen and (max-width: 900px) {
+
+  .favBtnContainer-clt i {
+    font-size: 1.5rem;
+  }
+}
+
+.favBtn-clt {
+  background: none;
+  border: none;
+  color: #fff;
+}
+
+@media screen and (max-width: 500px) {
+  .favBtn-clt {
+  font-size: .75rem;
+  }
+}
+
+.favBtn-clt:hover {
+  color: #fff;
+  text-shadow: 0px 0px 5px #51e3d4;
+}
+
+.favBtn-clt:focus {
+  outline: 0;
+}
+
+/* adlakjsdf */
 
 .aFSMIconContainer {
   text-align: right;
@@ -998,10 +1075,12 @@ a.userProfName {
   position: relative;
 }
 
-/* .userEntriesEntryTrayContainer {
-  position: relative;r
-  text-align: right;
-} */
+.cltTileTrayContainer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 3% 0%;
+}
 
 .collectionContainer {
   font-size: 1.35rem;
@@ -1062,12 +1141,21 @@ a.userProfName {
   color: darkgray;
 }
 
+.cltTileContainerBtn {
+  position: relative;
+  font-size: 1.25rem;
+  padding-top: 1%;
+  background: none;
+  border: none;
+  color: darkgray;
+}
+
 /* .reportIcnContainer .fa-stack i  {
   vertical-align: middle; */
 }
 
 @media screen and (max-width: 500px) {
-  .entryContainerBtn {
+  .entryContainerBtn .cltTileContainerBtn {
   font-size: 1.25rem;
   }
 }
@@ -1363,13 +1451,6 @@ h5.followTxt {
   }
 }
 
-.userDeleteIcnContainer {
-  /* position: absolute; */
-  /* right:0; */
-  /* bottom:0; */
-  /* text-align: right; */
-}
-
 .editIcnContainer {
   position: absolute;
   width:50%;
@@ -1387,6 +1468,13 @@ h5.followTxt {
 
 .collectionBackStop {
   position: relative;
+}
+
+.favGrpBtnContainer {
+  position: absolute;
+  top: 1%;
+  right: 1%;
+  color: #fff;
 }
 
 .collectionheading {
@@ -1416,6 +1504,7 @@ h5.followTxt {
 .btn-pubPri {
   background-color: none;
   border-color: #474f85;
+  color: #474f85;
 }
 
 .btn-pubPri:hover {
@@ -1431,11 +1520,6 @@ h5.followTxt {
 .pubPritoggle {
   color:#465559;
 }
-
-/* .dDoption {
-  background: none;
-  width: 100%;
-} */
 
 .pubPritoggle p {
   margin: 0;
@@ -1464,5 +1548,71 @@ i p .pubPriUserBtn:hover  {
     font-size: 1rem;
   }
 
+}
+
+/* -----------------------Collection Tile Public/Private-------------------- */
+
+.btn-pubPri-clt {
+  background-color: none;
+  border-color: darkgray;
+  padding: 0 5%;
+  align-items: center;
+}
+
+.btn-pubPri-clt:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0px 0px 5px #51e3d4;
+}
+
+.pubPriUserBtn-clt {
+  position: absolute;
+  top: 0;
+}
+
+.pubPritoggle-clt {
+  color:#465559;
+}
+
+.pubPritoggle-clt p {
+  margin: 0;
+}
+
+i p .pubPriUserBtn-clt:hover  {
+  color:#465559;
+}
+
+/* .dropdown-clt {
+  text-align: center;
+  vertical-align: baseline;
+} */
+
+.dropdown-menu-clt {
+  min-width: 7rem;
+  padding: 0;
+  border-radius: .25rem;
+}
+
+.dropdown-item-clt {
+  padding: 0 5%;
+}
+
+.dropdown-item-clt:hover {
+  background-color: gray;
+}
+
+@media screen and (max-width: 900px) {
+
+  .btn-pubPri-clt {
+    height: 28px;
+    /* padding: 1rem 1rem; */
+  }
+
+   .btn-pubPri-clt i {
+    font-size: 1rem;
+  }
+
+  .dDoption-clt i {
+    font-size: 1rem;
+  }
 
 }
