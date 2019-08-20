@@ -642,7 +642,7 @@ app.get("/user/collections/:grouping", function(req, res) {
   let userInfo = req.user;
   let grouping = req.params.grouping.replace("%20", " ");
   // console.log(userInfo._id);
-  console.log(grouping);
+  // console.log(grouping);
 
   if (req.isAuthenticated()) {
 
@@ -1088,6 +1088,38 @@ app.post("/userImageUpload", upload.single("file"), function(req, res) {
 
   res.status(200);
   res.end(userFileExists());
+
+});
+
+app.post("/changeCltImage", upload.single("file"), function(req, res) {
+
+  let groupingId = req.body.groupingId;
+  console.log(groupingId);
+
+  function cltFileExists() {
+    if (typeof req.file === "undefined") {
+      let cltFileName = "";
+      return cltFileName
+    } else {
+      let cltFileName = req.file.filename;
+      return cltFileName
+    }
+  }
+
+  Grouping.updateOne({
+    _id: groupingId
+  }, {groupingImageFile: cltFileExists()}, function(err, success) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("Succesfully updated groupingImage.")
+    }
+  });
+
+  // res.status(200);
+  // res.end(cltFileExists());
+
+  res.redirect("back");
 
 });
 

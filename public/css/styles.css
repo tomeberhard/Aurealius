@@ -875,6 +875,10 @@ a.userProfName {
   .label-info.bioPicFileBtn {
     overflow-wrap: normal;
   }
+
+  .label-info.cltImgFileBtn {
+    overflow-wrap: normal;
+  }
 }
 
 
@@ -1159,6 +1163,41 @@ a.userProfName {
   font-size: 1.25rem;
   }
 }
+
+#cltImageSettingsBtnBar {
+  width: 100%;
+}
+
+@media screen and (min-width: 500px) {
+
+  .cltImageSubmitBtn {
+    width: 45%;
+    min-width: 55px;
+    margin-right: 2%;
+  }
+}
+
+
+@media screen and (max-width: 500px) {
+
+  .cltImageSubmitBtn {
+    margin-right: 0;
+    margin-bottom: 5%;
+  }
+
+  #cltImageSettingsBtnBar {
+    text-align: center;
+  }
+
+.mobileCltImagePadding {
+  padding: 0;
+  }
+
+.mobileCltCardPadding {
+    padding-right: 0;
+    }
+}
+
 
 /* -----------------------user column  edit-------------------r------------ */
 /* @media screen and (min-width: 768px) and (max-width: 900px) {

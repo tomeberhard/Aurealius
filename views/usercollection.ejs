@@ -6,12 +6,43 @@
     <div class="col-md-8 m-auto">
       <div class="container">
         <div class="row">
-          <div class="col-md-4 m-auto">
-            <div class="card card-body">
-              <div class="orientation" image="/image/<%= groupingInfo.groupingImageFile %>"></div>
+          <div class="col-4 m-auto mobileCltImagePadding">
+            <div class="card card-body pb-1">
+
+              <form action="/changeCltImage" method="POST" id="cltImageForm" enctype="multipart/form-data">
+                <div class="collectionImg orientation" id="cltImage" image="/image/<%= groupingInfo.groupingImageFile %>"></div>
+                <div class="cltImagePreview orientation m-auto d-none" id="imagePreview" image=""></div>
+
+                <% var cltImgCollapseExpandID = "aUCllctImg" + groupingInfo._id %>
+                <% var cltImgCollapseExpandIconID = "b" + cltCollapseExpandID %>
+
+                <div class="expndCrdContainer expandCrdCusion">
+                  <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= cltImgCollapseExpandID %>" aria-expanded="false" aria-controls="<%= cltImgCollapseExpandID %>">
+                    <i class="fas fa-chevron-down" id="<%= cltImgCollapseExpandIconID %>"></i>
+                  </button>
+                </div>
+                <div class="collapse" id="<%= cltImgCollapseExpandID %>">
+                  <div class="settingsContentWrapper mt-2 mb-3">
+                    <button class="btn btn-primary btn-block cltImagePicBtn">Change</button>
+                    <div class="d-none" id="cltImageSettingsBtnBar">
+                      <label class="btn fileBtn" for="cltImgFile">
+                        <input type="file" name="file" id="cltImgFile" class="" style="display:none" onchange="loadFilePreview(event); $('#upload-file-info').html(this.files[0].name);">
+                        Add Image
+                      </label>
+                      <div class="label label-info cltImgFileBtn" id="upload-file-info"></div>
+                      <div class="">
+                      <!-- <div class="editUserSettingsBtnBar"> -->
+                        <button type="submit" class="btn btn-primary cltImageSubmitBtn" value="<%= groupingInfo._id %>" name="groupingId">Save</button>
+                        <button type="button" class="btn btn-secondary closeEditSettingsBtn" id="closecltImageEditSettingsBtn">Close</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </form>
             </div>
           </div>
-          <div class="col-md-8 m-auto">
+          <div class="col-8 m-auto mobileCltCardPadding">
             <div class="card card-body-collectionPg">
               <h2 class="text-center">
 
@@ -27,26 +58,68 @@
                 </button>
               </div>
 
-              <div class="collapse userEntryTrayContainer" id="<%= cltCollapseExpandID %>">
-                <div class="reportIcnContainer">
-                  <button class="entryContainerBtn">
-                      <i class="fas fa-exclamation-circle"></i>
-                      <i class="fas fa-slash overLayIcns"></i>
-                  </button>
+              <div class="collapse" id="<%= cltCollapseExpandID %>">
+                <div class="editCollectionNameBtnBar d-none" id="editCltContainer<%=groupingInfo._id %>">
+                  <input type="submit" value="Save" class="btn btn-primary btn-block mr-2 submitEditCollectionNameBtn" id="profileNameSubmitBtn" />
+                  <button type="button" class="btn btn-secondary closeEditCollectionNameBtnBar" value="<%= groupingInfo._id %>">Close</button>
                 </div>
 
-                <div class="userEditIcnContainer">
-                  <button class="editBtn entryContainerBtn" value="<%=  %>" name="entryToUpdate">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                </div>
+                <div class="cltTileTrayContainer">
+                  <div class="">
+                    <button class="editBtn cltTileContainerBtn editCltTileContainerBtn" value="<%= groupingInfo._id %>" name="entryToUpdate">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
 
-                <div class="userDeleteIcnContainer">
-                  <form method="POST" action="/delete">
-                    <button class="entryContainerBtn warning " value="<%= groupingInfo._id %>" id="deleteButton" name="deleteButton">
+                  <% if(groupingInfo.viewStatus === "public") { %>
+                  <% var public = "" %>
+                  <% var private = "d-none" %>
+                  <% } else { %>
+                  <% var public = "d-none" %>
+                  <% var private = "" %>
+                  <% } %>
+
+                  <% var pubPriDDId = "dd" + groupingInfo._id %>
+                  <% var pubPriModalDDId = "ddModal" + groupingInfo._id %>
+
+                  <div class="dropdown">
+                    <button class="btn btn-pubPri-clt dropdown-toggle" type="button" id="<%= pubPriDDId %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <div class="inline currentOption pubPritoggle-clt">
+                        <div class="public <%= public %>">
+                          <i class="inline fas fa-eye"></i>
+                          <p class="inline">Public</p>
+                        </div>
+                        <div class="private <%= private %>">
+                          <i class="inline fas fa-eye-slash"></i>
+                          <p class="inline">Private</p>
+                        </div>
+                      </div>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-clt" aria-labelledby="<%= pubPriDDId %>">
+                      <div class="dropdown-item dropdown-item-clt">
+                        <%var pubPriFormId = "formDD" + groupingInfo._id %>
+                        <form method="POST" action="/updateCltPrivacy" id="<%= pubPriFormId %>">
+                          <div class="inline dDoption pubPritoggle-clt" data-toggle="modal" data-target="#<%= pubPriModalDDId %>">
+                            <div class="public <%= private %>">
+                              <i class="inline fas fa-eye"></i>
+                              <p class="inline">Public</p>
+                            </div>
+                            <div class="private <%= public %>">
+                              <i class="inline fas fa-eye-slash"></i>
+                              <p class="inline">Private</p>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="">
+                    <% var deleteCltModal = "deleteCltModal" + groupingInfo._id %>
+                    <button class="cltTileContainerBtn warning" data-toggle="modal" data-target="#<%= deleteCltModal %>">
                       <i class="fas fa-trash"></i>
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
 
@@ -274,8 +347,54 @@
           </div>
         </div>
 
-
       </div>
+
+      <div class="modal" id="<%= pubPriModalDDId %>" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Are You Sure?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <p>Changing the privacy setting will impact who can see this collection!</p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary btn-block pubPriSubmitBtn-clt" type="submit" id="sbmt<%= pubPriModalDDId %>" value="<%= groupingInfo._id %> <%= groupingInfo.viewStatus %>">Yes. Let's Do it!</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="<%= deleteCltModal %>" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Are You Sure?</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <p>Deleting this collection will also delete all it's underlying entries!</p>
+              </div>
+            </div>
+            <form method="POST" action="/deleteCollection">
+              <div class="modal-footer">
+                <button class="btn btn-primary btn-block" type="submit" id="deleteCltBtn<%= groupingInfo._id %>" value="<%= groupingInfo._id %>"  name="deleteCollectionButton">Yes, I'm sure.</button>
+                <button class="btn btn-secondary" type="button"  data-dismiss="modal">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
       <%_ }) _%>
 
     </div>

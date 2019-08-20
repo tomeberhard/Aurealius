@@ -780,8 +780,8 @@ $(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
   event.stopPropagation();
 
   $("#userBioPicForm")[0].reset();
-  $("#bioImagePreview").empty();
-  $("#bioImagePreview").addClass("d-none");
+  $("#imagePreview").empty();
+  $("#imagePreview").addClass("d-none");
   $("#userBioImage").removeClass("d-none");
 
   $(".userBioPicBtn").removeClass("d-none");
@@ -805,9 +805,9 @@ $(document).on("click", ".userBioPicSubmitBtn", function(event) {
 
       $("#userBioImage").empty();
 
-      $("#bioImagePreview").addClass("d-none");
+      $("#imagePreview").addClass("d-none");
       $("#userBioPicForm")[0].reset();
-      $("#bioImagePreview").empty();
+      $("#imagePreview").empty();
 
       $("#userBioImage").removeClass("d-none");
 
@@ -838,9 +838,9 @@ $(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
   event.stopPropagation();
 
   $("#userBioPicForm")[0].reset();
-  $("#bioImagePreview").empty();
+  $("#imagePreview").empty();
   $("#upload-file-info").text("");
-  $("#bioImagePreview").addClass("d-none");
+  $("#imagePreview").addClass("d-none");
   $("#userBioImage").removeClass("d-none");
 
   $(".userBioPicBtn").removeClass("d-none");
@@ -848,23 +848,112 @@ $(document).on("click", "#closeUserBioPicEditSettingsBtn", function(event) {
 
 });
 
+//-------------------edit collection Image------------------------------------------//
 
-//------------------new bioImage preview------------------------------------------//
+$(document).on("click", ".cltImagePicBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
 
-var loadFile = function(event) {
+  $(this).addClass("d-none");
+  $(this).next("#cltImageSettingsBtnBar").removeClass("d-none");
+
+});
+
+$(document).on("click", "#closecltImageEditSettingsBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  $("#cltImageForm")[0].reset();
+  $("#imagePreview").empty();
+  $("#imagePreview").addClass("d-none");
+  $("#cltImage").removeClass("d-none");
+
+  $(".cltImagePicBtn").removeClass("d-none");
+  $(".cltImagePicBtn").next("#cltImageSettingsBtnBar").addClass("d-none");
+
+});
+
+// $(document).on("click", ".cltImageSubmitBtn", function(event) {
+//   event.preventDefault();
+//   event.stopPropagation();
+//
+//   $(cltImageForm).ajaxSubmit({
+//
+//     error: function(err) {
+//       console.log(err)
+//     },
+//     success: function(response) {
+//       $("#cltImage").attr("image", "image/" + response);
+//
+//       console.log("image/" + response);
+//
+//       $("#cltImage").empty();
+//
+//       $("#imagePreview").addClass("d-none");
+//       $("#cltImageForm")[0].reset();
+//       $("#imagePreview").empty();
+//
+//       $("#cltImageForm").removeClass("d-none");
+//
+//       jQuery(function() {
+//         jQuery(".cltImagePreview.orientation").each(function() {
+//           var div = $(this);
+//           loadImage(
+//             div.attr("image"),
+//             function(img) {
+//               div.append(img);
+//             }, {
+//               orientation: true,
+//               aspectRatio: 1 / 1
+//             }
+//           );
+//         });
+//       })
+//
+//       $(".cltImagePicBtn").removeClass("d-none");
+//       $(".cltImagePicBtn").next("#cltImageSettingsBtnBar").addClass("d-none");
+//     }
+//
+//   });
+// });
+
+// $(document).on("click", "#closecltImageEditSettingsBtn", function(event) {
+//   event.preventDefault();
+//   event.stopPropagation();
+//
+//   $("#cltImageForm")[0].reset();
+//   $("#imagePreview").empty();
+//   $("#upload-file-info").text("");
+//   $("#imagePreview").addClass("d-none");
+//   $("#cltImage").removeClass("d-none");
+//
+//   $(".cltImagePicBtn").removeClass("d-none");
+//   $(".cltImagePicBtn").next("#cltImageSettingsBtnBar").addClass("d-none");
+//
+// });
+
+//------------------image preview (collection and bioImage)-------------------//
+
+var loadFilePreview = function(event) {
 
   loadImage(
     event.target.files[0],
     function(img) {
-      $("#bioImagePreview").append(img);
+      $("#imagePreview").append(img);
     }, {
       orientation: true,
       aspectRatio: 1 / 1
     }
   );
 
-  $("#bioImagePreview").removeClass("d-none");
-  $("#userBioImage").addClass("d-none");
+  $("#imagePreview").removeClass("d-none");
+
+  if (path === "/settings") {
+    $("#userBioImage").addClass("d-none");
+  } else {
+    $("#cltImage").addClass("d-none");
+  }
+
 }
 
 //-----------------------------edituserSettings------------------------------//

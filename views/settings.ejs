@@ -21,7 +21,7 @@
                 <% var userImage = "/image/" + userData.bioImageFile %>
                 <% } %>
                 <div class="userSettingsImage orientation" id="userBioImage" image="<%= userImage %>"></div>
-                <div class="userSettingsImage orientation d-none" id="bioImagePreview" image=""></div>
+                <div class="userSettingsImage orientation d-none" id="imagePreview" image=""></div>
                 <div class="settingsContentWrapper mt-2 mb-3">
                   <button class="btn btn-primary userBioPicBtn">Change</button>
                   <div class="d-none" id="userBioPicSettingsBtnBar">
@@ -30,7 +30,7 @@
                       <!-- <input type="file" name="file" id="bioFile" class="form-control-file" onchange=""/> -->
                     <!-- </div> -->
                     <label class="btn fileBtn bioPicFileBtn" for="bioFile">
-                      <input type="file" name="file" id="bioFile" class="" style="display:none" onchange="loadFile(event); $('#upload-file-info').html(this.files[0].name);">
+                      <input type="file" name="file" id="bioFile" class="" style="display:none" onchange="loadFilePreview(event); $('#upload-file-info').html(this.files[0].name);">
                       Add Image
                     </label>
                     <div class="label label-info bioPicFileBtn" id="upload-file-info"></div>
@@ -343,36 +343,3 @@
 </div>
 
 <%- include('partials/footer') %>
-
-<!-- <form action="/userUpload" method="POST" id="userBioForm" enctype="multipart/form-data">
-    <div class="form-group">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col">
-            <div class="userImagePreviewContainer">
-              <div class="userImageframe">
-                <div class="userImagePreview orientation" id="bioImage" image="= userImage %>"></div>
-                <img id="bioImagePreview" class="userImagePreview d-none"/>
-              </div>
-            </div>
-            <div class="custom-file mb-3">
-              <input type="file" name="file" id="bioFile" class="form-control-file" onchange="loadFile(event)"/>
-            </div>
-          </div>
-          <div class="col-6">
-            <label for="editProfileName">Username</label>
-            <input class="form-control" name="userProfileName" id="editProfileName" placeholder=" userInfo.profileName %>"></input>
-            <label for="editFistName">First Name</label>
-            <input class="form-control" name="userFName" id="editFirstName" placeholder=" userInfo.firstName %>"></input>
-            <label for="editFistName">Last Name</label>
-            <input class="form-control" name="userLName" id="editLastName" placeholder=" userInfo.lastName %>"></input> -->
-<!-- <label for="editUserEmail">Email</label>
-            <input class="form-control" name="userEmail" id="editUserEmail" placeholder="SHOW EXISTING EMAIL"></input> -->
-<!-- <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Email" </input>
-            <input class="form-control btn btn-outline-danger form-button-spacing" type="button" value="Reset Password" </input>
-            <input class="form-control btn btn-danger form-button-spacing" type="button" value="Delete Account" </input>
-          </div>
-        </div>
-      </div>
-    </div>
-</form> -->
