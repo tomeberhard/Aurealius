@@ -755,6 +755,10 @@ app.get("/", function(req, res) {
   res.render("launchPage");
 });
 
+app.get("/developer", function(req, res) {
+  res.render("developer");
+});
+
 app.get("/about", function(req, res) {
   res.render("about");
 });
@@ -768,11 +772,11 @@ app.get("/terms", function(req, res) {
 });
 
 app.get("/register", function(req, res) {
-  res.render("register");
+  res.render("developer");
 });
 
 app.get("/login", function(req, res) {
-  res.render("login", {
+  res.render("developer", {
     error: req.flash("error")
   });
 });
@@ -824,7 +828,19 @@ app.post("/launchPage", function(req, res){
 
   });
 
-  // res.render("launchPage")
+});
+
+app.post("/developerAccess", function(req, res) {
+
+  let accessKeyField = req.body.developerAccessKey;
+  console.log(accessKeyField);
+
+  if(accessKeyField === "isaweneskanter") {
+    res.render("login");
+
+  } else {
+    res.send("Incorrect Access Token!");
+  }
 
 });
 
@@ -930,6 +946,12 @@ app.post("/login", passport.authenticate("local", {
     message: "Uh oh! Invalid username or password. Please try again."
   }
 }));
+
+app.post("/goToregister", function(req,res){
+
+  res.render("register");
+
+});
 
 app.post("/upload", upload.single("file"), function(req, res) {
 

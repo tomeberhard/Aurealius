@@ -388,7 +388,7 @@ nav.footer li a:hover {
   display: none;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   .lgMdLPLogo {
     display: none;
   }
@@ -492,6 +492,19 @@ width: 50%;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
+}
+
+/* ---------------------developerPortal formatting------------------------------ */
+
+.center-block-developer {
+  height:90vh;
+  position: relative;
+}
+
+#developerFooter {
+  position:absolute;
+  width: 97%;
+  bottom:0;
 }
 
 

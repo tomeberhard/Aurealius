@@ -22,60 +22,62 @@
     <link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Signika" rel="stylesheet">
 
-    <link rel="stylesheet" href="/css/bootstrap-timepicker.css" />
     <link type="text/css" rel="stylesheet" href="/css/styles.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
     <script src="/scripts/load-image.all.min.js"></script>
     <script src="/scripts/imageCorrect.js"></script>
-    <script src="/scripts/bootstrap-timepicker.js"></script>
   </head>
 
-<body>
+  <body>
 
-    <div class="container mt-5">
-      <h1>Login</h1>
-
+    <div class="container lauchContainer mt-3 mb-3">
       <div class="row">
-        <div class="col-sm-8">
-          <div class="card">
-            <div class="card-body">
-
-              <!-- <p class="loginError" style="color:red;font-size:1.25rem">< error %></p> -->
-
-              <form action="/login" method="POST">
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" class="form-control" name="email">
+        <div class="col-md-12 center-block-developer">
+          <section id="title" class="mt-3">
+            <div class="jumbotron mb-0 mobileCentered">
+              <div class="container">
+                <div id="sMLogoLPContainer">
+                  <img class="smLPLogo" src="/assets/FFF_Aurealius_LO_01.png" alt="aurealius-logo-icon" />
                 </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" class="form-control" name="password">
-
+                <h1 id="smRegTitle" class="display-3 secondaryTanFont">Aurealius</h1>
+                <p id="smRegTag" class="lead secondaryTanFont">Where Gratitude Takes Center Stage</p>
+                <div id="lGMdLogoLPContainer">
+                  <img class="lgMdLPLogo inline" src="/assets/SxS_noTxt_logo.png" alt="aurealius-logo-SxS_noTxt" />
+                  <div id="lgMdTitleTagContainer" class="inline">
+                    <div>
+                      <h1 id="lGMdRegTitle" class="display-1 mb-0 pl-2 secondaryTanFont">Aurealius</h1>
+                      <p class="lead pl-2 secondaryTanFont">Where Gratitude Takes Center Stage</p>
+                    </div>
+                  </div>
                 </div>
-                <button type="submit" class="btn btn-dark mb-3">Login</button>
-              </form>
-              <form action="/goToregister" method="POST">
-                <button type="submit" class="btn btn-dark inline">Register</button>
-              </form>
+                <hr class="secondaryTanFont lgMdFullLength">
+                <div class="inline mobileCentered">
+                  <form action="/developerAccess" method="POST">
+                    <input type="password" id="accessKeyField" placeholder="Enter Access Key Here..." class="lPEmailInput pl-1 mr-1 mb-2" name="developerAccessKey" />
+                    <button type="submit" id="submitDeveloperAccessBtn" class="btn btn-outline-secondary secondaryTanFont">Submit Access Key</button>
+                  </form>
+                  <div class="validateEmail validateWarning d-none">
+                      Incorrect Access Key!
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          </section>
+
+          <section id="developerFooter">
+            <div id="developerFooterContainer">
+              <ul class="list-inline headerFont">
+                <li class="list-inline-item"><a class="primaryPurpleFont" href="/about">About Us</a></li>
+                <li class="list-inline-item"><a class="primaryPurpleFont" href="/jobs">Jobs</a></li>
+                <li class="list-inline-item"><a class="primaryPurpleFont" href="/contact">Contact</a></li>
+              </ul>
+            </div>
+            <div id="rightsReserved" class="text-center">
+              <p>© 2019 All Rights Reserved</p>
+            </div>
+          </section>
+
         </div>
-
-        <!-- <div class="col-sm-4">
-          <div class="card">
-            <div class="card-body">
-              <a class="btn btn-block btn-social btn-google" href="/auth/google" role="button">
-                <i class="fab fa-google"></i>
-                Sign In with Google
-              </a>
-              <a class="btn btn-block btn-social btn-facebook" href="/auth/facebook" role="button">
-                <i class="fab fa-facebook"></i>
-                Sign In with facebook
-              </a>
-            </div>
-          </div>
-        </div> -->
-
       </div>
     </div>
 
@@ -87,6 +89,5 @@
   <script src="/scripts/scriptFile.js"></script>
 
   </body>
-
 
 </html>
