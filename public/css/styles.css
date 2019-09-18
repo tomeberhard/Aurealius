@@ -64,6 +64,26 @@ box-shadow: none;
   color: #fff;
 }
 
+.primaryPurpleFont {
+  color: #474f85;
+}
+
+.secondaryTanFont {
+  color: #f3ecd3;
+}
+
+.thirdgreyFont {
+  color: #F3F9FB;
+}
+
+.headerFont {
+  font-family: 'Sansita', sans-serif;
+}
+
+.bodyFont {
+  font-family: 'IM Fell Great Primer', serif;
+}
+
 .collectionLink:hover {
   color: #fff;
   text-decoration: underline;
@@ -109,6 +129,7 @@ box-shadow: none;
     outline: 0;
     box-shadow: none!important;
 } */
+
 
 /*---------------------------custom scroller------------------------------ */
 
@@ -160,26 +181,26 @@ box-shadow: none;
 }
 
 .headerLinks {
-  position: absolute;
-  bottom: 0;
+  line-height: 59px;
+  /* position: absolute; */
+  /* bottom: 0; */
 }
 
 .lftLinks {
-  height: 100%;
-  line-height: 59px;
-  left: 10%;
-  vertical-align: bottom;
+  /* height: 100%; */
+  /* line-height: 59px; */
+  /* left: 5%; */
 }
 
 .rghtLinks {
-  height: 100%;
-  line-height: 59px;
-  right: 5%;
-  vertical-align: bottom;
+  /* height: 100%; */
+  /* line-height: 59px; */
+  /* right: 5%; */
 }
 
 nav ul {
   list-style-type: none;
+  height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -188,10 +209,12 @@ nav ul {
 
 nav li {
   float: left;
+  height: 100%;
 }
 
 nav li a {
   display: block;
+  height: 100%;
   font-size: 1.35rem;
   color: #f3f9fb;
   text-align: center;
@@ -200,7 +223,19 @@ nav li a {
   padding-right: 16px;
   text-decoration: none;
   text-shadow: 0 0 25px black;
-  /* border-width: 5px; */
+}
+
+nav li i {
+  display: block;
+  height: 100%;
+  font-size: 1.35rem;
+  color: #f3f9fb;
+  text-align: center;
+  padding-top: 14px;
+  padding-left: 16px;
+  padding-right: 16px;
+  text-decoration: none;
+  text-shadow: 0 0 25px black;
 }
 
 nav li:hover {
@@ -223,6 +258,10 @@ nav a:hover {
 nav a.activePage {
   color: #51e3d4;
   text-decoration: none;
+}
+
+nav i:hover {
+  color: #51e3d4;
 }
 
 nav.footer li a:hover {
@@ -249,6 +288,41 @@ nav.footer li a:hover {
   font-family: 'Sansita', sans-serif;
 }
 
+.headerIconCushion {
+  padding-top: 10px;
+}
+
+.headerIcon {
+  width: 50px;
+}
+
+.headerSearchIcon {
+  line-height: 2.75;
+}
+
+@media screen and (max-width: 400px) {
+
+  .mobileHide {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 500px) {
+
+  .headerIcon {
+    width: 30px;
+  }
+
+  .headerIconCushion {
+    padding-top: 2px;
+  }
+
+  .headerSearchIcon {
+    line-height: 2.25;
+  }
+
+}
+
 .inline {
   display: inline-block;
 }
@@ -269,6 +343,158 @@ nav.footer li a:hover {
   outline: 0;
 }
 
+/*-------------------LaunchPage formatting-----------------*/
+
+.lauchContainer {
+  background: #fff;
+  background-image: url("https://www.transparenttextures.com/patterns/light-paper-fibers.png");
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+#title {
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.jumbotron {
+  background-color: #474f85;
+  background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+}
+
+
+.lgMdLPLogo {
+  width: 20%;
+}
+
+.lgMdFullLength {
+  width: 100%;
+}
+
+#lgMdTitleTagContainer {
+  display: inline-flex;
+  align-items:center;
+  /* justify-content: center; */
+}
+
+#sMLogoLPContainer {
+  display: none;
+}
+
+#smRegTitle {
+  display: none;
+}
+
+#smRegTag {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .lgMdLPLogo {
+    display: none;
+  }
+
+  #sMLogoLPContainer {
+    display: inline-block;
+  }
+
+  #lGMdLogoLPContainer {
+    display: none;
+  }
+
+  .smLPLogo {
+    width: 35%;
+  }
+
+  #smRegTitle {
+    display: inline-block;
+  }
+
+  #smRegTag {
+    display: inline-block;
+  }
+
+  .mobileCentered {
+    text-align: center;
+  }
+
+}
+
+
+@media screen and (min-width: 768px) and (max-width: 968px) {
+
+  .lgMdLPLogo {
+    width: 35%;
+  }
+
+}
+
+.lPEmailInput {
+  width: 250px;
+}
+
+.explainerLead {
+display: flex;
+align-items: center;
+justify-content: center;
+height: 150px;
+}
+
+.landerDemo {
+width: 50%;
+}
+
+@media screen and (max-width: 500px) {
+  .landerDemo {
+  width: 75%;
+  }
+}
+
+#threeRules {
+  border-radius: .3rem;
+  /* background-color: #F3F9FB; */
+  background-color: #51e3d4;
+  background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
+  /* background-image: url("https://www.transparenttextures.com/patterns/fabric-1-light.png"); */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+#threeRules p {
+  font-size: 1.15rem;
+}
+
+.threeRuleShading {
+  text-shadow: 0px 0px 15px #F3F9FB
+}
+
+.lPcardHeader {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.lPRuleNumber {
+  width: 20%;
+  margin-right: 3%;
+}
+
+.lPRuleTxt {
+  padding-left: 3%;
+}
+.rule-column {
+  margin-bottom: 5%;
+}
+
+.fullHeight {
+  height: 100%;
+}
+
+#lPfooterContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+
 /* ---------------------Mobile Phone formatting------------------------------ */
 
 @media screen and (max-width: 500px) {
@@ -283,16 +509,25 @@ nav.footer li a:hover {
     z-index: 2;
   }
 
-  .lftLinks {
+  .headerLinks {
     line-height: 29px;
-    left: 5%;
+    /* left: 5%; */
   }
 
-  .rghtLinks {
+  /* .rghtLinks {
     line-height: 29px;
-  }
+  } */
 
   nav li a {
+    font-size: .8rem;
+    color: #f3f9fb;
+    padding-top: 7px;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-shadow: 0 0 17px black;
+  }
+
+  nav li i {
     font-size: .8rem;
     color: #f3f9fb;
     padding-top: 7px;
@@ -304,6 +539,7 @@ nav.footer li a:hover {
   .footer {
     height: 50px;
   }
+
 
   /*-------------------userCard Mobile formatting-----------------*/
 

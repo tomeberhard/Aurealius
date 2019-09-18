@@ -101,6 +101,14 @@ const upload = multer({
 //---------------------Mongo Moongoose Models--------------------------//
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
+const launchContactSchema = new mongoose.Schema({
+  email: String
+}, {
+  timestamps: true
+});
+
+const LaunchContact = new mongoose.model("launchContact", launchContactSchema);
+
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
@@ -744,7 +752,7 @@ app.get("/image/:filename", function(req, res) {
 });
 
 app.get("/", function(req, res) {
-  res.render("home");
+  res.render("launchPage");
 });
 
 app.get("/about", function(req, res) {
@@ -775,6 +783,50 @@ app.get("/logout", function(req, res) {
 });
 
 //------------------------POST Requests--------------------------------///
+
+app.post("/launchPage", function(req, res){
+
+  const newlaunchContact = req.body.email;
+  console.log(newlaunchContact);
+
+  LaunchContact.findOne({
+    launchContact: newlaunchContact
+  }, function(err, foundEmail) {
+    if (err) {
+      console.log(err);
+    } else {
+      if(foundEmail) {
+        console.log("Submitted email is already on file!")
+
+        res.status(200);
+        res.json({
+          message: "Thanks for your interest in Aurealius! Looks like we've already got your email. Not to worry, we will definitely let you know when we're up and running!"
+        });
+        res.end();
+
+      } else {
+
+          const launchContact = new LaunchContact({
+            email: newlaunchContact
+          });
+
+          launchContact.save();
+          console.log("Launch page email successfully saved!")
+
+          res.status(200);
+          res.json({
+            message: "Thanks for your interest in Aurealius! We'll let you know when we're fully up and running!"
+          });
+          res.end();
+
+      }
+    }
+
+  });
+
+  // res.render("launchPage")
+
+});
 
 app.post("/register", function(req, res) {
 

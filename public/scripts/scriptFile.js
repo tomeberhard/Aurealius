@@ -428,6 +428,47 @@ function updateEveryoneEntries(everyoneEntries) {
 
 }
 
+//-----------------------------favBtn AJAX----------------------------------//
+
+$(document).on("click", "#submitLPEmailBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let lPEmailField = $("#lPemailAddressInput").val();
+  console.log(lPEmailField.includes("@"));
+
+  if (lPEmailField.includes("@") === true ) {
+
+    let data = JSON.stringify({
+      email: lPEmailField
+    });
+
+    $.ajax({
+      url: "/launchPage",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function(response) {
+
+      $("#lPResponse").html(response.message);
+      $("#lPSubmitModal").modal('show');
+
+    }).fail(function(err) {
+      console.log(err)
+    });
+
+  } else {
+
+    $(".validateEmail").removeClass("d-none");
+
+    setTimeout(function() {
+    $(".validateEmail").addClass("d-none");
+    }, 3000);
+
+}
+
+});
+
 //-----------------------------delete Entry AJAX----------------------------------//
 
 $(document).on("click", "#deleteButton", function(event) {

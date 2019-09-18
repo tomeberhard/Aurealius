@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Aurealius</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed|IM+Fell+Great+Primer" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Sansita" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Signika" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/bootstrap-timepicker.css" />
+    <link type="text/css" rel="stylesheet" href="/css/styles.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="/scripts/load-image.all.min.js"></script>
+    <script src="/scripts/imageCorrect.js"></script>
+    <script src="/scripts/bootstrap-timepicker.js"></script>
+  </head>
+
+  <body>
+
+    <div class="container lauchContainer mt-3 mb-3">
+      <div class="row">
+        <div class="col-md-12 center-block">
+          <section id="title" class="mt-3">
+            <div class="jumbotron mb-0 mobileCentered">
+              <div class="container">
+                <div id="sMLogoLPContainer">
+                  <img class="smLPLogo" src="/assets/FFF_Aurealius_LO_01.png" alt="aurealius-logo-icon" />
+                </div>
+                <h1 id="smRegTitle" class="display-3 secondaryTanFont">Aurealius</h1>
+                <p id="smRegTag" class="lead secondaryTanFont">Where Gratitude Takes Center Stage</p>
+                <div id="lGMdLogoLPContainer">
+                  <img class="lgMdLPLogo inline" src="/assets/SxS_noTxt_logo.png" alt="aurealius-logo-SxS_noTxt" />
+                  <div id="lgMdTitleTagContainer" class="inline">
+                    <div>
+                      <h1 id="lGMdRegTitle" class="display-1 mb-0 pl-2 secondaryTanFont">Aurealius</h1>
+                      <p class="lead pl-2 secondaryTanFont">Where Gratitude Takes Center Stage</p>
+                    </div>
+                  </div>
+                </div>
+                <hr class="secondaryTanFont lgMdFullLength">
+                <div class="inline mobileCentered">
+                  <form action="/launchPage" method="POST">
+                    <input type="email" id="lPemailAddressInput"placeholder="Enter your email here..." class="lPEmailInput pl-1 mr-1 mb-2" name="launchEmailAddress" />
+                    <button type="submit" id="submitLPEmailBtn" class="btn btn-outline-secondary secondaryTanFont">Let me know when it's ready!</button>
+                  </form>
+                  <div class="validateEmail validateWarning d-none">
+                      Please provide a valid email address!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="lPexplainer1" class="explainerLead">
+            <div class="container text-center">
+              <h3 class="primaryPurpleFont">What Would a Social Network Based Entirely on Gratitude Look like?</h3>
+            </div>
+          </section>
+
+          <section id="aurealiusDemo" class="mb-5">
+            <div class="container text-center">
+              <img class="landerDemo" src="/assets/blur-cellphone-close-up-1786433.jpg" alt="aurealius-demo" />
+            </div>
+          </section>
+
+
+          <section id="threeRules" class="p-4 mb-4">
+            <div class="container text-center mb-4">
+              <h3 class="primaryPurpleFont threeRuleShading">What are the Rules?</h3>
+            </div>
+
+            <div class="row">
+              <div class="rule-column col-lg-4 col-md-6">
+                <div class="card fullHeight ">
+                  <div class="card-header lPcardHeader">
+                    <div class="lPRuleNumber">
+                      <h1 class="primaryPurpleFont">#1</h1>
+                    </div>
+                    <div class="lPRuleTxt">
+                      <h4 class="primaryPurpleFont">Posts must be based in gratitude</h4>
+                    </div>
+                  </div>
+                  <div class="card-body p-4 text-center">
+                    <p class="primaryPurpleFont">Aurealius is a place to practice appreciation and gratitude. There are plenty of other social networks to satisfy other needs</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rule-column col-lg-4 col-md-6">
+                <div class="card fullHeight ">
+                  <div class="card-header lPcardHeader">
+                    <div class="lPRuleNumber">
+                      <h1 class="primaryPurpleFont">#2</h1>
+                    </div>
+                    <div class="lPRuleTxt">
+                      <h4 class="primaryPurpleFont">No gratitude at the expense of another</h4>
+                    </div>
+                  </div>
+                  <div class="card-body p-4 text-center">
+                    <p class="primaryPurpleFont">Aurealius is not a space to take joy in the suffering of others, no matter deserving it may seem</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rule-column col-lg-4 col-md-6">
+                <div class="card fullHeight ">
+                  <div class="card-header lPcardHeader">
+                    <div class="lPRuleNumber">
+                      <h1 class="primaryPurpleFont">#3</h1>
+                    </div>
+                    <div class="lPRuleTxt">
+                      <h4 class="primaryPurpleFont">No politics!<br /></h4>
+                    </div>
+                  </div>
+                  <div class="card-body p-4 text-center">
+                    <p class="primaryPurpleFont">Politics divide and distract us from the gifts of day-to-day experiences that Aurealius hopes to bring to light</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+          <section id="lPfooter">
+            <div id="lPfooterContainer">
+              <ul class="list-inline headerFont ml-3">
+                <li class="list-inline-item"><a class="primaryPurpleFont" href="/about">About Us</a></li>
+                <li class="list-inline-item"><a class="primaryPurpleFont" href="/jobs">Jobs</a></li>
+                <li class="list-inline-item"><a class="primaryPurpleFont" href="/contact">Contact</a></li>
+              </ul>
+              <div class="pt-2 pb-2 mr-3 goToTopIconContainer">
+                <i class="fas fa-chevron-circle-up fa-2x goToTopIcon primaryPurpleFont" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);"></i>
+              </div>
+            </div>
+            <div id="rightsReserved" class="text-center">
+              <p>© 2019 All Rights Reserved</p>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- response modal -->
+    <div class="modal" id="lPSubmitModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Thank You!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="lPResponse"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
+  <script src="/scripts/scriptFile.js"></script>
+
+  </body>
+
+</html>
