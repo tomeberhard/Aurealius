@@ -31,9 +31,9 @@
   <body>
 
     <div class="container launchContainer mt-3 mb-3">
-      <div class="row">
-        <div class="col-md-12 center-block-developer">
-          <section id="title" class="mt-3">
+      <div class="row justify-content-md-center">
+        <div class="col-md-12">
+          <section id="title" class="mt-3 mb-5">
             <div class="jumbotron launchPGJTron mb-0 mobileCentered">
               <div class="container">
                 <div id="sMLogoLPContainer">
@@ -50,28 +50,69 @@
                     </div>
                   </div>
                 </div>
-                <hr class="secondaryTanFont lgMdFullLength">
-                <div class="inline mobileCentered">
-                  <form action="/developerAccess" method="POST">
-                    <input type="password" id="accessKeyField" placeholder="Enter Access Key Here..." class="lPEmailInput pl-1 mr-1 mb-2" name="developerAccessKey" />
-                    <button type="submit" id="submitDeveloperAccessBtn" class="btn btn-outline-secondary secondaryTanFont">Submit Access Key</button>
-                  </form>
-                  <div class="validateEmail validateWarning d-none">
-                      Incorrect Access Key!
-                  </div>
-                </div>
               </div>
             </div>
           </section>
 
-          <section id="developerFooter">
-            <div id="developerFooterContainer">
-              <ul class="list-inline headerFont">
+          <section class="container mb-5" id="launchContactForm">
+            <div class="row justify-content-md-center">
+              <div class="col-md-9">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="container text-center">
+                      <h2 class="primaryPurpleFont mb-4">We Would Love To Hear From You!</h2>
+                    </div>
+                    <form action="/launchContactUs" method="POST">
+                      <label class="" for="lContactFName">Contact Information</label>
+                      <div class="form-row">
+                        <div class="form-group col-5">
+                            <input type="text" id="lContactFName" placeholder="First Name" class="form-control" name="launchContactFname" />
+                        </div>
+                        <div class="form-group col-7">
+                          <input type="text" id="lContactLName" placeholder="Last Name" class="form-control" name="launchContactLname" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <input type="email" id="lContactEmail" placeholder="Email Address" class="form-control" name="launchContactEmail" />
+                      </div>
+                      <div class="form-group">
+                        <label class="" for="contactRationale">Reason for Inquiry</label>
+                        <select id="contactRationale" class="form-control" placeholder="Reason for contact" >
+                          <option class="launchOptions" value="General Inquiries">General Inquiries</option>
+                          <option class="launchOptions" value="Employment Opportunities">Employment Opportunities</option>
+                          <option class="launchOptions" value="Media/Press">Media/Press Inquiries</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="" for="lContactContent">Message</label>
+                        <textarea id="lContactContent" class="form-control" rows="5" placeholder="Please leave your message here..." name="launchContactContent"></textarea>
+                      </div>
+                      <div class="form-group">
+                        <button type="submit" id="submitLContactBtn" class="btn btn-block btn-primary">Send</button>
+                      </div>
+                    </form>
+                    <div class="validateEmail validateWarning d-none">
+                        Please provide a valid email address!
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </section>
+
+
+          <section id="lPfooter">
+            <div id="lPfooterContainer">
+              <ul class="list-inline headerFont ml-3">
                 <li class="list-inline-item"><a class="primaryPurpleFont" href="/">Home</a></li>
                 <li class="list-inline-item"><a class="primaryPurpleFont" href="/about">About Us</a></li>
                 <li class="list-inline-item"><a class="primaryPurpleFont" href="/contact">Contact</a></li>
                 <li class="list-inline-item"><a class="primaryPurpleFont" href="/developer">Developers</a></li>
               </ul>
+              <div class="pt-2 pb-2 mr-3 goToTopIconContainer">
+                <i class="fas fa-chevron-circle-up fa-2x goToTopIcon primaryPurpleFont" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);"></i>
+              </div>
             </div>
             <div id="rightsReserved" class="text-center">
               <p>© 2019 All Rights Reserved</p>
@@ -81,6 +122,23 @@
         </div>
       </div>
     </div>
+
+  <!-- response modal -->
+  <div class="modal" id="lContactSubmitModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thank You!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p id="lContactResponse"></p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>

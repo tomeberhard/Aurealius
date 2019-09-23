@@ -759,6 +759,10 @@ app.get("/developer", function(req, res) {
   res.render("developer");
 });
 
+app.get("/contact", function(req, res) {
+  res.render("launchContactUs");
+});
+
 app.get("/about", function(req, res) {
   res.render("about");
 });
@@ -792,6 +796,48 @@ app.post("/launchPage", function(req, res){
 
   const newlaunchContact = req.body.email;
   console.log(newlaunchContact);
+
+  LaunchContact.findOne({
+    launchContact: newlaunchContact
+  }, function(err, foundEmail) {
+    if (err) {
+      console.log(err);
+    } else {
+      if(foundEmail) {
+        console.log("Submitted email is already on file!")
+
+        res.status(200);
+        res.json({
+          message: "Thanks for your interest in Aurealius! Looks like we've already got your email. Not to worry, we will definitely let you know when we're up and running!"
+        });
+        res.end();
+
+      } else {
+
+          const launchContact = new LaunchContact({
+            email: newlaunchContact
+          });
+
+          launchContact.save();
+          console.log("Launch page email successfully saved!")
+
+          res.status(200);
+          res.json({
+            message: "Thanks for your interest in Aurealius! We'll let you know when we're fully up and running!"
+          });
+          res.end();
+
+      }
+    }
+
+  });
+
+});
+//------------------NEED TO FINISH THIS-----------------------------------------------//
+app.post("/launchContactUs", function(req, res){
+
+  const launchInquiry = req.body.data;
+  console.log(launchInquiry);
 
   LaunchContact.findOne({
     launchContact: newlaunchContact

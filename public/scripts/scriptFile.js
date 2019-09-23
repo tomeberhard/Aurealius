@@ -1,3 +1,17 @@
+//-------------------launch top of page button ----------------------------//
+
+$(document).on("click", ".goToTopIconContainer", function(event) {
+
+    $(".goToTopIcon").removeClass("primaryPurpleFont");
+
+    setTimeout(function() {
+      $(".goToTopIcon").addClass("primaryPurpleFont");
+    }, 10);
+
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+});
+
 //-------------------active page header formatting--------------------------//
 
 let path = (window.location.pathname);
@@ -428,7 +442,7 @@ function updateEveryoneEntries(everyoneEntries) {
 
 }
 
-//-----------------------------favBtn AJAX----------------------------------//
+//-----------------------------launch email AJAX----------------------------------//
 
 $(document).on("click", "#submitLPEmailBtn", function(event) {
   event.preventDefault();
@@ -466,6 +480,62 @@ $(document).on("click", "#submitLPEmailBtn", function(event) {
     }, 3000);
 
 }
+
+});
+
+//-----------------------------contactUs Form-------------------------------------//
+
+$(document).on("click", "#submitLContactBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let contactUsEmail = $("#lContactEmail").val();
+  // console.log(updatedFieldValue);
+
+  if (contactUsEmail.includes("@")) {
+
+    let contactUsFName = $("#lContactFName").val();
+    let contactUsLName = $("#lContactLName").val();
+    let contactRationale = $("#contactRationale").val();
+    let lContactContent = $("#lContactContent").val();
+
+    let contactUsObj = new Object();
+
+    contactUsObj[firstName] = contactUsFName;
+    contactUsObj[lastName] = contactUsLName;
+    contactUsObj[contactUsEmail] = contactUsEmail;
+    contactUsObj[contactRationale] = contactRationale;
+    contactUsObj[lContactContent] = lContactContent;
+
+    console.log(contactUsObj);
+
+    let data = JSON.stringify({
+      data: contactUsObj
+    });
+
+    $.ajax({
+      url: "/launchContact",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function(response) {
+
+      $("#lContactResponse").html(response.message);
+      $("#lContactSubmitModal").modal('show');
+
+    }).fail(function(err) {
+      console.log(err)
+    });
+
+  } else {
+
+    $(".validateEmail").removeClass("d-none");
+
+    setTimeout(function() {
+    $(".validateEmail").addClass("d-none");
+    }, 3000);
+
+  }
 
 });
 

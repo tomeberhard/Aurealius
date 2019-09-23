@@ -345,7 +345,7 @@ nav.footer li a:hover {
 
 /*-------------------LaunchPage formatting-----------------*/
 
-.lauchContainer {
+.launchContainer {
   background: #fff;
   background-image: url("https://www.transparenttextures.com/patterns/light-paper-fibers.png");
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -388,6 +388,11 @@ nav.footer li a:hover {
   display: none;
 }
 
+.goToTopIcon:hover {
+  cursor: pointer;
+  color: #465559;
+}
+
 @media screen and (max-width: 767px) {
   .lgMdLPLogo {
     display: none;
@@ -415,6 +420,10 @@ nav.footer li a:hover {
 
   .mobileCentered {
     text-align: center;
+  }
+
+  .mobileHeaderStack {
+    justify-content: center;
   }
 
 }
@@ -507,6 +516,39 @@ width: 50%;
   bottom:0;
 }
 
+/* ---------------------launch Contact------------------------------ */
+
+.launchOptions {
+  color:#495057
+}
+
+.launchPGJTron {
+  padding: 2rem 2rem;
+}
+
+/* ---------------------launch About Us------------------------------ */
+
+.aboutUsLogo {
+  width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+  .aboutUsLogo {
+    width: 25%;
+  }
+}
+
+/* @media screen (min-width: 769px) and (max-width: 1000px) {
+  .aboutUsLogo {
+    width: 50%;
+  }
+}
+
+@media screen and (min-width: 1001px) {
+  .aboutUsLogo {
+    width: 25%;
+  }
+} */
 
 /* ---------------------Mobile Phone formatting------------------------------ */
 
@@ -1499,11 +1541,10 @@ a.userProfName {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
-.align-items-center {
+/* .align-items-center {
   display: flex;
   align-items: center;  /*Aligns vertically center */
-  justify-content: center; /*Aligns horizontally center */
-}
+  /* justify-content: center; /*Aligns horizontally center */
 
 .mobilePaddingReduction {
   padding-left: 0;
