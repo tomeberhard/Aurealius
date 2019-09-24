@@ -119,7 +119,7 @@ const launchContactUsFormSchema = new mongoose.Schema({
   timestamps: true
 });
 
-const LaunchContactUsForm = new mongoose.model("launchContactUsForm", launchContactSchema);
+const LaunchContactUsForm = new mongoose.model("launchContactUsForm", launchContactUsFormSchema);
 
 const entrySchema = new mongoose.Schema({
   imageFile: String,
@@ -858,6 +858,8 @@ app.post("/launchContactUs", function(req, res){
     contactRationale: launchContactUsInquiry.contactRationale,
     lContactContent: launchContactUsInquiry.lContactContent
   });
+
+  console.log(launchContactUsForm);
 
   launchContactUsForm.save();
   console.log("Launch contact inquiry successfully saved!")
