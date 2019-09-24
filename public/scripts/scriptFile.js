@@ -467,6 +467,8 @@ $(document).on("click", "#submitLPEmailBtn", function(event) {
       $("#lPResponse").html(response.message);
       $("#lPSubmitModal").modal('show');
 
+      $("launchPageForm").trigger("reset");
+
     }).fail(function(err) {
       console.log(err)
     });
@@ -522,6 +524,8 @@ $(document).on("click", "#submitLContactBtn", function(event) {
 
       $("#lContactResponse").html(response.message);
       $("#lContactSubmitModal").modal('show');
+
+      $("#launchContactusForm").trigger("reset");
 
     }).fail(function(err) {
       console.log(err)
