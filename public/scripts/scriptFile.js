@@ -503,11 +503,11 @@ $(document).on("click", "#submitLContactBtn", function(event) {
 
     contactUsObj["firstName"] = contactUsFName;
     contactUsObj["lastName"] = contactUsLName;
-    contactUsObj["contactUsEmail"] = contactUsEmail;
+    contactUsObj["email"] = contactUsEmail;
     contactUsObj["contactRationale"] = contactRationale;
     contactUsObj["lContactContent"] = lContactContent;
 
-    console.log(contactUsObj);
+    // console.log(contactUsObj);
 
     let data = JSON.stringify({
       data: contactUsObj
