@@ -501,11 +501,11 @@ $(document).on("click", "#submitLContactBtn", function(event) {
 
     let contactUsObj = new Object();
 
-    contactUsObj[firstName] = contactUsFName;
-    contactUsObj[lastName] = contactUsLName;
-    contactUsObj[contactUsEmail] = contactUsEmail;
-    contactUsObj[contactRationale] = contactRationale;
-    contactUsObj[lContactContent] = lContactContent;
+    contactUsObj["firstName"] = contactUsFName;
+    contactUsObj["lastName"] = contactUsLName;
+    contactUsObj["contactUsEmail"] = contactUsEmail;
+    contactUsObj["contactRationale"] = contactRationale;
+    contactUsObj["lContactContent"] = lContactContent;
 
     console.log(contactUsObj);
 
@@ -514,7 +514,7 @@ $(document).on("click", "#submitLContactBtn", function(event) {
     });
 
     $.ajax({
-      url: "/launchContact",
+      url: "/launchContactUs",
       type: "POST",
       contentType: "application/json",
       data: data

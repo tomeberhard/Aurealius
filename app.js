@@ -109,6 +109,18 @@ const launchContactSchema = new mongoose.Schema({
 
 const LaunchContact = new mongoose.model("launchContact", launchContactSchema);
 
+const launchContactUsFormSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  contactRationale: String,
+  lContactContent: String
+}, {
+  timestamps: true
+});
+
+const LaunchContactUsForm = new mongoose.model("launchContactUsForm", launchContactSchema);
+
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
@@ -833,46 +845,28 @@ app.post("/launchPage", function(req, res){
   });
 
 });
-//------------------NEED TO FINISH THIS-----------------------------------------------//
+
 app.post("/launchContactUs", function(req, res){
 
-  const launchInquiry = req.body.data;
-  console.log(launchInquiry);
+  const launchContactUsInquiry = req.body.data;
+  console.log(launchContactUsInquiry);
 
-  LaunchContact.findOne({
-    launchContact: newlaunchContact
-  }, function(err, foundEmail) {
-    if (err) {
-      console.log(err);
-    } else {
-      if(foundEmail) {
-        console.log("Submitted email is already on file!")
-
-        res.status(200);
-        res.json({
-          message: "Thanks for your interest in Aurealius! Looks like we've already got your email. Not to worry, we will definitely let you know when we're up and running!"
-        });
-        res.end();
-
-      } else {
-
-          const launchContact = new LaunchContact({
-            email: newlaunchContact
-          });
-
-          launchContact.save();
-          console.log("Launch page email successfully saved!")
-
-          res.status(200);
-          res.json({
-            message: "Thanks for your interest in Aurealius! We'll let you know when we're fully up and running!"
-          });
-          res.end();
-
-      }
-    }
-
+  const launchContactUsForm = new LaunchContactUsForm({
+    firstName: launchContactUsInquiry.firstName,
+    lastName: launchContactUsInquiry.lastName,
+    email: launchContactUsInquiry.email,
+    contactRationale: launchContactUsInquiry.contactRationale,
+    lContactContent: launchContactUsInquiry.lContactContent
   });
+
+  launchContactUsForm.save();
+  console.log("Launch contact inquiry successfully saved!")
+
+  res.status(200);
+  res.json({
+    message: "We will follow up with you as soon as we can."
+  });
+  res.end();
 
 });
 
