@@ -467,7 +467,7 @@ $(document).on("click", "#submitLPEmailBtn", function(event) {
       $("#lPResponse").html(response.message);
       $("#lPSubmitModal").modal('show');
 
-      $("launchPageForm").trigger("reset");
+      $("#launchPageForm").trigger("reset");
 
     }).fail(function(err) {
       console.log(err)
