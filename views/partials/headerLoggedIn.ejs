@@ -51,20 +51,21 @@
         </li>
         <li class="">
           <div class="h-100">
-            <i class="fas fa-search headerSearchIcon"></i>
+            <i class="fas fa-search headerFAIcon"></i>
           </div>
 
         </li>
       </ul>
     </div>
     <div class="mr-sm-2 mr-md-3 mr-lg-5 headerLinks">
-      <ul class="">
+      <ul class="overflow-auto">
+        <!-- allows for dropdown menu to not get hidden under body -->
         <li class="">
           <!-- <a class="" href="/logout" role="submit">Log Out</a> -->
           <div class="dropdown">
-            <button class="" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="bg-transparent border-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <div class="h-100">
-                <i class="fas fa-bars headerSearchIcon"></i>
+                <i class="fas fa-bars headerFAIcon"></i>
               </div>
             </button>
             <div class="dropdown-menu">
@@ -74,7 +75,7 @@
               <a class="dropdown-item" href="/terms">Terms & Conditions</a>
               <a class="dropdown-item" href="/privacy">Privacy Policy</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href=""/logout"">Log Out</a>
+              <a class="dropdown-item" href="/logout" role="submit">Log Out</a>
             </div>
           </div>
         </li>
