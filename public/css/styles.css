@@ -300,6 +300,10 @@ nav.footer li a:hover {
   line-height: 2.75;
 }
 
+.showHeaderDropDown {
+  overflow-y: auto;  
+}
+
 @media screen and (max-width: 400px) {
 
   .mobileHide {
