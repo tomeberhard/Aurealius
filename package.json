@@ -27,7 +27,7 @@
     "jpeg-autorotate": "^5.0.0",
     "md5": "^2.2.1",
     "method-override": "^3.0.0",
-    "mongoose": "^5.4.17",
+    "mongoose": "^5.7.13",
     "mongoose-findorcreate": "^3.0.0",
     "multer": "^1.4.1",
     "multer-gridfs-storage": "^3.2.3",
