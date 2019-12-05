@@ -300,8 +300,8 @@ nav.footer li a:hover {
   line-height: 2.75;
 }
 
-.showHeaderDropDown {
-  overflow-y: auto;  
+nav ul.showHeaderDropDown {
+  overflow-y: visible;
 }
 
 @media screen and (max-width: 400px) {
