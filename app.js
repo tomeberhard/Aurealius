@@ -53,7 +53,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //-------------------Create Mongo Connection--------------------------//
-mongoose.connect("mongodb+srv://admin-scott:isaweneskanter@aurealius-7vtw9.mongodb.net/aurealiusUsersDB", {
+// mongoose.connect("mongodb+srv://admin-scott:isaweneskanter@aurealius-7vtw9.mongodb.net/aurealiusUsersDB", {
+//   useNewUrlParser: true
+// });
+mongoose.connect("mongodb://localhost:27017/aurealiusUsersDB", {
   useNewUrlParser: true
 });
 //below just to kill depracation warning//
