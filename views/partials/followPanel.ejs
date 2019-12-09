@@ -2,7 +2,7 @@
     <% if(userFollowing.length > 0){ %>
     <% userFollowing.forEach(function(usersFollowed) {%>
 
-    <a href="/index" class="btn btn-primary followLinkBox">
+    <a href="/user/<%= usersFollowed.profileName %>" class="btn btn-primary followLinkBox">
 
       <% if(usersFollowed.bioImageFile === "/assets/defaultusericon.png") { %>
       <% var userImage = usersFollowed.bioImageFile %>

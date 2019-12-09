@@ -20,7 +20,7 @@ let navPage = "";
 defineNavPage();
 
 switch (navPage) {
-  case ("index"):
+  case ("everyone"):
 
     $(function() {
       $("li.evyOnPgLk").addClass("activePage");
@@ -37,7 +37,7 @@ switch (navPage) {
 
     break;
 
-  case ("user"):
+  case ("yourGratitude"):
     $(function() {
       $("li.userPgLk").addClass("activePage");
       $("li.userPgLk").children().addClass("activePage");
@@ -262,7 +262,7 @@ $("#collectionSelector").on("change", function() {
 
 //--------------------------user page rendered entries------------------------//
 
-if (path === "/index2") {
+if (path === "/yourGratitude") {
 
 $("#userEntriesContainer").addClass("active");
 $("#followingEntriesContainer").addClass("d-none");
@@ -302,6 +302,51 @@ function updateUserEntries(userEntries) {
   $("#userEntriesContainer").append(userEntries);
   // $("div.appendedBelow").nextAll().children().addClass("scrollImages");
 }
+
+//--------------------------public user page rendered entries------------------------//
+
+if (path.includes("/user/")) {
+
+$("#userEntriesContainer").addClass("active");
+$("#followingEntriesContainer").addClass("d-none");
+$("#favoriteEntriesContainer").addClass("d-none");
+
+  $.ajax({
+    url: "/userEntriesPublic",
+    type: "GET",
+    contentType: "application/json"
+  }).done(function(result) {
+    updateUserEntries(result);
+
+    jQuery(function() {
+      jQuery(".userEntriesImg.orientation").each(function() {
+        var div = $(this);
+        loadImage(
+          div.attr("image"),
+          function(img) {
+            div.append(img);
+          }, {
+            orientation: true,
+          }
+        );
+      });
+      // $(".appendedBelow").remove();
+    });
+
+  }).fail(function(err) {
+    console.log(err);
+  });
+
+}
+
+function updateUserEntries(userEntries) {
+
+  // $("#renderedEntryContainer").append("<div class='appendedBelow'></div>");
+  $("#userEntriesContainer").append(userEntries);
+  // $("div.appendedBelow").nextAll().children().addClass("scrollImages");
+}
+
+
 
 //--------------------------user page render------------------------//
 
@@ -373,7 +418,7 @@ $(userBtnID).addClass("customActive");
 let totalSeenIds = [];
 let isWorking = 0;
 
-if (path == "/index") {
+if (path == "/yourGratitude") {
   $(window).scroll(function() {
 
     var scrollPercent = Math.round(($(window).scrollTop()) / ($(document).height() - $(window).height()) * 100);
@@ -1614,7 +1659,7 @@ function defineNavPage() {
 
 function userPageDesignator(pathName) {
   let uPP;
-  if (pathName === "/index2") {
+  if (pathName === "/yourGratitude") {
     uPP =  $("#renderingContainer").find(".active").attr("value");
     console.log(path);
     console.log(uPP);
