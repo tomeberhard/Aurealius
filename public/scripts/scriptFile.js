@@ -154,11 +154,16 @@ $(document).on("click", ".editBtn", function(event) {
   let editBtnEntryId = $(this).attr("value");
 
   let userPagePath = userPageDesignator(path);
+  console.log(userPagePath);
 
   let currentCaptionHeight = $("#" + "cpt" + userPagePath + editBtnEntryId).outerHeight();
+  console.log(currentCaptionHeight);
   let currentCaptionWidth = $("#" + "cpt" + userPagePath  + editBtnEntryId).outerWidth();
+  console.log(currentCaptionWidth);
   let numberLineHeight = parseInt($("#" + "cpt" + userPagePath + editBtnEntryId).css("lineHeight"));
+  console.log(numberLineHeight);
   let rows = Math.ceil(currentCaptionHeight / numberLineHeight)+1;
+  console.log(rows);
 
   $("#" + "editCptTA" + userPagePath + editBtnEntryId).attr("rows", rows);
   $("#" + "editCptTA" + userPagePath + editBtnEntryId).css("width", currentCaptionWidth);
@@ -262,7 +267,7 @@ $("#collectionSelector").on("change", function() {
 
 //--------------------------user page rendered entries------------------------//
 
-if (path === "/yourGratitude") {
+if (path === "/Yours") {
 
 $("#userEntriesContainer").addClass("active");
 $("#followingEntriesContainer").addClass("d-none");
@@ -307,19 +312,27 @@ function updateUserEntries(userEntries) {
 
 if (path.includes("/user/")) {
 
-$("#userEntriesContainer").addClass("active");
-$("#followingEntriesContainer").addClass("d-none");
-$("#favoriteEntriesContainer").addClass("d-none");
+$("#userEntriesPublicContainer").addClass("active");
+$("#followingEntriesPublicContainer").addClass("d-none");
+$("#favoriteEntriesPublicContainer").addClass("d-none");
+
+let profileName = path.substring(6,path.length);
+// console.log(profileName);
+
+let data = JSON.stringify({
+  profileName: profileName
+});
 
   $.ajax({
     url: "/userEntriesPublic",
-    type: "GET",
-    contentType: "application/json"
+    type: "Post",
+    contentType: "application/json",
+    data: data
   }).done(function(result) {
-    updateUserEntries(result);
+    updateUserEntriesPublic(result);
 
     jQuery(function() {
-      jQuery(".userEntriesImg.orientation").each(function() {
+      jQuery(".userEntriesPublicImg.orientation").each(function() {
         var div = $(this);
         loadImage(
           div.attr("image"),
@@ -339,10 +352,10 @@ $("#favoriteEntriesContainer").addClass("d-none");
 
 }
 
-function updateUserEntries(userEntries) {
+function updateUserEntriesPublic(userEntries) {
 
   // $("#renderedEntryContainer").append("<div class='appendedBelow'></div>");
-  $("#userEntriesContainer").append(userEntries);
+  $("#userEntriesPublicContainer").append(userEntries);
   // $("div.appendedBelow").nextAll().children().addClass("scrollImages");
 }
 
@@ -361,18 +374,33 @@ console.log(imgClass);
 
 
 let containerID = ("#"+ renderContainerChoice + "Container");
+console.log(containerID);
 let containerStatus = $(containerID +" > div").length;
 // let containerStatus = ("#"+ renderContainerChoice + "Container").children().length;
 console.log(containerStatus);
 
 $("#userBtnBarContainer").find(".customActive").removeClass("customActive");
 let userBtnID = ("#show"+ renderContainerChoice);
+// console.log(userBtnID);
 $(userBtnID).addClass("customActive");
+
+// let routeChoiceValidate = routeChoice.includes("Public");
+// console.log(routeChoiceValidate);
+
+if(routeChoice.includes("Public")) {
+
+  let profileName = path.substring(6,path.length);
+  // console.log(profileName);
+
+  let data = JSON.stringify({
+    profileName: profileName
+  });
 
   $.ajax({
     url: routeChoice,
-    type: "GET",
-    contentType: "application/json"
+    type: "POST",
+    contentType: "application/json",
+    data: data
   }).done(function(returnedEntries) {
 
     $("#renderingContainer").find(".active").empty();
@@ -380,8 +408,6 @@ $(userBtnID).addClass("customActive");
     $(containerID).removeClass("d-none").addClass("active");
 
     $(containerID).append(returnedEntries);
-    //
-    // updateUserEntries(returnedEntries);
 
     jQuery(function() {
       jQuery("."+ imgClass + ".orientation").each(function() {
@@ -402,6 +428,42 @@ $(userBtnID).addClass("customActive");
     console.log(err);
   });
 
+} else {
+
+    $.ajax({
+      url: routeChoice,
+      type: "GET",
+      contentType: "application/json"
+    }).done(function(returnedEntries) {
+
+      $("#renderingContainer").find(".active").empty();
+      $("#renderingContainer").find(".active").removeClass("active").addClass("d-none");
+      $(containerID).removeClass("d-none").addClass("active");
+
+      $(containerID).append(returnedEntries);
+      //
+      // updateUserEntries(returnedEntries);
+
+      jQuery(function() {
+        jQuery("."+ imgClass + ".orientation").each(function() {
+          var div = $(this);
+          loadImage(
+            div.attr("image"),
+            function(img) {
+              div.append(img);
+            }, {
+              orientation: true,
+            }
+          );
+        });
+        // $(".appendedBelow").remove();
+      });
+
+    }).fail(function(err) {
+      console.log(err);
+    });
+
+}
 
 });
 
@@ -656,13 +718,16 @@ $(document).on("click", ".reportSubmitBtn", function(event) {
   console.log(reportedEntryId);
 
   let userPagePath = userPageDesignator(path);
+  console.log(userPagePath);
 
-  let entryId = $("#eID" + userPagePath + reportedEntryId).closest(".card-body").attr("id");
+  let entryId = "eID" + userPagePath + reportedEntryId;
   console.log(entryId);
   let checkedOption = $(".form-check-input:checked").val();
   console.log(checkedOption);
   let reportComment = $(".reportTA").val()
   console.log(reportComment);
+  let reportModalId = "rptModal" + reportedEntryId;
+  console.log(reportModalId);
 
   let data = JSON.stringify({
     entryId: reportedEntryId,
@@ -675,7 +740,7 @@ $(document).on("click", ".reportSubmitBtn", function(event) {
       contentType: "application/json",
       data: data
     }).done(function() {
-      $("#reportModal").modal("hide");
+      $("#" + reportModalId).modal("hide");
       $("body").removeClass("modal-open");
       $("body").removeAttr("style");
       $(".modal-backdrop").remove();
@@ -1659,7 +1724,8 @@ function defineNavPage() {
 
 function userPageDesignator(pathName) {
   let uPP;
-  if (pathName === "/yourGratitude") {
+  // console.log(pathName);
+  if (pathName === "/Yours" || pathName.includes("user")) {
     uPP =  $("#renderingContainer").find(".active").attr("value");
     console.log(path);
     console.log(uPP);

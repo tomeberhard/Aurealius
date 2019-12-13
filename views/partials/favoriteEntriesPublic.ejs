@@ -9,10 +9,10 @@
 <% var cardClass = "cardWImg" %>
 <% } %>
 
-<% var cardId = "eIDfollowingEntries" + entry._id %>
+<% var cardId = "eIDfavoriteEntries" + entry._id %>
 
 <div class="card card-body-2 mb-3" id="<%= cardId %>">
-  <div class="followingEntriesImg orientation" image="<%= hide %>"></div>
+  <div class="favoriteEntriesPublicImg orientation" image="<%= hide %>"></div>
   <div class="<%= cardClass %>">
     <div class="uNFavIcnContainer">
       <div class="profileFllwUnFllw">
@@ -20,7 +20,7 @@
           <h3 class="primaryPurpleFont"><%= entry._user.profileName %></h3>
         </a>
 
-        <% if (entry._user.profileName === userData.profileName) { %>
+        <% if (entry._user.profileName === reqUserData.profileName) { %>
         <% var hide = "d-none" %>
         <% } else { %>
         <% var hide = "" %>
@@ -34,11 +34,11 @@
         <% var folUnfol = "Follow" %>
         <% } %>
 
-        <% var followbtnUName = "flwBtnfollowingEntries" + entry._user.profileName %>
+        <% var followbtnUName = "flwBtnfavoriteEntries" + entry._user.profileName %>
 
         <div class="flwUnflw <%= hide %>">
           <form method="POST" action="/follow">
-            <% var flwBtnId = "flwfollowingEntries"+ entry._id %>
+            <% var flwBtnId = "flw"+ entry._id %>
             <button class="followBtn btn <%= followbtnUName %>" name="followButton" id="<%= flwBtnId %>" value="<%= entry._user._id %>">
               <%= folUnfol %>
             </button>
@@ -50,7 +50,7 @@
       <div class="favShare">
         <div class="shareBtnContainer">
 
-          <% var collapseShareID = "afollowingEntries" + JSON.stringify(entry._id).replace(/"/g, "") %>
+          <% var collapseShareID = "afavoriteEntries" + JSON.stringify(entry._id).replace(/"/g, "") %>
 
           <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
             <i class="fas fa-share "></i>
@@ -59,13 +59,13 @@
 
         <div class="favBtnContainer">
 
-          <% var favFormEntryId = "favFormfollowingEntries"+ entry._id%>
+          <% var favFormEntryId = "favFormfavoriteEntries"+ entry._id%>
 
           <form method="POST" action="/favorite" id="<%= favFormEntryId %>">
 
-            <% var heartBtnEntryId = "efollowingEntries"+ entry._id%>
+            <% var heartBtnEntryId = "efavoriteEntries"+ entry._id%>
             <% var favs = JSON.stringify(entry._favoriteUsers) %>
-            <% if (favs.includes(userData._id)) { %>
+            <% if (favs.includes(reqUserData._id)) { %>
             <% var faved = "" %>
             <% var notFaved = "d-none" %>
             <% var clicked = "clicked" %>
@@ -93,17 +93,17 @@
     </div>
     <div class="captionContainer">
 
-      <% var captionId = "cptfollowingEntries"+ entry._id %>
+      <% var captionId = "cptfavoriteEntries"+ entry._id %>
 
       <p class="card-text" id="<%= captionId %>"><%= entry.caption %></p>
       <div class="editEntryForm d-none">
         <form method="POST" action="/upload">
 
-          <% var editCaptionFormId = "editCptTAfollowingEntries"+ entry._id %>
+          <% var editCaptionFormId = "editCptTAfavoriteEntriesPublic"+ entry._id %>
 
           <textarea class="captionContainer" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%- entry.caption %></textarea>
 
-          <% var editCptBtnBarId = "editCptBtnBarfollowingEntries"+ entry._id %>
+          <% var editCptBtnBarId = "editCptBtnBarfavoriteEntriesPublic"+ entry._id %>
 
           <div class="editEntryBtnBar" id="<%= editCptBtnBarId %>">
             <button type="submit" class="btn btn-primary btn-block mr-1 submitEditBtn" value="<%= entry._id %>">Save</button>
@@ -126,7 +126,7 @@
     <div class="collapse entryTrayContainer" id="<%= collapseExpandID %>">
       <div class="reportIcnContainer">
 
-          <% var rptModalId = "rptModalfollowingEntries" + entry._id %>
+          <% var rptModalId = "rptModalfavoriteEntries" + entry._id %>
 
         <button class="entryContainerBtn warning" data-toggle="modal" data-target="#<%= rptModalId %>">
           <i class="fas fa-exclamation-circle"></i>
@@ -134,7 +134,7 @@
 
       </div>
 
-      <% var yours = JSON.stringify(userData._id) %>
+      <% var yours = JSON.stringify(reqUserData._id) %>
       <% var posTheirs = JSON.stringify(entry._user._id) %>
       <% if (yours === posTheirs) { %>
       <% var show = "" %>
@@ -196,7 +196,7 @@
               <textarea class="form-control reportTA" rows="3" name="reportComments" placeholder="Comments"></textarea>
             </div>
           </div>
-          <% var rptSubmitBtn = "rptBtnfollowingEntries" + entry._id %>
+          <% var rptSubmitBtn = "rptBtnfavoriteEntries" + entry._id %>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary reportSubmitBtn"  id="<%= rptSubmitBtn %>" name="reportButton">Submit</button>
             <button type="button" id="modalCloseBtn" class="btn btn-secondary inline" data-dismiss="modal">Close</button>

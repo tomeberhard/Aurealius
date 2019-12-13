@@ -76,6 +76,10 @@ box-shadow: none;
   color: #F3F9FB;
 }
 
+.noBackground {
+  background: none;
+}
+
 .headerFont {
   font-family: 'Sansita', sans-serif;
 }
@@ -1028,6 +1032,7 @@ label.btn {
 .captionContainer {
   font-size: 1.35rem;
   font-family: 'IM Fell Great Primer', serif;
+  margin-top: 1.25rem;
 }
 
 .card-text {
@@ -1048,34 +1053,33 @@ label.btn {
 }
 
 .uNFavIcnContainer {
-  position: relative;
-  height: 40px;
-  padding-bottom: 50px;
+  display: flex;
+  justify-content: space-between;
+  /* height: 40px; */
+  /* padding-bottom: 50px; */
 }
 
 @media screen and (max-width: 500px) {
   .uNFavIcnContainer {
-  padding-bottom: 30px;
+  /* padding-bottom: 30px; */
   }
 }
 
 .profileFllwUnFllw {
-  /* width: 88%;
-  height: 30px;
-  left: 0;
-  top: 0; */
+  display:flex;
+  justify-content: space-between;
 }
 
 .userProfName {
-  display: inline-block;
+  /* display: inline-block; */
 }
 
 .userProfName h3 {
-  color:#474f85;
+  /* color:#474f85; */
 }
 
 a.userProfName {
-  color:#474f85;
+  /* color:#474f85; */
 }
 
 .followBtn {
@@ -1084,8 +1088,8 @@ a.userProfName {
   border-color: #474f85;
   border-width: 1px;
   /* height: 1rem; */
-  padding: .15rem .5rem;
-  margin-bottom: 20%;
+  /* padding: .15rem .5rem; */
+  /* margin-bottom: 20%; */
 }
 
 .followBtn:hover {
@@ -1097,19 +1101,19 @@ a.userProfName {
 }
 
 .flwUnflw {
-  padding-left: 2%;
-  display: inline-block;
+  /* padding-left: 2%;
+  display: inline-block; */
   /* vertical-align: middle; */
 
 }
 
 .favShare {
-  width: 35%;
+  /* width: 35%;
   height: 30px;
   position: absolute;
   top: 0;
   right: 0;
-  text-align: right;
+  text-align: right; */
 }
 
 .editBtn {
@@ -1410,6 +1414,13 @@ a.userProfName {
   display: flex;
   height: 100%;
   width: 25%;
+  align-items: baseline;
+}
+
+.collectionNameFrameUserPublic {
+  display: flex;
+  height: 100%;
+  width: 35%;
   align-items: baseline;
 }
 
@@ -1850,8 +1861,8 @@ h5.followTxt {
 }
 
 .pubPriUserBtn {
-  position: absolute;
-  top: 0;
+  /* position: absolute;
+  top: 0; */
 }
 
 .pubPritoggle {

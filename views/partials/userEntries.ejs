@@ -26,9 +26,6 @@
     </div>
     <div class="uNFavIcnContainer">
       <div class="profileFllwUnFllw">
-        <a href="/<%= entry._user.profileName %>" class="userProfName">
-          <h3><%= entry._user.profileName %></h3>
-        </a>
 
         <% if(entry.viewStatus === "public") { %>
         <% var public = "" %>
@@ -41,7 +38,7 @@
         <% var pubPriDDId = "dd" + entry._id %>
         <% var pubPriModalDDId = "ddModal" + entry._id %>
 
-        <div class="dropdown inline pubPriUserBtn ml-2">
+        <div class="dropdown inline pubPriUserBtn">
           <button class="btn btn-pubPri dropdown-toggle" type="button" id="<%= pubPriDDId %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <div class="inline currentOption pubPritoggle">
               <div class="public <%= public %>">

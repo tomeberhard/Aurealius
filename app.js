@@ -24,6 +24,9 @@ const flash = require("connect-flash");
 
 const fs = require("fs");
 
+const http = require("http");
+const url = require("url");
+
 const app = express();
 
 app.set("view engine", "ejs");
@@ -291,7 +294,7 @@ app.get("/Everyone", function(req, res) {
                 } else {
 
                   let uniqueGroupings = [...new Set(foundUserFollow._groupings.map(item => item.groupingName))];
-                  console.log(uniqueGroupings);
+                  // console.log(uniqueGroupings);
 
                   res.render("everyone", {
                     entries: foundEntries,
@@ -361,6 +364,7 @@ app.get("/user/:publicUserName", function(req, res) {
   if (req.isAuthenticated()) {
 
     let userName = req.params.publicUserName;
+    let requestingUser = req.user;
     // console.log(userName);
     // let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
@@ -399,6 +403,7 @@ app.get("/user/:publicUserName", function(req, res) {
 
         res.render("theirGratitude", {
           userData: foundUser,
+          requestingUser: requestingUser,
           groupings: uniqueGroupings,
           userFollowing: foundUser._following,
           userFollowers: foundUser._followers
@@ -409,53 +414,6 @@ app.get("/user/:publicUserName", function(req, res) {
   }
 
 });
-
-// app.get("/publicUserEntries", function(req, res) {
-//
-//   if (req.isAuthenticated()) {
-//
-//     let userIdentifier = req.params.publicUserName;
-//     console.log(userIdentifier);
-//
-//     // let userInfo = req.user;
-//
-//     AurealiusUser.findOne({
-//       profileName: userIdentifier
-//     })
-//     .populate({
-//       path: "_entries",
-//       match: {
-//         reportStatus: "Open",
-//         viewStatus: "public"
-//         },
-//       options: {
-//         populate: {
-//           path: "_user",
-//           model: "aurealiusUser"
-//         },
-//         populate: {
-//           path: "_grouping",
-//           model: "grouping"
-//         },
-//         limit: 10,
-//         sort: {createdAt: -1},
-//     },
-//       model: "entry"
-//     })
-//     .exec(function(err, foundUser) {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//
-//         res.render("partials/userEntries", {
-//           userData: userIdentifier,
-//           entries: foundUser._entries
-//         });
-//       }
-//     });
-//   }
-//
-// });
 
 app.get("/userEntries", function(req, res) {
 
@@ -499,15 +457,16 @@ app.get("/userEntries", function(req, res) {
 
 });
 
-app.get("/userEntriesPublic", function(req, res) {
+app.post("/userEntriesPublic", function(req, res) {
 
   if (req.isAuthenticated()) {
 
-    let userInfo = req.user;
-    let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
+    let profileName =  req.body.profileName;
+    // console.log(profileName);
+    let requestingUser = req.user;
 
     AurealiusUser.findOne({
-      _id: userInfo._id
+      profileName: profileName
     })
     .populate({
       path: "_entries",
@@ -537,13 +496,123 @@ app.get("/userEntriesPublic", function(req, res) {
         console.log(err);
       } else {
 
-        res.render("partials/userEntries", {
-          userData: userInfo,
+        // console.log(foundUser);
+
+        res.render("partials/userEntriesPublic", {
+          userData: foundUser,
+          reqUserData: requestingUser,
           entries: foundUser._entries
         });
       }
     });
   }
+
+});
+
+app.post("/favoriteEntriesPublic", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let profileName =  req.body.profileName;
+    let requestingUser = req.user;
+
+    AurealiusUser.findOne({
+      profileName: profileName
+    })
+    .populate({
+      path: "_following",
+      model: "aurealiusUser"
+    })
+    .populate({
+      path: "_favorites",
+      options: {
+        populate: {
+          path: "_user",
+          model: "aurealiusUser"
+        },
+        limit: 10,
+        sort: {createdAt: -1},
+      },
+      match: {
+        reportStatus: "Open",
+        viewStatus: "public"
+      },
+      model: "entry"
+    })
+    .exec(function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
+
+        let filteredFavs = foundUser._favorites.filter(function(result){
+
+          if (result.viewStatus === "private" && JSON.stringify(result._user._id) !== JSON.stringify(foundUser._id)) {
+          return false
+          }
+          return true
+
+        });
+
+        // console.log(requestingUser.profileName);
+
+        res.render("partials/favoriteEntriesPublic", {
+          userData: foundUser,
+          reqUserData: requestingUser,
+          entries: filteredFavs,
+          userFollowing: requestingUser._following,
+        });
+      }
+    });
+  }
+
+});
+
+app.post("/followingEntriesPublic", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let profileName = req.body.profileName;
+    let requestingUser = req.user;
+
+    AurealiusUser.findOne({
+        profileName: profileName
+      },function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          Entry.find({
+            viewStatus: "public",
+            reportStatus: "Open",
+            _user: {
+              $in: foundUser._following
+            }
+          })
+          .limit(10)
+          .sort({
+            createdAt: -1
+          })
+          .populate({
+            path: "_user",
+            model: "aurealiusUser"
+          })
+          .exec(function(err, foundEntries) {
+            if (err) {
+              console.log(err);
+            } else {
+
+            res.status(200);
+            res.render("partials/followingEntriesPublic", {
+              userData: foundUser,
+              reqUserData: requestingUser,
+              entries: foundEntries,
+              userFollowing: requestingUser._following,
+            });
+            }
+          });
+        }
+      });
+    }
 
 });
 
@@ -632,6 +701,8 @@ app.get("/followingEntries", function(req, res) {
             if (err) {
               console.log(err);
             } else {
+
+              // console.log(foundUser._following);
 
             res.status(200);
             res.render("partials/followingEntries", {
@@ -797,6 +868,7 @@ app.get("/Collections", function(req, res) {
 
           let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
           // console.log(foundUser._groupingFavorites);
+          // console.log(foundGroupings);
 
           res.render("collections", {
             userData: foundUser,
@@ -946,7 +1018,7 @@ app.get("/register", function(req, res) {
 });
 
 app.get("/login", function(req, res) {
-  res.render("developer", {
+  res.render("login", {
     error: req.flash("error")
   });
 });
@@ -1162,6 +1234,10 @@ app.post("/upload", upload.single("file"), function(req, res) {
   }
 
   function collectionAllocator() {
+
+    const collectionPageEntry = req.body.groupingId;
+    console.log(collectionPageEntry);
+
     const userCollectionChoice = req.body.grouping;
 
     if (userCollectionChoice === "") {
