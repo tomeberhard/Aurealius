@@ -457,6 +457,45 @@ app.get("/userEntries", function(req, res) {
 
 });
 
+app.post("/userPageCollectionsPublic", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let profileName =  req.body.profileName;
+    console.log(profileName);
+    // let requestingUser = req.user;
+
+    AurealiusUser.findOne({
+      profileName: profileName
+    })
+    .populate({
+      path: "_groupings",
+      match: {
+        viewStatus: "public"
+      },
+      options: {
+        limit: 10,
+        sort: {createdAt: -1},
+    },
+      model: "grouping"
+    })
+    .exec(function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
+
+        console.log(foundUser._groupings);
+
+        res.render("partials/userPageCollectionsPublic", {
+          userData: foundUser,
+          groupings: foundUser._groupings
+        });
+      }
+    });
+  }
+
+});
+
 app.post("/userEntriesPublic", function(req, res) {
 
   if (req.isAuthenticated()) {
@@ -882,8 +921,57 @@ app.get("/Collections", function(req, res) {
 
 });
 
-// app.get("/user/collections/:grouping", function(req, res) {
-app.get("/collections/:grouping", function(req, res) {
+
+app.get("/Collections", function(req, res) {
+
+  if (req.isAuthenticated()) {
+
+    let userName = req.params.publicUserName;
+
+    AurealiusUser.findOne({
+      _id: req.user._id
+    })
+    .populate({
+      path: "_groupingFavorites",
+      model: "grouping"
+    })
+    .exec(function(err, foundUser) {
+
+      Grouping.find({
+        _user: mongoose.Types.ObjectId(foundUser._id)
+      })
+      .populate({
+        path: "_user",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_entries",
+        options: {sort: {createdAt: -1}},
+        model: "entry"
+      })
+      .exec(function(err, foundGroupings) {
+        if (err) {
+          console.log(err);
+        } else {
+
+          let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
+          // console.log(foundUser._groupingFavorites);
+          // console.log(foundGroupings);
+
+          res.render("collections", {
+            userData: foundUser,
+            favGroupings: uniqueFavs,
+            groupings: foundGroupings
+          });
+        }
+      });
+    });
+  }
+
+});
+
+
+app.get("/Collections/:grouping", function(req, res) {
 
   let userInfo = req.user;
   let grouping = req.params.grouping.replace("%20", " ");
@@ -1235,12 +1323,12 @@ app.post("/upload", upload.single("file"), function(req, res) {
 
   function collectionAllocator() {
 
-    const collectionPageEntry = req.body.groupingId;
-    console.log(collectionPageEntry);
+    const collectionPageGrouping = req.body.groupingName;
+    console.log(collectionPageGrouping);
 
     const userCollectionChoice = req.body.grouping;
 
-    if (userCollectionChoice === "") {
+    if (userCollectionChoice === "" && collectionPageGrouping == null) {
       let today = new Date();
       let dd = String(today.getDate());
       let mm = String(today.getMonth());
@@ -1253,7 +1341,11 @@ app.post("/upload", upload.single("file"), function(req, res) {
       today = month[mm] + " " + dd + ", " + yyyy;
       return today;
     } else {
-      return userCollectionChoice;
+      if(collectionPageGrouping == null) {
+        return userCollectionChoice;
+      } else {
+        return collectionPageGrouping;
+      }
     }
   }
 
@@ -1649,6 +1741,7 @@ app.post("/follow", function(req, res) {
 
   const poster = req.user.id;
   const followTargetId = req.body.flwBtnUserId;
+  console.log(followTargetId);
 
   AurealiusUser.findOne({
       _id: poster

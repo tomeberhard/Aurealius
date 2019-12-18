@@ -135,13 +135,14 @@
         <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="entrySubmit.disabled = true; return true">
           <div class="form-group entry-form">
             <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What gratitude entry would you like to add to this collection right now?"></textarea>
+            <input type="hidden" name="groupingName" value="<%= groupingInfo.groupingName %>">
             <div class="upldToggleContainer expandable d-none">
 
-              <label class="btn fileBtn" for="my-file-selector">
-                <input id="my-file-selector" type="file" name="file" class="" style="display:none" onchange="$('#upload-file-info').html(this.files[0].name)">
+              <label class="btn fileBtn" for="my-file-selector2">
+                <input id="my-file-selector2" type="file" name="file" class="" style="display:none" onchange="$('#upload-file-info2').html(this.files[0].name)">
                 Add Image
               </label>
-              <div class='inline label label-info' id="upload-file-info"></div>
+              <div class="inline label label-info" id="upload-file-info2"></div>
               <div class="toggleCotainer">
                 <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-width="100" checked value="private">
               </div>
@@ -174,9 +175,6 @@
 
           <div class="uNFavIcnContainer">
             <div class="profileFllwUnFllw">
-              <a href="/index" class="userProfName">
-                <h3><%= entry._user.profileName %></h3>
-              </a>
 
               <% if(entry.viewStatus === "public") { %>
               <% var public = "" %>
@@ -189,7 +187,7 @@
               <% var pubPriDDId = "dd" + entry._id %>
               <% var pubPriModalDDId = "ddModal" + entry._id %>
 
-              <div class="dropdown inline pubPriUserBtn ml-2">
+              <div class="dropdown inline pubPriUserBtn">
                 <button class="btn btn-pubPri dropdown-toggle" type="button" id="<%= pubPriDDId %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <div class="inline currentOption pubPritoggle">
                     <div class="public <%= public %>">

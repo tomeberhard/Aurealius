@@ -16,9 +16,24 @@
                 <% } %>
                 <div class="userProfilePic orientation" image="<%= userImage %>"></div>
               </div>
-              <br />
+              <!-- <br /> -->
             </div>
             <div class="col-md-12 userColumnRight">
+              <div class="mt-2 mb-2'id="unFollowFollowPublic">
+                <% var viewer = requestingUser._id %>
+                <% var target = userData._id %>
+
+                <% if (viewer === target) { %>
+                  <% var unFolFol = "Follow" %>
+                <% } else { %>
+                  <% var unFolFol = "Unfollow" %>
+                <% }%>
+                <form method="POST" action="/follow">
+                  <button type="button" class="btn btn-primary btn-block userPublicFollowBtn" name="followButton" id="" value="<%= userData._id %>">
+                    <%= unFolFol %>
+                  </button>
+                </form>
+              </div>
               <div class="userInfoCard">
                 <div class="profileInfo">
                   <h2><%= userData.profileName %></h2>
@@ -31,6 +46,7 @@
                   </button>
                 </div>
               </div>
+
             </div>
           </div>
           <div class="row">
@@ -63,7 +79,7 @@
                 </div>
                 <div class="followContainer">
                   <div class="followBoxHeader">
-                    <h5 class="inline">
+                    <h5 class="inline" id="followerNum">
                       Followers (<%= userData._followers.length %>)
                     </h5>
                   </div>
@@ -112,8 +128,7 @@
     </div>
 
     <div class="col-md-8">
-      <div class="entryContainer entryFormCard">
-
+      <div id="userCollectionsPublicContainer">
       </div>
       <hr />
 

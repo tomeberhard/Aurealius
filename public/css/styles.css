@@ -76,6 +76,14 @@ box-shadow: none;
   color: #F3F9FB;
 }
 
+.darkgrayFont {
+  color: #465559;
+}
+
+.noDefaultMargin {
+  margin: 0;
+}
+
 .noBackground {
   background: none;
 }
@@ -1004,6 +1012,16 @@ label.btn {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     padding: .75rem 1rem;
   }
+}
+
+.paperBack {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background-image: url(/assets/lightpaperfibers_@2X.png);
+}
+
+.publicCollectionContainer{
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .card {

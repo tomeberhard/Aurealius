@@ -119,13 +119,14 @@
         <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="entrySubmit.disabled = true; return true">
           <div class="form-group entry-form">
             <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
+
             <div class="upldToggleContainer expandable d-none">
-              <!-- <div class="custom-file mb-3 upldToggleContainerWidth"> -->
+
               <label class="btn fileBtn" for="my-file-selector">
                 <input id="my-file-selector" type="file" name="file" class="" style="display:none" onchange="$('#upload-file-info').html(this.files[0].name)">
                 Add Image
               </label>
-              <div class='inline label label-info' id="upload-file-info"></div>
+              <div class="inline label label-info" id="upload-file-info"></div>
               <div class="toggleCotainer">
                 <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-width="100" checked value="private">
               </div>

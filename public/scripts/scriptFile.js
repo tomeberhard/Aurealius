@@ -343,24 +343,66 @@ let data = JSON.stringify({
           }
         );
       });
-      // $(".appendedBelow").remove();
     });
 
   }).fail(function(err) {
     console.log(err);
   });
 
+  $.ajax({
+    url: "/userPageCollectionsPublic",
+    type: "Post",
+    contentType: "application/json",
+    data: data
+  }).done(function(result) {
+    console.log("successfully called ajax");
+    updateUserCollectionsPublic(result);
+
+    jQuery(function() {
+      jQuery(".collectionImg.orientation").each(function() {
+        var div = $(this);
+        loadImage(
+          div.attr("image"),
+          function(img) {
+            div.append(img);
+          }, {
+            orientation: true,
+            aspectRatio: 1/1
+          }
+        );
+      });
+    });
+
+  }).fail(function(err) {
+    console.log(err);
+  });
+
+
 }
 
 function updateUserEntriesPublic(userEntries) {
-
-  // $("#renderedEntryContainer").append("<div class='appendedBelow'></div>");
   $("#userEntriesPublicContainer").append(userEntries);
-  // $("div.appendedBelow").nextAll().children().addClass("scrollImages");
 }
 
+function updateUserCollectionsPublic(userCollections) {
+  $("#userCollectionsPublicContainer").append(userCollections);
+}
 
+//--------------------------user public page collection scroller------------------------//
 
+$(document).on("click",".cltNavRight", function(event) {
+
+  $('.publicCollectionContainer').animate({
+    scrollLeft: "+=200px"
+  }, "slow");
+});
+
+ $(document).on("click",".cltNavLeft", function(event) {
+
+  $('.publicCollectionContainer').animate({
+    scrollLeft: "-=200px"
+  }, "slow");
+});
 //--------------------------user page render------------------------//
 
 $(document).on("click",".userBtnBar", function(event) {
@@ -834,7 +876,7 @@ $(document).on("click", ".favBtn-clt", function(event) {
 
 
 
-//-----------------------------followBtn AJAX----------------------------------//
+//-----------------------------Entry followBtn AJAX----------------------------------//
 $(document).on("click", ".followBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -890,6 +932,61 @@ $(document).on("click", ".followBtn", function(event) {
 
 function updateFollowing(followPanel) {
   $("#followLinklist").html(followPanel)
+}
+
+//-----------------------------Entry followBtn AJAX----------------------------------//
+$(document).on("click", ".userPublicFollowBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let flwBtnTxt = $(this).text();
+  let flwBtnData = $(this).attr("value");
+  let data = JSON.stringify({
+    flwBtnUserId: flwBtnData
+  });
+  $.ajax({
+      url: "/follow",
+      type: "POST",
+      contentType: "application/json",
+      data: data
+    }).done(function(result) {
+      updateFollowing(result);
+
+      let followingNumber = $("#followerLinklist > a").length;
+
+      if (flwBtnTxt === "Follow") {
+        $(".userPublicFollowBtn").html("Unfollow");
+        $("#followerNum").html("Followers (" + followingNumber + ")");
+      } else {
+        $(".userPublicFollowBtn").html("Follow");
+        $("#followerNum").html("Followers (" + followingNumber + ")");
+      }
+
+      jQuery(function() {
+        jQuery(".followingPrvw.orientation").each(function() {
+          var div = $(this);
+          loadImage(
+            div.attr("image"),
+            function(img) {
+              div.append(img);
+            }, {
+              orientation: true,
+              aspectRatio: 1 / 1
+            }
+          );
+
+        });
+
+      })
+
+    })
+    .fail(function(err) {
+      console.log(err)
+    });
+});
+
+function updateFollowing(followPanel) {
+  $("#followerLinklist").html(followPanel)
 }
 
 //-----------------------------userEntry privacy change AJAX----------------------------------//
