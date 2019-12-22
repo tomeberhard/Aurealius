@@ -56,29 +56,54 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //-------------------Create Mongo Connection--------------------------//
+
+const mongoURI = "mongodb://localhost:27017/aurealiusUsersDB";
+
 // mongoose.connect("mongodb+srv://admin-scott:isaweneskanter@aurealius-7vtw9.mongodb.net/aurealiusUsersDB", {
 //   useNewUrlParser: true
 // });
-mongoose.connect("mongodb://localhost:27017/aurealiusUsersDB", {
-  useNewUrlParser: true
+
+const conn = mongoose.createConnection(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
 });
+
+mongoose.connect(mongoURI, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,  useFindAndModify: false }
+);
+
+
+// mongoose.connect(, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// });
 //below just to kill depracation warning//
 
-mongoose.set('useCreateIndex', true);
+// mongoose.set('useCreateIndex', true);
 //kills error from findOneandUpdate//
-mongoose.set('useFindAndModify', false);
+// mongoose.set('useFindAndModify', false);
+// mongoose.set('useUnifiedTopology', true);
 
-const mongoURI = "mongodb://localhost:27017/aurealiusUsersDB";
-const conn = mongoose.createConnection(mongoURI);
+// const conn = mongoose.createConnection(mongoURI);
+
 
 //--------------------Init GridFs--------------------------------------//
 let gfs;
 
-//--------------------Init Stream--------------------------------------//
-conn.once("open", function() {
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads");
+// //--------------------Init Stream--------------------------------------//
+// conn.once("open", function() {
+//   gfs = Grid(conn.db, mongoose.mongo);
+//   gfs.collection("uploads");
+// });
+
+conn.once("open", () => {
+  // init stream
+  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+    bucketName: "uploads"
+  });
 });
+
 
 //--------------------Create storage engine----------------------------//
 const storage = new GridFsStorage({
@@ -1053,28 +1078,46 @@ app.get("/files", function(req, res) {
 // });
 
 //---------------filename specific path------------------------------------//
-app.get("/image/:filename", function(req, res) {
-  (gfs.files.findOne({
-    filename: req.params.filename
-  }, function(err, file) {
-    if (!file || file.length === 0) {
-      return res.status(404).json({
-        err: "No File Exist."
-      });
-    } else {
-      //--Check if file an image file--//
-      if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
-        //-read output to browser-//
-        res.set("Content-Type", "image/jpeg");
-        const readstream = gfs.createReadStream(file.filename);
-        readstream.pipe(res);
-      } else {
-        res.status(404).json({
-          err: "Not an Image."
+// app.get("/image/:filename", function(req, res) {
+//
+//   const file = gfs.find({
+//     filename: req.params.filename
+//   }, function(err, file) {
+//     if (!file || file.length === 0) {
+//       return res.status(404).json({
+//         err: "No File Exist."
+//       });
+//     } else {
+//       //--Check if file an image file--//
+//       if (file.contentType === "image/jpeg" || file.contentType === "image/png") {
+//         //-read output to browser-//
+//         res.set("Content-Type", "image/jpeg");
+//         // const readstream = gfs.createReadStream(file.filename);
+//         gfs.openDownloadStreamByName(file.filename).pipe(res);
+//         // readstream.pipe(res);
+//       } else {
+//         res.status(404).json({
+//           err: "Not an Image."
+//         });
+//       }
+//     }
+//   });
+// });
+
+app.get("/image/:filename", (req, res) => {
+  
+  const file = gfs
+    .find({
+      filename: req.params.filename
+    })
+    .toArray((err, files) => {
+      if (!files || files.length === 0) {
+        return res.status(404).json({
+          err: "no files exist"
         });
       }
-    }
-  }));
+      gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+    });
 });
 
 app.get("/", function(req, res) {
@@ -2304,7 +2347,8 @@ app.post("/delete", function(req, res) {
                 } else {
                   console.log("Successfully deleted entry.");
 
-                  gfs.remove({
+                  // gfs.remove({
+                  gfs.delete({
                     filename: deleteBtnimageFile,
                     root: "uploads"
                   }, function(err, success) {
@@ -2402,7 +2446,8 @@ app.post("/deleteCollection", function(req, res) {
                 console.log("Succesfully deleted all entries from grouping.");
                 // console.log(foundGrouping.groupingImageFile);
 
-                gfs.remove({
+                // gfs.remove({
+                gfs.delete({
                   // filename: foundGrouping.groupingImageFile,
                   filename: groupingImageFileArray,
                   root: "uploads"
