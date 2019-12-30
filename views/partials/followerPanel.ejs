@@ -1,0 +1,20 @@
+
+    <% if(userFollowers.length > 0){ %>
+    <% userFollowers.forEach(function(followingUsers) {%>
+
+    <a href="/user/<%= followingUsers.profileName %>" class="btn btn-primary followLinkBox">
+
+      <% if(followingUsers.bioImageFile === "/assets/defaultusericon.png") { %>
+      <% var userImage = followingUsers.bioImageFile %>
+      <% } else { %>
+      <% var userImage = "/image/" + followingUsers.bioImageFile %>
+      <% } %>
+      <div class="followingPrvw orientation" image="<%= userImage %>"></div>
+      <h5 class="followTxt">
+        <%= followingUsers.profileName %>
+      </h5>
+    </a>
+    <% }) %>
+    <% } else { %>
+    <p class="noFollowTxt">No Followers</p>
+    <% } %>
