@@ -19,7 +19,7 @@
               <!-- <br /> -->
             </div>
             <div class="col-md-12 userColumnRight">
-              <div class="mt-2 mb-2'id="unFollowFollowPublic">
+              <div class="mb-2 userInfoCard text-center" id="unFollowFollowPublic">
                 <% var viewer = requestingUser._id %>
                 <% var target = userData._id %>
 
@@ -29,7 +29,7 @@
                   <% var unFolFol = "Unfollow" %>
                 <% }%>
                 <form method="POST" action="/follow">
-                  <button type="button" class="btn btn-primary btn-block userPublicFollowBtn" name="followButton" id="" value="<%= userData._id %>">
+                  <button type="button" class="btn btn-primary w-75 m-2 userPublicFollowBtn" name="followButton" id="" value="<%= userData._id %>">
                     <%= unFolFol %>
                   </button>
                 </form>

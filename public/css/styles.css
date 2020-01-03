@@ -80,6 +80,14 @@ box-shadow: none;
   color: #465559;
 }
 
+.darkGrayColor {
+color: darkgray;
+}
+
+.opacity75 {
+  opacity: 75%;
+}
+
 .noDefaultMargin {
   margin: 0;
 }
@@ -769,6 +777,21 @@ box-shadow: 0 0 0 0.2rem rgb(	81, 227, 212,.25)
   }
 }
 
+.btnSeeCollections {
+  border: 1px solid rgb(71,79,133,.2);
+  border-radius: .25rem;
+}
+
+.btnSeeCollections:hover {
+  color: white;
+  border: 0;
+  background-color: #474f85;
+}
+
+.btnSeeCollections p:hover {
+  color: white;
+}
+
 /* -----------------------settings Page------------------------------- */
 .card-settings {
   padding: 1rem 1rem;
@@ -1016,6 +1039,7 @@ label.btn {
 
 .paperBack {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: .25rem;
   background-image: url(/assets/lightpaperfibers_@2X.png);
 }
 
@@ -1383,6 +1407,10 @@ a.userProfName {
 }
 
 .expndCrdBtn:hover {
+  color: #474f85;
+}
+
+.navIndicator:hover {
   color: #474f85;
 }
 

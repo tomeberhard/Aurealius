@@ -329,8 +329,8 @@ let data = JSON.stringify({
     contentType: "application/json",
     data: data
   }).done(function(result) {
+    console.log("successfully called ajax");
     updateUserEntriesPublic(result);
-
     jQuery(function() {
       jQuery(".userEntriesPublicImg.orientation").each(function() {
         var div = $(this);
@@ -834,7 +834,60 @@ $(document).on("click", ".favBtn", function(event) {
   });
 });
 
-//-----------------------------favorate collection AJAX----------------------------------//
+//-----------------------------collection tiles AJAX----------------------------------//
+
+if (path === "/Collections") {
+
+  $.ajax({
+    url: "/favCollections",
+    type: "GET",
+    contentType: "application/json"
+  }).done(function(result) {
+    updateFavCollections(result);
+
+  }).fail(function(err) {
+    console.log(err);
+  });
+
+$.ajax({
+  url: "/unfavCollections",
+  type: "GET",
+  contentType: "application/json"
+}).done(function(result) {
+  updateUnfavCollections(result);
+
+  jQuery(function() {
+    jQuery(".collectionImg.orientation").each(function() {
+      var div = $(this);
+      loadImage(
+        div.attr("image"),
+        function(img) {
+          div.append(img);
+        }, {
+          orientation: true,
+          aspectRatio: 1/1
+        }
+      );
+    });
+  });
+
+}).fail(function(err) {
+  console.log(err);
+});
+
+}
+
+function updateFavCollections(favCollections) {
+  $("#favCollectionsRenderingContainer").append(favCollections);
+
+}
+
+function updateUnfavCollections(unfavCollections) {
+  $("#unfavCollectionsRenderingContainer").append(unfavCollections);
+}
+
+
+//-----------------------------favorite collection AJAX----------------------------------//
 
 $(document).on("click", ".favBtn-clt", function(event) {
   event.preventDefault();
