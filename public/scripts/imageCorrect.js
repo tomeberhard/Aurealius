@@ -7,7 +7,8 @@ jQuery(function() {
 		if(imageClassList.includes("followingPrvw") ||
     imageClassList.includes("userProfilePic") ||
     imageClassList.includes("userSettingsImage") ||
-    imageClassList.includes("collectionImg")) {
+    imageClassList.includes("collectionImg") ||
+    imageClassList.includes("favCollectionImg")) {
 
 			loadImage(
 				div.attr("image"),

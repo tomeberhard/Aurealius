@@ -857,6 +857,19 @@ $.ajax({
   updateUnfavCollections(result);
 
   jQuery(function() {
+    jQuery(".favCollectionImg.orientation").each(function() {
+      var div = $(this);
+      loadImage(
+        div.attr("image"),
+        function(img) {
+          div.append(img);
+        }, {
+          orientation: true,
+          aspectRatio: 1/1
+        }
+      );
+    });
+
     jQuery(".collectionImg.orientation").each(function() {
       var div = $(this);
       loadImage(
@@ -869,6 +882,7 @@ $.ajax({
         }
       );
     });
+
   });
 
 }).fail(function(err) {
@@ -894,7 +908,7 @@ $(document).on("click", ".favBtn-clt", function(event) {
   event.stopPropagation();
 
   let favCltBtnId = $(this).attr("id");
-  let favCltUnfavId = $("#" + favCltBtnId).find(".d-none").attr("id");
+  // let favCltUnfavId = $("#" + favCltBtnId).find(".d-none").attr("id");
 
   if ($("#" + favCltBtnId).hasClass("clicked")) {
     $("#" + favCltBtnId).removeClass("clicked");
@@ -903,10 +917,21 @@ $(document).on("click", ".favBtn-clt", function(event) {
   }
 
   let favCltBtnData = $(this).attr("value");
-  // let favBtnFormID = $(this).parent().attr("id");
+
+  if($("#" + favCltBtnData + "cltTileId").hasClass("d-none")) {
+    $("#" + favCltBtnData + "cltTileId").removeClass("d-none");
+    $("#grping" + favCltBtnData).children().toggleClass("d-none");
+    $("#" + favCltBtnData + "favCltTileId").addClass("d-none");
+  } else {
+    $("#" + favCltBtnData + "cltTileId").addClass("d-none");
+    // let toggleFavId = favCltBtnData + "favCltTileId";
+    // $("#" + favCltBtnData + "cltTileId").clone().appendTo("#favCollectionsRenderingContainer").attr("id", toggleFavId).removeClass("d-none");
+  }
+
   let data = JSON.stringify({
     _id: favCltBtnData
   });
+
   $.ajax({
     url: "/favoriteGrouping",
     type: "POST",
@@ -914,17 +939,54 @@ $(document).on("click", ".favBtn-clt", function(event) {
     data: data
   }).done(function() {
 
-    if ($("#" + favCltBtnId).hasClass("clicked") === false) {
-      $("#" + favCltBtnId).children().eq(1).addClass("d-none");
-      $("#" + favCltBtnId).children().eq(0).removeClass("d-none");
-    } else {
+    if ($("#" + favCltBtnId).hasClass("clicked")) {
       $("#" + favCltBtnId).children().eq(0).addClass("d-none");
       $("#" + favCltBtnId).children().eq(1).removeClass("d-none");
+    } else {
+      $("#" + favCltBtnId).children().eq(1).addClass("d-none");
+      $("#" + favCltBtnId).children().eq(0).removeClass("d-none");
+
     }
+
+    $("#favCollectionsRenderingContainer").empty();
+
+    $.ajax({
+      url: "/favCollections",
+      type: "GET",
+      contentType: "application/json"
+    }).done(function(result) {
+      updateFavCollections(result);
+
+      jQuery(function() {
+        jQuery(".favCollectionImg.orientation").each(function() {
+          var div = $(this);
+          loadImage(
+            div.attr("image"),
+            function(img) {
+              div.append(img);
+            }, {
+              orientation: true,
+              aspectRatio: 1/1
+            }
+          );
+        });
+      });
+
+    }).fail(function(err) {
+      console.log(err);
+    });
+
+    function updateFavCollections(favCollections) {
+      $("#favCollectionsRenderingContainer").append(favCollections);
+
+    }
+
 
   }).fail(function(err) {
     console.log(err)
   });
+
+
 });
 
 
@@ -1407,9 +1469,9 @@ $(document).on("click", ".editCltTileContainerBtn", function(event) {
 
   let cltId = $(this).attr("value");
 
-  $("#cltId" + cltId).addClass("d-none");
-  $("#editCltId" + cltId).css("width", "100%").removeClass("d-none");
-  $("#editCltContainer" + cltId).removeClass("d-none");
+  $(".cltId" + cltId).addClass("d-none");
+  $(".editCltId" + cltId).css("width", "100%").removeClass("d-none");
+  $(".editCltContainer" + cltId).removeClass("d-none");
 
 });
 
@@ -1419,10 +1481,10 @@ $(document).on("click", ".closeEditCollectionNameBtnBar", function(event) {
 
   let cltId = $(this).attr("value")
 
-  $("#cltId" + cltId).removeClass("d-none");
-  $("#editCltId" + cltId).addClass("d-none");
-  $("#editCltId" + cltId).val("");
-  $("#editCltContainer" + cltId).addClass("d-none");
+  $(".cltId" + cltId).removeClass("d-none");
+  $(".editCltId" + cltId).addClass("d-none");
+  $(".editCltId" + cltId).val("");
+  $(".editCltContainer" + cltId).addClass("d-none");
 
 });
 
@@ -1430,10 +1492,9 @@ $(document).on("click", ".submitEditCollectionNameBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
-
-  let cltId = $(this).parent().attr("id").replace("editCltContainer","");
+  let cltId = $(this).closest("form").find(".grpingValue").attr("value");
   console.log(cltId);
-  let updatedCltValue = $("#editCltId" + cltId).val();
+  let updatedCltValue = $(".editCltId" + cltId).val();
   console.log(updatedCltValue);
 
   let data = JSON.stringify({
@@ -1448,21 +1509,12 @@ $(document).on("click", ".submitEditCollectionNameBtn", function(event) {
     data: data
   }).done(function() {
 
-    $("#cltId" + cltId).text(updatedCltValue);
-    $("#cltId" + cltId).removeClass("d-none");
-    $("#editCltId" + cltId).addClass("d-none");
-    $("#editCltId" + cltId).val("");
-    $("#editCltId" + cltId).attr("placeholder", updatedCltValue);;
-    $("#editCltContainer" + cltId).addClass("d-none");
-
-    // $("#" + fieldName + "EditInput").addClass("d-none");
-    // $("#" + fieldName + "EditInput").val("");
-    // $("#" + fieldName + "EditInput").attr("placeholder", updatedFieldValue);
-    // $("#" + fieldName + "EditBtnContainer").addClass("d-none");
-    // $("#" + fieldName + "EditInput").closest("form").get(0).reset();
-    // $("#" + fieldName + "SettingsInputWBtnContainer").removeClass("d-none");
-    // $("#" + fieldName + "SettingsContent").text(updatedFieldValue);
-    // console.log(updatedFieldValue);
+    $(".cltId" + cltId).text(updatedCltValue);
+    $(".cltId" + cltId).removeClass("d-none");
+    $(".editCltId" + cltId).addClass("d-none");
+    $(".editCltId" + cltId).val("");
+    $(".editCltId" + cltId).attr("placeholder", updatedCltValue);;
+    $(".editCltContainer" + cltId).addClass("d-none");
 
   }).fail(function(err) {
     console.log(err)

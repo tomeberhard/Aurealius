@@ -15,9 +15,9 @@
   <% var notFaved = "" %>
   <% var clicked = "" %>
   <% } %>
-  <div class="col-md-3 <%= notFaved %>">
+  <div class="col-md-3 <%= notFaved %>" id="<%= cltTileId %>">
 
-    <div class="card card-body-collectionTile mb-3" id="<%= cltTileId %>">
+    <div class="card card-body-collectionTile mb-3">
 
         <div class="collectionBackStop">
           <% if(grouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
@@ -28,8 +28,8 @@
           <div class="collectionImg orientation" image="<%= collectionImage %>"></div>
 
           <div class="collectionheading">
-            <h5><a class="whiteFont collectionLink" id="cltId<%=grouping._id %>" href="/Collections/<%= grouping.groupingName %>"><%= grouping.groupingName %></a></h5>
-            <input class="d-none collectionNameInput pl-1" id="editCltId<%=grouping._id %>" type="text" maxlength="25" rows="" name="" placeholder="<%= grouping.groupingName %>">
+            <h5><a class="whiteFont collectionLink cltId<%=grouping._id %>"  href="/Collections/<%= grouping.groupingName %>"><%= grouping.groupingName %></a></h5>
+            <input class="d-none collectionNameInput pl-1 editCltId<%=grouping._id %>"  type="text" maxlength="25" rows="" name="" placeholder="<%= grouping.groupingName %>">
           </div>
           <div class="favGrpBtnContainer favBtnContainer-clt">
 
@@ -38,8 +38,8 @@
             <form method="POST" action="/favoriteGrouping" id="<%= favFormEntryId %>">
 
               <button class="favBtn-clt <%= clicked %>" name="favoriteButton" id="<%= heartBtnGrpingEntryId %>" value="<%= grouping._id %>">
-                <i id="unfav" class="far fa-heart <%= notFaved %>"></i>
-                <i id="Fav" class="fas fa-heart  <%= faved %>"></i>
+                <i class="far fa-heart <%= notFaved %>"></i>
+                <i class="fas fa-heart  <%= faved %>"></i>
               </button>
             </form>
           </div>
@@ -60,14 +60,18 @@
       </div>
 
       <div class="collapse" id="<%= collapseExpandID %>">
-        <div class="editCollectionNameBtnBar d-none" id="editCltContainer<%=grouping._id %>">
-          <input type="submit" value="Save" class="btn btn-primary btn-block mr-2 submitEditCollectionNameBtn" id="profileNameSubmitBtn" />
-          <button type="button" class="btn btn-secondary closeEditCollectionNameBtnBar" value="<%= grouping._id %>">Close</button>
-        </div>
+        <form action="/collectionNameUpdate">
+          <div class="invisible grpingValue" value="<%= grouping._id %>"></div>
+          <div class="editCollectionNameBtnBar d-none editCltContainer<%=grouping._id %>">
+            <input type="submit" value="Save" class="btn btn-primary btn-block mr-2 submitEditCollectionNameBtn" id="uniqueCltSubmitId<%=grouping._id %>" />
+            <button type="button" class="btn btn-secondary closeEditCollectionNameBtnBar" value="<%= grouping._id %>">Close</button>
+          </div>
+
+        </form>
 
         <div class="cltTileTrayContainer">
           <div class="">
-            <button class="editBtn cltTileContainerBtn editCltTileContainerBtn" value="<%= grouping._id %>" name="entryToUpdate">
+            <button class="cltTileContainerBtn editCltTileContainerBtn" value="<%= grouping._id %>" name="entryToUpdate">
               <i class="fas fa-edit"></i>
             </button>
           </div>

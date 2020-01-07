@@ -1,7 +1,9 @@
 <% if(groupings){ %>
 <% groupings.forEach(function(grouping) { %>
 
-<div class="col-md-3">
+<% var favCltTileId = grouping._id + "favCltTileId" %>
+
+<div class="col-md-3" id="<%= favCltTileId %>">
   <div class="card card-body-collectionTile mb-3">
 
       <div class="collectionBackStop">
@@ -10,11 +12,11 @@
         <% } else { %>
         <% var collectionImage = "/image/" + grouping.groupingImageFile %>
         <% } %>
-        <div class="collectionImg orientation" image="<%= collectionImage %>"></div>
+        <div class="favCollectionImg orientation" image="<%= collectionImage %>"></div>
 
         <div class="collectionheading">
-          <h5><a class="whiteFont collectionLink" id="cltId<%=grouping._id %>" href="/Collections/<%= grouping.groupingName %>"><%= grouping.groupingName %></a></h5>
-          <input class="d-none collectionNameInput pl-1" id="editCltId<%=grouping._id %>" type="text" maxlength="25" rows="" name="" placeholder="<%= grouping.groupingName %>">
+          <h5><a class="whiteFont collectionLink cltId<%=grouping._id %>"  href="/Collections/<%= grouping.groupingName %>"><%= grouping.groupingName %></a></h5>
+          <input class="d-none collectionNameInput pl-1 editCltId<%=grouping._id %>"  type="text" maxlength="25" rows="" name="" placeholder="<%= grouping.groupingName %>">
         </div>
         <div class="favGrpBtnContainer favBtnContainer-clt">
 
@@ -22,7 +24,8 @@
 
           <form method="POST" action="/favoriteGrouping" id="<%= favFormEntryId %>">
 
-            <% var heartBtnGrpingEntryId = "grping"+ grouping._id%>
+            <% var heartBtnGrpingEntryId = "favGrping"+ grouping._id%>
+            <!-- above slightly modified for Id unqiueness purposes -->
             <% var favs = JSON.stringify(favGroupings) %>
             <% if (favs.includes(grouping.groupingName)) { %>
             <% var faved = "" %>
@@ -35,8 +38,8 @@
             <% } %>
 
             <button class="favBtn-clt <%= clicked %>" name="favoriteButton" id="<%= heartBtnGrpingEntryId %>" value="<%= grouping._id %>">
-              <i id="unfav" class="far fa-heart <%= notFaved %>"></i>
-              <i id="Fav" class="fas fa-heart  <%= faved %>"></i>
+              <i id="" class="far fa-heart <%= notFaved %>"></i>
+              <i id="" class="fas fa-heart  <%= faved %>"></i>
             </button>
           </form>
         </div>
@@ -47,8 +50,8 @@
     <% var originalGrouping = grouping.groupingName %>
     <!-- console.log(originalGrouping) -->
     <% var trimmedGrouping = originalGrouping.replace(/\s/g, '').replace(/,/g, '') %>
-    <% var collapseExpandID = "b" + trimmedGrouping %>
-    <% var collapseExpandIconID = "c" + collapseExpandID %>
+    <% var collapseExpandID = "favB" + trimmedGrouping %>
+    <% var collapseExpandIconID = "favC" + collapseExpandID %>
 
     <div class="expndCrdContainer expandCrdCusion">
       <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
@@ -56,15 +59,18 @@
       </button>
     </div>
 
-    <div class="collapse" id="<%= collapseExpandID %>">
-      <div class="editCollectionNameBtnBar d-none" id="editCltContainer<%=grouping._id %>">
-        <input type="submit" value="Save" class="btn btn-primary btn-block mr-2 submitEditCollectionNameBtn" id="profileNameSubmitBtn" />
-        <button type="button" class="btn btn-secondary closeEditCollectionNameBtnBar" value="<%= grouping._id %>">Close</button>
-      </div>
+      <div class="collapse" id="<%= collapseExpandID %>">
+      <form action="/collectionNameUpdate">
+        <div class="invisible grpingValue" value="<%= grouping._id %>"></div>
+        <div class="editCollectionNameBtnBar d-none editCltContainer<%=grouping._id %>" >
+          <input type="submit" value="Save" class="btn btn-primary btn-block mr-2 submitEditCollectionNameBtn" id="uniqueFavCltSubmitId<%=grouping._id %>" />
+          <button type="button" class="btn btn-secondary closeEditCollectionNameBtnBar" value="<%= grouping._id %>">Close</button>
+        </div>
+      </form>
 
       <div class="cltTileTrayContainer">
         <div class="">
-          <button class="editBtn cltTileContainerBtn editCltTileContainerBtn" value="<%= grouping._id %>" name="entryToUpdate">
+          <button class="cltTileContainerBtn editCltTileContainerBtn" value="<%= grouping._id %>" name="entryToUpdate">
             <i class="fas fa-edit"></i>
           </button>
         </div>
@@ -77,8 +83,8 @@
         <% var private = "" %>
         <% } %>
 
-        <% var pubPriDDId = "dd" + grouping._id %>
-        <% var pubPriModalDDId = "ddModal" + grouping._id %>
+        <% var pubPriDDId = "favDd" + grouping._id %>
+        <% var pubPriModalDDId = "favDdModal" + grouping._id %>
 
         <div class="dropdown">
           <button class="btn btn-pubPri-clt dropdown-toggle" type="button" id="<%= pubPriDDId %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -113,7 +119,7 @@
         </div>
 
         <div class="">
-          <% var deleteCltModal = "deleteCltModal" + grouping._id %>
+          <% var deleteCltModal = "deleteFavCltModal" + grouping._id %>
           <button class="cltTileContainerBtn warning" data-toggle="modal" data-target="#<%= deleteCltModal %>">
             <i class="fas fa-trash"></i>
           </button>
