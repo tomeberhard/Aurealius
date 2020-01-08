@@ -1,193 +1,197 @@
-<% if(groupings){ %>
+<% if(groupings.length > 0){ %>
+
+<div class="col-12">
+  <div class="d-flex justify-content-between">
+    <div class="favCollectionNameFrame">
+      <hr />
+    </div>
+    <div class="d-flex h-100 align-items-baseline">
+      <h3 class="bodyFont darkgrayFont favCollectionTitle">Favorites</h3>
+    </div>
+    <div class="favCollectionNameFrame">
+      <hr />
+    </div>
+  </div>
+</div>
+
 <% groupings.forEach(function(grouping) { %>
 
-<% var favCltTileId = grouping._id + "favCltTileId" %>
+  <% var favCltTileId = grouping._id + "favCltTileId" %>
 
-<div class="col-md-3" id="<%= favCltTileId %>">
-  <div class="card card-body-collectionTile mb-3">
+  <div class="col-md-3" id="<%= favCltTileId %>">
+    <div class="card card-body-collectionTile mb-3">
 
-      <div class="collectionBackStop">
-        <% if(grouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
-        <% var collectionImage = "/assets/defaultusericon.png" %>
-        <% } else { %>
-        <% var collectionImage = "/image/" + grouping.groupingImageFile %>
-        <% } %>
-        <div class="favCollectionImg orientation" image="<%= collectionImage %>"></div>
+        <div class="collectionBackStop">
+          <% if(grouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
+          <% var collectionImage = "/assets/defaultusericon.png" %>
+          <% } else { %>
+          <% var collectionImage = "/image/" + grouping.groupingImageFile %>
+          <% } %>
+          <div class="favCollectionImg orientation" image="<%= collectionImage %>"></div>
 
-        <div class="collectionheading">
-          <h5><a class="whiteFont collectionLink cltId<%=grouping._id %>"  href="/Collections/<%= grouping.groupingName %>"><%= grouping.groupingName %></a></h5>
-          <input class="d-none collectionNameInput pl-1 editCltId<%=grouping._id %>"  type="text" maxlength="25" rows="" name="" placeholder="<%= grouping.groupingName %>">
+          <div class="collectionheading">
+            <h5><a class="whiteFont collectionLink cltId<%=grouping._id %>"  href="/Collections/<%= grouping.groupingName %>"><%= grouping.groupingName %></a></h5>
+            <input class="d-none collectionNameInput pl-1 editCltId<%=grouping._id %>"  type="text" maxlength="25" rows="" name="" placeholder="<%= grouping.groupingName %>">
+          </div>
+          <div class="favGrpBtnContainer favBtnContainer-clt">
+
+            <% var favFormEntryId = "favGrpForm"+ grouping._id%>
+            <!--does above need to exit???-->
+
+            <form method="POST" action="/favoriteGrouping"">
+
+              <% var heartBtnGrpingEntryId = "favGrping"+ grouping._id%>
+              <!-- above slightly modified for Id unqiueness purposes -->
+              <% var favs = JSON.stringify(favGroupings) %>
+              <% if (favs.includes(grouping.groupingName)) { %>
+              <% var faved = "" %>
+              <% var notFaved = "d-none" %>
+              <% var clicked = "clicked" %>
+              <% } else { %>
+              <% var faved = "d-none" %>
+              <% var notFaved = "" %>
+              <% var clicked = "" %>
+              <% } %>
+
+              <button class="favBtn-clt <%= clicked %>" name="favoriteButton" id="<%= heartBtnGrpingEntryId %>" value="<%= grouping._id %>">
+                <i id="" class="far fa-heart <%= notFaved %>"></i>
+                <i id="" class="fas fa-heart  <%= faved %>"></i>
+              </button>
+            </form>
+          </div>
+
         </div>
-        <div class="favGrpBtnContainer favBtnContainer-clt">
 
-          <% var favFormEntryId = "favGrpForm"+ grouping._id%>
-          <!--does above need to exit???-->
 
-          <form method="POST" action="/favoriteGrouping"">
+      <% var originalGrouping = grouping.groupingName %>
+      <!-- console.log(originalGrouping) -->
+      <% var trimmedGrouping = originalGrouping.replace(/\s/g, '').replace(/,/g, '') %>
+      <% var collapseExpandID = "favB" + trimmedGrouping %>
+      <% var collapseExpandIconID = "favC" + collapseExpandID %>
 
-            <% var heartBtnGrpingEntryId = "favGrping"+ grouping._id%>
-            <!-- above slightly modified for Id unqiueness purposes -->
-            <% var favs = JSON.stringify(favGroupings) %>
-            <% if (favs.includes(grouping.groupingName)) { %>
-            <% var faved = "" %>
-            <% var notFaved = "d-none" %>
-            <% var clicked = "clicked" %>
-            <% } else { %>
-            <% var faved = "d-none" %>
-            <% var notFaved = "" %>
-            <% var clicked = "" %>
-            <% } %>
-
-            <button class="favBtn-clt <%= clicked %>" name="favoriteButton" id="<%= heartBtnGrpingEntryId %>" value="<%= grouping._id %>">
-              <i id="" class="far fa-heart <%= notFaved %>"></i>
-              <i id="" class="fas fa-heart  <%= faved %>"></i>
-            </button>
-          </form>
-        </div>
-
+      <div class="expndCrdContainer expandCrdCusion">
+        <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
+          <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
+        </button>
       </div>
 
+        <div class="collapse" id="<%= collapseExpandID %>">
+        <form action="/collectionNameUpdate">
+          <div class="invisible grpingValue" value="<%= grouping._id %>"></div>
+          <div class="editCollectionNameBtnBar d-none editCltContainer<%=grouping._id %>" >
+            <input type="submit" value="Save" class="btn btn-primary btn-block mr-2 submitEditCollectionNameBtn" id="uniqueFavCltSubmitId<%=grouping._id %>" />
+            <button type="button" class="btn btn-secondary closeEditCollectionNameBtnBar" value="<%= grouping._id %>">Close</button>
+          </div>
+        </form>
 
-    <% var originalGrouping = grouping.groupingName %>
-    <!-- console.log(originalGrouping) -->
-    <% var trimmedGrouping = originalGrouping.replace(/\s/g, '').replace(/,/g, '') %>
-    <% var collapseExpandID = "favB" + trimmedGrouping %>
-    <% var collapseExpandIconID = "favC" + collapseExpandID %>
+        <div class="cltTileTrayContainer">
+          <div class="">
+            <button class="cltTileContainerBtn editCltTileContainerBtn" value="<%= grouping._id %>" name="entryToUpdate">
+              <i class="fas fa-edit"></i>
+            </button>
+          </div>
 
-    <div class="expndCrdContainer expandCrdCusion">
-      <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
-        <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
-      </button>
-    </div>
+          <% if(grouping.viewStatus === "public") { %>
+          <% var public = "" %>
+          <% var private = "d-none" %>
+          <% } else { %>
+          <% var public = "d-none" %>
+          <% var private = "" %>
+          <% } %>
 
-      <div class="collapse" id="<%= collapseExpandID %>">
-      <form action="/collectionNameUpdate">
-        <div class="invisible grpingValue" value="<%= grouping._id %>"></div>
-        <div class="editCollectionNameBtnBar d-none editCltContainer<%=grouping._id %>" >
-          <input type="submit" value="Save" class="btn btn-primary btn-block mr-2 submitEditCollectionNameBtn" id="uniqueFavCltSubmitId<%=grouping._id %>" />
-          <button type="button" class="btn btn-secondary closeEditCollectionNameBtnBar" value="<%= grouping._id %>">Close</button>
-        </div>
-      </form>
+          <% var pubPriDDId = "favDd" + grouping._id %>
+          <% var pubPriModalDDId = "favDdModal" + grouping._id %>
 
-      <div class="cltTileTrayContainer">
-        <div class="">
-          <button class="cltTileContainerBtn editCltTileContainerBtn" value="<%= grouping._id %>" name="entryToUpdate">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-
-        <% if(grouping.viewStatus === "public") { %>
-        <% var public = "" %>
-        <% var private = "d-none" %>
-        <% } else { %>
-        <% var public = "d-none" %>
-        <% var private = "" %>
-        <% } %>
-
-        <% var pubPriDDId = "favDd" + grouping._id %>
-        <% var pubPriModalDDId = "favDdModal" + grouping._id %>
-
-        <div class="dropdown">
-          <button class="btn btn-pubPri-clt dropdown-toggle" type="button" id="<%= pubPriDDId %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <div class="inline currentOption pubPritoggle-clt">
-              <div class="public <%= public %>">
-                <i class="inline fas fa-eye"></i>
-                <p class="inline">Public</p>
-              </div>
-              <div class="private <%= private %>">
-                <i class="inline fas fa-eye-slash"></i>
-                <p class="inline">Private</p>
-              </div>
-            </div>
-          </button>
-          <div class="dropdown-menu dropdown-menu-clt" aria-labelledby="<%= pubPriDDId %>">
-            <div class="dropdown-item dropdown-item-clt">
-              <%var pubPriFormId = "formFavDD" + grouping._id %>
-              <form method="POST" action="/updateCltPrivacy" id="<%= pubPriFormId %>">
-                <div class="inline dDoption pubPritoggle-clt" data-toggle="modal" data-target="#<%= pubPriModalDDId %>">
-                  <div class="public <%= private %>">
-                    <i class="inline fas fa-eye"></i>
-                    <p class="inline">Public</p>
-                  </div>
-                  <div class="private <%= public %>">
-                    <i class="inline fas fa-eye-slash"></i>
-                    <p class="inline">Private</p>
-                  </div>
+          <div class="dropdown">
+            <button class="btn btn-pubPri-clt dropdown-toggle" type="button" id="<%= pubPriDDId %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <div class="inline currentOption pubPritoggle-clt">
+                <div class="public <%= public %>">
+                  <i class="inline fas fa-eye"></i>
+                  <p class="inline">Public</p>
                 </div>
-              </form>
+                <div class="private <%= private %>">
+                  <i class="inline fas fa-eye-slash"></i>
+                  <p class="inline">Private</p>
+                </div>
+              </div>
+            </button>
+            <div class="dropdown-menu dropdown-menu-clt" aria-labelledby="<%= pubPriDDId %>">
+              <div class="dropdown-item dropdown-item-clt">
+                <%var pubPriFormId = "formFavDD" + grouping._id %>
+                <form method="POST" action="/updateCltPrivacy" id="<%= pubPriFormId %>">
+                  <div class="inline dDoption pubPritoggle-clt" data-toggle="modal" data-target="#<%= pubPriModalDDId %>">
+                    <div class="public <%= private %>">
+                      <i class="inline fas fa-eye"></i>
+                      <p class="inline">Public</p>
+                    </div>
+                    <div class="private <%= public %>">
+                      <i class="inline fas fa-eye-slash"></i>
+                      <p class="inline">Private</p>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
+          </div>
+
+          <div class="">
+            <% var deleteCltModal = "deleteFavCltModal" + grouping._id %>
+            <button class="cltTileContainerBtn warning" data-toggle="modal" data-target="#<%= deleteCltModal %>">
+              <i class="fas fa-trash"></i>
+            </button>
           </div>
         </div>
 
-        <div class="">
-          <% var deleteCltModal = "deleteFavCltModal" + grouping._id %>
-          <button class="cltTileContainerBtn warning" data-toggle="modal" data-target="#<%= deleteCltModal %>">
-            <i class="fas fa-trash"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="<%= pubPriModalDDId %>" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Are You Sure?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
           </button>
         </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="<%= pubPriModalDDId %>" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Are You Sure?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <p>Changing the privacy setting will impact who can see this collection!</p>
+        <div class="modal-body">
+          <div class="form-group">
+            <p>Changing the privacy setting will impact who can see this collection!</p>
+          </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary btn-block pubPriSubmitBtn-clt" type="submit" id="sbmt<%= pubPriModalDDId %>" value="<%= grouping._id %> <%= grouping.viewStatus %>">Yes. Let's Do it!</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="<%= deleteCltModal %>" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Are You Sure?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <p>Deleting this collection will also delete all it's underlying entries!</p>
-        </div>
-      </div>
-      <form method="POST" action="/deleteCollection">
         <div class="modal-footer">
-          <button class="btn btn-primary btn-block deleteCltBtn<%= grouping._id %>" type="submit" value="<%= grouping._id %>"  name="deleteCollectionButton">Yes, I'm sure.</button>
-          <button class="btn btn-secondary" type="button"  data-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary btn-block pubPriSubmitBtn-clt" type="submit" id="sbmt<%= pubPriModalDDId %>" value="<%= grouping._id %> <%= grouping.viewStatus %>">Yes. Let's Do it!</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
+
+  <div class="modal" id="<%= deleteCltModal %>" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Are You Sure?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <p>Deleting this collection will also delete all it's underlying entries!</p>
+          </div>
+        </div>
+        <form method="POST" action="/deleteCollection">
+          <div class="modal-footer">
+            <button class="btn btn-primary btn-block deleteCltBtn<%= grouping._id %>" type="submit" value="<%= grouping._id %>"  name="deleteCollectionButton">Yes, I'm sure.</button>
+            <button class="btn btn-secondary" type="button"  data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
 <% }) %>
-<% } else { %>
-
-<div class="col-md-4">
-  <div class="card card-body mb-3">
-    <button class="btn btn-primary firstEntryAddBtn">
-      <i class="fas fa-plus fa-5x"></i>
-      <br />
-      <br />
-      <h3 class="whiteFont">Add Your First Entry!</h3>
-    </button>
-  </div>
-</div>
+<hr />
 <% } %>

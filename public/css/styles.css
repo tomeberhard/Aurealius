@@ -1554,6 +1554,16 @@ a.userProfName {
     }
 }
 
+/* -----------------------User Collection Page------------------------------*/
+
+
+.favCollectionTitle {
+  opacity: 75%;
+}
+
+.favCollectionNameFrame {
+  width: 33%;
+}
 
 /* -----------------------user column  edit-------------------r------------ */
 /* @media screen and (min-width: 768px) and (max-width: 900px) {
