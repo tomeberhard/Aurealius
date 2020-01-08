@@ -21,8 +21,9 @@
         <div class="favGrpBtnContainer favBtnContainer-clt">
 
           <% var favFormEntryId = "favGrpForm"+ grouping._id%>
+          <!--does above need to exit???-->
 
-          <form method="POST" action="/favoriteGrouping" id="<%= favFormEntryId %>">
+          <form method="POST" action="/favoriteGrouping"">
 
             <% var heartBtnGrpingEntryId = "favGrping"+ grouping._id%>
             <!-- above slightly modified for Id unqiueness purposes -->
@@ -101,7 +102,7 @@
           </button>
           <div class="dropdown-menu dropdown-menu-clt" aria-labelledby="<%= pubPriDDId %>">
             <div class="dropdown-item dropdown-item-clt">
-              <%var pubPriFormId = "formDD" + grouping._id %>
+              <%var pubPriFormId = "formFavDD" + grouping._id %>
               <form method="POST" action="/updateCltPrivacy" id="<%= pubPriFormId %>">
                 <div class="inline dDoption pubPritoggle-clt" data-toggle="modal" data-target="#<%= pubPriModalDDId %>">
                   <div class="public <%= private %>">
@@ -168,7 +169,7 @@
       </div>
       <form method="POST" action="/deleteCollection">
         <div class="modal-footer">
-          <button class="btn btn-primary btn-block" type="submit" id="deleteCltBtn<%= grouping._id %>" value="<%= grouping._id %>"  name="deleteCollectionButton">Yes, I'm sure.</button>
+          <button class="btn btn-primary btn-block deleteCltBtn<%= grouping._id %>" type="submit" value="<%= grouping._id %>"  name="deleteCollectionButton">Yes, I'm sure.</button>
           <button class="btn btn-secondary" type="button"  data-dismiss="modal">Cancel</button>
         </div>
       </form>

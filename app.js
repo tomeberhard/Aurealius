@@ -1144,6 +1144,7 @@ app.get("/image/:filename", (req, res) => {
           err: "no files exist"
         });
       }
+      // console.log(files);
       gfs.openDownloadStreamByName(req.params.filename).pipe(res);
     });
 });
@@ -2339,7 +2340,7 @@ app.post("/delete", function(req, res) {
   let deleteBtnEntryId = req.body.entryId;
   console.log(deleteBtnEntryId);
   let deleteBtnimageFile = req.body.fileName;
-  // console.log(deleteBtnimageFile);
+  console.log(deleteBtnimageFile);
 
   AurealiusUser.findOne({
     _id: req.user.id
@@ -2373,24 +2374,36 @@ app.post("/delete", function(req, res) {
                 if (err) {
                   console.log(err);
                 } else {
-                  console.log("Successfully deleted entry.");
+                  console.log("Successfully deleted entry from entries db collection.");
 
                   // gfs.remove({
-                  gfs.delete({
-                    filename: deleteBtnimageFile,
-                    root: "uploads"
-                  }, function(err, success) {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      console.log("Successfully deleted entry upload.")
-                      res.status(200);
-                      res.end();
-                    }
-                  });
-                }
+                  gfs.find({
+                    filename: deleteBtnimageFile
+                  })
+                  .toArray(function(err, files) {
+
+                    if (!files || files.length === 0) {
+                      return res.status(404).json({
+                        err: "No Files Exist."
+                      });
+
+                      } else {
+                        console.log(files);
+                        gfs.delete(new mongoose.Types.ObjectId(files[0]._id), function(err, success) {
+                          if (err) {
+                            console.log(err);
+                          } else {
+                            console.log("Successfully deleted entry upload.");
+                            res.status(200);
+                            res.end();
+                          }
+                        });
+                      }
+                    });
+
+                  };
+                });
               });
-            });
 
           } else {
             res.status(200);
@@ -2458,6 +2471,8 @@ app.post("/deleteCollection", function(req, res) {
           }
         }, function(err, updatedUser){
 
+          console.log(groupingEntriesObjArray);
+
           console.log("Succesfully updated users entries and Grouping.");
 
           Grouping.deleteOne({
@@ -2475,18 +2490,48 @@ app.post("/deleteCollection", function(req, res) {
                 // console.log(foundGrouping.groupingImageFile);
 
                 // gfs.remove({
-                gfs.delete({
-                  // filename: foundGrouping.groupingImageFile,
-                  filename: groupingImageFileArray,
-                  root: "uploads"
-                }, function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully removed groupingImageFile from uploads directory.");
-                    res.redirect("back");
-                  }
+                groupingImageFileArray.forEach(function(imageFile){
+
+                  console.log(imageFile);
+
+                  gfs.find({
+                    filename: imageFile
+                  }).toArray(function(err, fileIds){
+
+                    if (!fileIds || fileIds.length === 0) {
+                      return res.status(404).json({
+                        err: "No Files Exist."
+                      });
+                    } else {
+
+                    gfs.delete(new mongoose.Types.ObjectId(fileIds[0]._id), function(err, success) {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log("Successfully removed " + imageFile + " from uploads directory.");
+                        // res.redirect("back");
+                      }
+
+                      });
+                    }
+                  });
+
                 });
+
+                res.redirect("back");
+
+                // gfs.delete({
+                //   filename: foundGrouping.groupingImageFile,
+                //   // filename: groupingImageFileArray,
+                //   root: "uploads"
+                // }, function(err, success) {
+                //   if (err) {
+                //     console.log(err);
+                //   } else {
+                //     console.log("Successfully removed groupingImageFile from uploads directory.");
+                //     res.redirect("back");
+                //   }
+                // });
               });
             }
           });

@@ -34,8 +34,9 @@
           <div class="favGrpBtnContainer favBtnContainer-clt">
 
             <% var favFormEntryId = "favGrpForm"+ grouping._id%>
+            <!--does above need to exit???-->
 
-            <form method="POST" action="/favoriteGrouping" id="<%= favFormEntryId %>">
+            <form method="POST" action="/favoriteGrouping">
 
               <button class="favBtn-clt <%= clicked %>" name="favoriteButton" id="<%= heartBtnGrpingEntryId %>" value="<%= grouping._id %>">
                 <i class="far fa-heart <%= notFaved %>"></i>
@@ -169,7 +170,7 @@
         </div>
         <form method="POST" action="/deleteCollection">
           <div class="modal-footer">
-            <button class="btn btn-primary btn-block" type="submit" id="deleteCltBtn<%= grouping._id %>" value="<%= grouping._id %>"  name="deleteCollectionButton">Yes, I'm sure.</button>
+            <button class="btn btn-primary btn-block deleteCltBtn<%= grouping._id %>" type="submit" value="<%= grouping._id %>"  name="deleteCollectionButton">Yes, I'm sure.</button>
             <button class="btn btn-secondary" type="button"  data-dismiss="modal">Cancel</button>
           </div>
         </form>
