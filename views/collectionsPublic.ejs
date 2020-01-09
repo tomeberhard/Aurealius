@@ -1,0 +1,82 @@
+<%- include('partials/headerLoggedIn') %>
+
+<div class="container headerSpacing">
+  <div class="row" id="favCollectionsRenderingContainer">
+
+    <% if(favGroupings.length > 0){ %>
+    <div class="col-12">
+      <div class="d-flex justify-content-between">
+        <div class="favCollectionNameFrame">
+          <hr />
+        </div>
+        <div class="d-flex h-100 align-items-baseline">
+          <h3 class="bodyFont darkgrayFont favCollectionTitle">Favorites</h3>
+        </div>
+        <div class="favCollectionNameFrame">
+          <hr />
+        </div>
+      </div>
+    </div>
+
+    <% favGroupings.forEach(function(favGrouping) { %>
+
+    <div class="col-md-3">
+      <div class="card p-3 mb-3">
+
+        <div class="collectionBackStop">
+          <% if(favGrouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
+          <% var collectionImage = "/assets/defaultusericon.png" %>
+          <% } else { %>
+          <% var collectionImage = "/image/" + favGrouping.groupingImageFile %>
+          <% } %>
+          <div class="favCollectionImg orientation" image="<%= collectionImage %>"></div>
+
+          <% var favCollectionPagePublic = "/user/" + targetData.profileName + "/Collections/"+ favGrouping.groupingName %>
+
+          <div class="collectionheading">
+            <h5><a class="whiteFont collectionLink cltId<%=favGrouping._id %>" href="<%= favCollectionPagePublic %>"><%= favGrouping.groupingName %></a></h5>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <% }) %>
+    <hr />
+    <% } %>
+
+  </div>
+  <div class="row" id="unfavCollectionsRenderingContainer">
+
+    <% if(groupings.length > 0){ %>
+
+    <% groupings.forEach(function(grouping) { %>
+
+    <div class="col-md-3">
+      <div class="card p-3 mb-3">
+
+        <div class="collectionBackStop">
+          <% if(grouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
+          <% var collectionImage = "/assets/defaultusericon.png" %>
+          <% } else { %>
+          <% var collectionImage = "/image/" + grouping.groupingImageFile %>
+          <% } %>
+          <div class="favCollectionImg orientation" image="<%= collectionImage %>"></div>
+
+          <% var collectionPagePublic = "/user/" + targetData.profileName + "/Collections/"+ grouping.groupingName %>
+
+          <div class="collectionheading">
+            <h5><a class="whiteFont collectionLink cltId<%=grouping._id %>" href="<%= collectionPagePublic %>"><%= grouping.groupingName %></a></h5>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <% }) %>
+    <% } %>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>

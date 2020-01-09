@@ -1,0 +1,233 @@
+
+<%- include('partials/headerLoggedIn') %>
+
+<div class="container headerSpacing">
+  <div class="row">
+    <div class="col-md-8 m-auto">
+      <div class="mb-2 d-flex align-items-center justify-content-between paperBack pt-2 pb-2 pl-3 pr-3">
+        <div class="d-flex align-items-center">
+          <div class="inline collectionBioImagePrvwBorder">
+
+            <% if(targetData.bioImageFile === "/assets/defaultusericon.png") { %>
+            <% var targetUserImage = targetData.bioImageFile %>
+            <% } else { %>
+            <% var targetUserImage = "/image/" + targetData.bioImageFile %>
+            <% } %>
+
+            <div class="collectionBioImagePrvw orientation" image="<%= targetUserImage %>"></div>
+
+          </div>
+          <h3 class="inline ml-3 mb-0 darkgrayFont"><%= targetData.profileName %></h3>
+
+        </div>
+
+        <% var userCollectionsRoute = "/user/" + targetData.profileName + "/Collections" %>
+
+        <form method="GET" action="<%= userCollectionsRoute %>">
+          <button type="submit" class="btn btn-primary">
+            Back to Collections
+          </button>
+        </form>
+      </div>
+    <hr />
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 m-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-4 m-auto mobileCltImagePadding">
+            <div class="card card-body">
+                <div class="collectionImg orientation" id="cltImage" image="/image/<%= groupingInfo.groupingImageFile %>"></div>
+            </div>
+          </div>
+          <div class="col-8 m-auto mobileCltCardPadding">
+            <div class="card card-body">
+            <div class="row">
+              <div class="col-12">
+                <h2 class="text-center"><%= groupingInfo.groupingName %></h2>
+              </div>
+            </div>
+              <div class="row">
+                <div class="col-3 p-0 m-0 d-flex align-items-center justify-content-center">
+
+                </div>
+                <div class="col-9 d-flex m-auto">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <%_ entries.forEach(function(entry) { _%>
+
+      <% if (entry.imageFile === "NOTHING TO SEE HERE") { %>
+      <% var hide = "" %>
+      <% var cardClass = "cardWOImg" %>
+      <% var paddingTop = "pt-3" %>
+      <% } else { %>
+      <% var hide = "/image/" + entry.imageFile %>
+      <% var cardClass = "cardWImg" %>
+      <% } %>
+
+      <% var cardId = "eIDuserEntries" + entry._id %>
+
+      <div class="card card-body-2 mb-3 <%= paddingTop %>" id="<%= cardId %>">
+        <div class="userEntriesImg orientation" image="<%= hide %>"></div>
+        <div class="<%= cardClass %>">
+
+          <div class="uNFavIcnContainer">
+            <div class="profileFllwUnFllw">
+              <h3 class="primaryPurpleFont"><%= userData.profileName %></h3>
+            </div>
+
+            <div class="favShare">
+              <div class="shareBtnContainer">
+
+                <% var collapseShareID = "auserEntries" + JSON.stringify(entry._id).replace(/"/g, "") %>
+
+                <button class="shareBtn" type="button" data-toggle="collapse" data-target="#<%= collapseShareID %>" aria-expanded="false" aria-controls="<%= collapseShareID %>">
+                  <i class="fas fa-share "></i>
+                </button>
+              </div>
+
+              <div class="favBtnContainer">
+
+                <% var favFormEntryId = "favFormuserEntries"+ entry._id%>
+
+                <form method="POST" action="/favorite" id="<%= favFormEntryId %>">
+
+                  <% var heartBtnEntryId = "euserEntries"+ entry._id%>
+                  <% var favs = JSON.stringify(entry._favoriteUsers) %>
+                  <% if (favs.includes(userData._id)) { %>
+                  <% var faved = "" %>
+                  <% var notFaved = "d-none" %>
+                  <% var clicked = "clicked" %>
+                  <% } else { %>
+                  <% var faved = "d-none" %>
+                  <% var notFaved = "" %>
+                  <% var clicked = "" %>
+                  <% } %>
+
+                  <button class="favBtn <%= clicked %>" name="favoriteButton" id="<%= heartBtnEntryId %>" value="<%= entry._id %>">
+                    <i class="far fa-heart <%= notFaved %>"></i>
+                    <i class="fas fa-heart  <%= faved %>"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="aFSMIconContainer collapse" id="<%= collapseShareID %>">
+            <span class="aFSMIcons border rounded">
+              <i class="fab fa-facebook"></i>
+              <i class="fab fa-instagram"></i>
+              <i class="fab fa-twitter"></i>
+              <i class="fas fa-external-link-alt"></i>
+            </span>
+          </div>
+          <div class="captionContainer">
+
+            <% var captionId = "cptuserEntries"+ entry._id %>
+
+            <p class="card-text" id="<%= captionId %>"><%= entry.caption %></p>
+            <div class="editEntryForm d-none">
+              <form method="POST" action="/upload">
+
+                <% var editCaptionFormId = "editCptTAuserEntries"+ entry._id %>
+
+                <textarea class="captionContainer" rows="" name="" id="<%= editCaptionFormId %>" placeholder=""><%- entry.caption %></textarea>
+
+                <% var editCptBtnBarId = "editCptBtnBaruserEntries"+ entry._id %>
+
+                <div class="editEntryBtnBar" id="<%= editCptBtnBarId %>">
+                  <button type="submit" class="btn btn-primary btn-block mr-1 submitEditBtn" value="<%= entry._id %>">Save</button>
+                  <button type="button" class="btn btn-secondary closeEditBtn" value="<%= entry._id %>">Close</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+
+          <% var collapseExpandID = "b" + collapseShareID %>
+          <% var collapseExpandIconID = "c" + collapseExpandID %>
+
+          <div class="expndCrdContainer expandCrdCusion">
+            <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#<%= collapseExpandID %>" aria-expanded="false" aria-controls="<%= collapseExpandID %>">
+              <i class="fas fa-chevron-down" id="<%= collapseExpandIconID %>"></i>
+            </button>
+          </div>
+
+          <div class="collapse entryTrayContainer" id="<%= collapseExpandID %>">
+            <div class="reportIcnContainer">
+
+                <% var rptModalId = "rptModal" + entry._id %>
+
+              <button class="entryContainerBtn warning" data-toggle="modal" data-target="#<%= rptModalId %>">
+                <i class="fas fa-exclamation-circle"></i>
+              </button>
+
+            </div>
+          </div>
+
+        </div>
+
+        <form method="POST" action="/report">
+          <div class="modal fade" id="<%= rptModalId %>" tabindex="-1" role="dialog" aria-labelledby="reportModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Report Entry</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="reportRuleSelector">Which Rule Does this Entry Break?</label>
+                    <div class="form-check" id="reportRuleSelector">
+                      <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector1" value="Entry must be based in gratitude" checked>
+                      <label class="form-check-label" for="reportRuleSelector1">
+                        Entry must be based in gratitude
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector2" value="Gratitude cannot be at expense of the well-being of another">
+                      <label class="form-check-label" for="reportRuleSelector2">
+                        Gratitude cannot be at expense of the well-being of another
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="rule" id="reportRuleSelector3" value="No politics">
+                      <label class="form-check-label" for="reportRuleSelector3">
+                        No politics
+                      </label>
+                    </div>
+
+                    <br />
+
+                    <textarea class="form-control reportTA" rows="3" name="reportComments" placeholder="Comments"></textarea>
+                  </div>
+                </div>
+                <% var rptSubmitBtn = "rptBtn" + entry._id %>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary reportSubmitBtn"  id="<%= rptSubmitBtn %>" name="reportButton">Submit</button>
+                  <button type="button" id="modalCloseBtn" class="btn btn-secondary inline" data-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <%_ }) _%>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>

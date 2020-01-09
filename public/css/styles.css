@@ -1068,7 +1068,7 @@ label.btn {
 }
 
 .cardWImg {
-  background-color: #fafcfd;
+  /* background-color: #fafcfd; */
 }
 
 .captionContainer {
@@ -1764,6 +1764,14 @@ h5.followTxt {
   margin: 0 10px 0 10px;
 }
 
+
+.collectionBioImagePrvwBorder {
+  width: 15%;
+  /* border-radius: .25rem;
+  overflow: hidden; */
+}
+
+
 .noFollowTxt {
   color: darkgray;
 }
@@ -1936,6 +1944,10 @@ i p .pubPriUserBtn:hover  {
 .dropdown-menu:hover {
   cursor: pointer;
 }
+
+/* .userEntriesImg {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  } */
 
 @media screen and (max-width: 900px) {
 

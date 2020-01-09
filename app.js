@@ -319,7 +319,6 @@ app.get("/Everyone", function(req, res) {
                 } else {
 
                   let uniqueGroupings = [...new Set(foundUserFollow._groupings.map(item => item.groupingName))];
-                  // console.log(uniqueGroupings);
 
                   res.render("everyone", {
                     entries: foundEntries,
@@ -390,8 +389,6 @@ app.get("/user/:publicUserName", function(req, res) {
 
     let userName = req.params.publicUserName;
     let requestingUser = req.user;
-    // console.log(userName);
-    // let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
     AurealiusUser.findOne({
       profileName: userName
@@ -487,8 +484,6 @@ app.post("/userPageCollectionsPublic", function(req, res) {
   if (req.isAuthenticated()) {
 
     let profileName =  req.body.profileName;
-    // console.log(profileName);
-    // let requestingUser = req.user;
 
     AurealiusUser.findOne({
       profileName: profileName
@@ -509,8 +504,6 @@ app.post("/userPageCollectionsPublic", function(req, res) {
         console.log(err);
       } else {
 
-        // console.log(foundUser._groupings);
-
         res.render("partials/userPageCollectionsPublic", {
           userData: foundUser,
           groupings: foundUser._groupings
@@ -526,7 +519,6 @@ app.post("/userEntriesPublic", function(req, res) {
   if (req.isAuthenticated()) {
 
     let profileName =  req.body.profileName;
-    // console.log(profileName);
     let requestingUser = req.user;
 
     AurealiusUser.findOne({
@@ -559,8 +551,6 @@ app.post("/userEntriesPublic", function(req, res) {
       if (err) {
         console.log(err);
       } else {
-
-        // console.log(foundUser);
 
         res.render("partials/userEntriesPublic", {
           userData: foundUser,
@@ -616,8 +606,6 @@ app.post("/favoriteEntriesPublic", function(req, res) {
           return true
 
         });
-
-        // console.log(requestingUser.profileName);
 
         res.render("partials/favoriteEntriesPublic", {
           userData: foundUser,
@@ -766,8 +754,6 @@ app.get("/followingEntries", function(req, res) {
               console.log(err);
             } else {
 
-              // console.log(foundUser._following);
-
             res.status(200);
             res.render("partials/followingEntries", {
               userData: userInfo,
@@ -849,8 +835,6 @@ app.get("/user/:currentUserId", function(req, res) {
 
               uniqueGroupingEntries.reverse();
 
-              // console.log(uniqueGroupingEntries[1][0].imageFile);
-
               let groupEntryImages = [];
 
               if (uniqueGroupingEntries) {
@@ -925,8 +909,6 @@ app.get("/favCollections", function(req, res) {
       } else {
 
         let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
-        // console.log(foundUser._groupingFavorites);
-        // console.log(foundGroupings);
 
         res.render("partials/favCollectionTiles", {
           userData: foundUser,
@@ -974,8 +956,6 @@ app.get("/unfavCollections", function(req, res) {
         } else {
 
           let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
-          // console.log(foundUser._groupingFavorites);
-          // console.log(foundGroupings);
 
           res.render("partials/unfavCollectionTiles", {
             userData: foundUser,
@@ -989,47 +969,130 @@ app.get("/unfavCollections", function(req, res) {
 
 });
 
-// app.get("/unfavCollections", function(req, res) {
-//
-//   if (req.isAuthenticated()) {
-//
-//     AurealiusUser.findOne({
-//       _id: req.user._id
-//     })
-//     .populate({
-//       path: "_groupingFavorites",
-//       options: {sort: {updatedAt: -1}},
-//       model: "grouping"
-//     })
-//     .exec(function(err, foundUser) {
-//
-//       if (err) {
-//         console.log(err);
-//       } else {
-//
-//         let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
-//         // console.log(foundUser._groupingFavorites);
-//         // console.log(foundGroupings);
-//
-//         res.render("partials/favCollectionTiles", {
-//           userData: foundUser,
-//           favGroupings: uniqueFavs,
-//           groupings: foundUser._groupingFavorites
-//         });
-//
-//       }
-//     });
-//   }
-//
-// });
+app.get("/user/:user/Collections", function(req, res) {
+
+  let userProfileName = req.params.user;
+
+  if (req.isAuthenticated()) {
+
+    AurealiusUser.findOne({
+      _id: req.user.id
+    }).exec(function(err, foundUser) {
+
+      AurealiusUser.findOne({
+        profileName: userProfileName
+      })
+      .populate({
+        path: "_groupingFavorites",
+        options: {
+          match: {
+            viewStatus: "public"
+          }
+        },
+        model: "grouping"
+      })
+      .exec(function(err, targetUser) {
+
+        let favCollectionIds = [...new Set(targetUser._groupingFavorites.map(item => item._id))];
+
+        Grouping.find({
+          _user: mongoose.Types.ObjectId(targetUser._id),
+          _id: {
+            $nin: favCollectionIds
+          }
+        })
+        .populate({
+          path: "_user",
+          model: "aurealiusUser"
+        })
+        .exec(function(err, foundGroupings) {
+          if (err) {
+            console.log(err);
+          } else {
+
+            res.render("collectionsPublic", {
+              userData: foundUser,
+              targetData: targetUser,
+              favGroupings: targetUser._groupingFavorites,
+              groupings: foundGroupings
+            });
+          }
+        });
+      });
+    });
+  }
+
+});
+
+app.get("/user/:user/Collections/:grouping", function(req, res) {
+
+  let userProfileName = req.params.user;
+  // console.log(userProfileName);
+  let grouping = req.params.grouping.replace("%20", " ");
+  // console.log(grouping);
+
+  if (req.isAuthenticated()) {
+
+    AurealiusUser.findOne({
+      _id: req.user._id
+    })
+    .exec(function(err, foundUser) {
+
+      AurealiusUser.findOne({
+        profileName: userProfileName
+      })
+      .exec(function(err, targetUser) {
+
+        Grouping.findOne({
+          groupingName: grouping,
+          _user: mongoose.Types.ObjectId(targetUser._id),
+          viewStatus: "public",
+        })
+        .populate({
+          path: "_entries",
+          options: {
+              populate: {
+                path: "_user",
+                model: "aurealiusUser"
+              },
+            sort: {createdAt: -1},
+          },
+          match: {
+            viewStatus: "public",
+            reportStatus: "Open"
+          },
+          model: "entry"
+        })
+        .exec(function(err, foundGrouping) {
+
+          // console.log(foundGrouping._entries);
+
+          if (err) {
+            console.log(err);
+          } else {
+
+            res.render("userCollectionPublic", {
+              userData: foundUser,
+              targetData: targetUser,
+              groupingInfo: foundGrouping,
+              entries: foundGrouping._entries
+            });
+          }
+        });
+      });
+
+
+    });
+
+  }
+
+});
 
 
 app.get("/Collections/:grouping", function(req, res) {
 
   let userInfo = req.user;
   let grouping = req.params.grouping.replace("%20", " ");
-  // console.log(userInfo._id);
-  // console.log(grouping);
 
   if (req.isAuthenticated()) {
 
@@ -1059,7 +1122,7 @@ app.get("/Collections/:grouping", function(req, res) {
       } else {
 
         // console.log(foundGrouping._entries);
-        res.render("usercollection", {
+        res.render("userCollection", {
           groupingInfo: foundGrouping,
           entries: foundGrouping._entries,
           userData: userInfo

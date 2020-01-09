@@ -29,7 +29,7 @@
         <% } %>
         <div class="collectionImg orientation" image="<%= collectionImage %>"></div>
 
-        <% var collectionRoute = "/user/" + userData._profileName + "/Collections/" + grouping.groupingName %>
+        <% var collectionRoute = "/" + userData.profileName + "/Collections/" + grouping.groupingName %>
 
         <div class="collectionheading">
           <h5><a class="whiteFont collectionLink" id="cltId<%=grouping._id %>" href="<%= collectionRoute %>">
@@ -48,11 +48,15 @@
     </div>
   </div>
   <div class="pl-4 pr-4 pt-1 pb-3">
-    <button class="d-flex align-items-center justify-content-center noBackground darkgrayFont opacity75 btnSeeCollections border-1 w-100 p-2">
+
+  <% var userCollectionsRoute = "/user/" + userData.profileName + "/Collections" %>
+
+  <form method="GET" action="<%= userCollectionsRoute %>">
+    <button type="submit" class="d-flex align-items-center justify-content-center noBackground darkgrayFont opacity75 btnSeeCollections border-1 w-100 p-2">
       <i class="fas fa-th-large"></i>
       <p class="ml-2 noDefaultMargin">See All Collections</p>
     </button>
-
+  </form>
   </div>
 
 </div>

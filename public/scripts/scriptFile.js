@@ -308,9 +308,30 @@ function updateUserEntries(userEntries) {
   // $("div.appendedBelow").nextAll().children().addClass("scrollImages");
 }
 
+//--------------------------public user collections page------------------------//
+
+// $(document).on("click", ".btnSeeCollections", function(event) {
+//   event.preventDefault();
+//   event.stopPropagation();
+//
+//   let data = JSON.stringify({
+//     profileName: profileName
+//   });
+//
+//   $.ajax({
+//     url: "/user/" + profileName + "/Collections",
+//     type: "GET",
+//     contentType: "application/json",
+//     data: data
+//   }).fail(function(err) {
+//     console.log(err);
+//   });
+//
+// });
+
 //--------------------------public user page rendered entries------------------------//
 
-if (path.includes("/user/")) {
+if (path.includes("/user/") === true && path.includes("Collections") === false ) {
 
 $("#userEntriesPublicContainer").addClass("active");
 $("#followingEntriesPublicContainer").addClass("d-none");
@@ -325,7 +346,7 @@ let data = JSON.stringify({
 
   $.ajax({
     url: "/userEntriesPublic",
-    type: "Post",
+    type: "POST",
     contentType: "application/json",
     data: data
   }).done(function(result) {

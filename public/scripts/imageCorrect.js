@@ -8,6 +8,7 @@ jQuery(function() {
     imageClassList.includes("userProfilePic") ||
     imageClassList.includes("userSettingsImage") ||
     imageClassList.includes("collectionImg") ||
+    imageClassList.includes("collectionBioImagePrvw") ||
     imageClassList.includes("favCollectionImg")) {
 
 			loadImage(
@@ -16,7 +17,7 @@ jQuery(function() {
 					div.append(img);
 				}, {
 					orientation: true,
-					aspectRatio: 1/1
+					aspectRatio: 1/1,
 				}
 			);
 
