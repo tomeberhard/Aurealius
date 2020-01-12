@@ -451,10 +451,10 @@ app.get("/userEntries", function(req, res) {
       path: "_entries",
       match: { reportStatus: "Open"},
       options: {
-        populate: {
-          path: "_user",
-          model: "aurealiusUser"
-        },
+        // populate: {
+        //   path: "_user",
+        //   model: "aurealiusUser"
+        // },
         populate: {
           path: "_grouping",
           model: "grouping"
@@ -468,6 +468,8 @@ app.get("/userEntries", function(req, res) {
       if (err) {
         console.log(err);
       } else {
+
+        // console.log(foundUser._entries[0]._user);
 
         res.render("partials/userEntries", {
           userData: userInfo,
@@ -494,7 +496,7 @@ app.post("/userPageCollectionsPublic", function(req, res) {
         viewStatus: "public"
       },
       options: {
-        limit: 10,
+        // limit: 10,
         sort: {createdAt: -1},
     },
       model: "grouping"
@@ -503,6 +505,8 @@ app.post("/userPageCollectionsPublic", function(req, res) {
       if (err) {
         console.log(err);
       } else {
+
+        // console.log(foundUser._groupings);
 
         res.render("partials/userPageCollectionsPublic", {
           userData: foundUser,
@@ -519,30 +523,54 @@ app.post("/userEntriesPublic", function(req, res) {
   if (req.isAuthenticated()) {
 
     let profileName =  req.body.profileName;
+    console.log(profileName);
     let requestingUser = req.user;
+    console.log(requestingUser);
 
     AurealiusUser.findOne({
       profileName: profileName
     })
+      // .populate({
+      //   path: "_entries",
+      //   match: {
+      //     reportStatus: "Open",
+      //     viewStatus: "public",
+      //   },
+      //   options: {
+      //     populate: {
+      //       path: "_user",
+      //       model: "aurealiusUser"
+      //     },
+      //     populate: {
+      //       path: "_grouping",
+      //       match: {
+      //         viewStatus: "public",
+      //       },
+      //       model: "grouping"
+      //     },
+      //     // limit: 10,
+      //     sort: {createdAt: -1},
+      // },
+      //   model: "entry"
+      // })
     .populate({
       path: "_entries",
       match: {
         reportStatus: "Open",
         viewStatus: "public",
       },
-      options: {
+      populate: {
+        path: "_grouping",
+        match: {
+          viewStatus: "public",
+        },
         populate: {
           path: "_user",
           model: "aurealiusUser"
         },
-        populate: {
-          path: "_grouping",
-          match: {
-            viewStatus: "public",
-          },
-          model: "grouping"
-        },
-        limit: 10,
+        model: "grouping"
+      },
+      options: {
         sort: {createdAt: -1},
     },
       model: "entry"
@@ -551,6 +579,8 @@ app.post("/userEntriesPublic", function(req, res) {
       if (err) {
         console.log(err);
       } else {
+
+        console.log(foundUser._entries);
 
         res.render("partials/userEntriesPublic", {
           userData: foundUser,
@@ -997,6 +1027,7 @@ app.get("/user/:user/Collections", function(req, res) {
 
         Grouping.find({
           _user: mongoose.Types.ObjectId(targetUser._id),
+          viewStatus: "public",
           _id: {
             $nin: favCollectionIds
           }

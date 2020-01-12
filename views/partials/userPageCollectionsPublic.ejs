@@ -29,7 +29,7 @@
         <% } %>
         <div class="collectionImg orientation" image="<%= collectionImage %>"></div>
 
-        <% var collectionRoute = "/" + userData.profileName + "/Collections/" + grouping.groupingName %>
+        <% var collectionRoute = "/user/" + userData.profileName + "/Collections/" + grouping.groupingName %>
 
         <div class="collectionheading">
           <h5><a class="whiteFont collectionLink" id="cltId<%=grouping._id %>" href="<%= collectionRoute %>">

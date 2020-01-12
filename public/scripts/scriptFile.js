@@ -338,7 +338,7 @@ $("#followingEntriesPublicContainer").addClass("d-none");
 $("#favoriteEntriesPublicContainer").addClass("d-none");
 
 let profileName = path.substring(6,path.length);
-// console.log(profileName);
+console.log(profileName);
 
 let data = JSON.stringify({
   profileName: profileName
