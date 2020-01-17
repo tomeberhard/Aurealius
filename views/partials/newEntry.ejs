@@ -1,0 +1,109 @@
+<!-- <div class="col-md-8"> -->
+  <div class="entryContainer entryFormCard">
+    <form action="/upload" method="POST" enctype="multipart/form-data" id="newEntryForm" onsubmit="entrySubmit.disabled = true; return true">
+      <div class="form-group entry-form">
+        <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
+
+        <div class="upldToggleContainer expandable d-none">
+
+          <label class="btn fileBtn" for="my-file-selector">
+            <input id="my-file-selector" type="file" name="file" class="" style="display:none" onchange="$('#upload-file-info').html(this.files[0].name)">
+            Add Image
+          </label>
+          <div class="inline label label-info" id="upload-file-info"></div>
+          <div class="toggleCotainer">
+            <input id="entryPrivacyToggler" type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-width="100" value="private">
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary entry-form-submitBtn btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
+        Submit
+      </button>
+
+      <div class="modal" id="collectionModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Choose Your Collection</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+
+                <div class="form-row">
+                  <div class="form-group col-md-8">
+                    <input class="form-control" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <div class="form-control p-0">
+
+                      <!-- BUTTON FOR ClOSED PUBLIC SELECTION  -->
+                      <!-- <div class="disableCustom h-100 w-100 d-none" id="closedCltPrivacySelector">
+                        <button class="h-100 w-100 border-0 noBackground" type="button">
+                          <div id="" class="activeCltPrivacy inline">
+                            <div class="privacySelectionGroup" value="public">
+                              <i class="inline fas fa-eye darkgrayFont"></i>
+                              <p class="inline darkgrayFont mb-0"> Public</p>
+                            </div>
+                          </div>
+                        </button>
+                      </div> -->
+
+                      <!-- BUTTON FOR OPEN SELECTION  -->
+                      <div class="h-100 w-100" id="cltPrivacySelector">
+                        <button class="h-100 w-100 dropdown-toggle border-0 noBackground" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <div id="activeCltPrivacy" class="inline">
+                            <div class="privacySelectionGroup" value="public">
+                              <i class="inline fas fa-eye darkgrayFont"></i>
+                              <p class="inline darkgrayFont mb-0"> Public</p>
+                            </div>
+                          </div>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="cltPrivacySelector">
+                          <div id="selectCltPublic" class="dropdown-item cltPrivacySelection">
+                            <div class="privacySelectionGroup" value="public">
+                              <i class="inline fas fa-eye darkGrayColor"></i>
+                              <p class="inline darkGrayColor mb-0"> Public</p>
+                            </div>
+                          </div>
+                          <div id="selectCltPrivate" class="dropdown-item cltPrivacySelection">
+                            <div class="privacySelectionGroup" value="private">
+                              <i class="inline fas fa-eye-slash darkGrayColor"></i>
+                              <p class="inline darkGrayColor mb-0"> Private</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+                <div class="text-center">
+                  <p>Choose Existing Collection</p>
+                </div>
+
+                <div class="form-group">
+                  <div id="emulatorDisabler" class="">
+                    <div class="cltSelectorEmulator" id="collectionSelector">
+                      <!-- rendered collections here -->
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input type="submit" value="Save" class="btn btn-primary btn-block newEntrySubmitBtn" name="entrySubmit" />
+              <button type="button" class="btn btn-secondary newEntryCloseBtn" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+<!-- </div> -->

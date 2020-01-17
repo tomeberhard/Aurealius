@@ -1,0 +1,25 @@
+
+<% var collectionCount = 0 %>
+
+<% if(groupings){ %>
+<% groupings.forEach(function(userCollection) { %>
+  <% collectionCount++ %>
+  <% if (collectionCount % 2 != 0) { %>
+    <% var showAlternateClass = "" %>
+  <% } else { %>
+    <% var showAlternateClass = "altCltOption" %>
+  <% } %>
+
+<div class="d-flex pl-2 pr-2 justify-content-between align-items-center optionEmulator <%= showAlternateClass %>" id="cltOpt<%= userCollection._id %>">
+  <p class="m-0"><%= userCollection.groupingName %></p>
+  <% if(userCollection.viewStatus === "public") { %>
+    <% var pubPriIconSelection = "fas fa-eye" %>
+  <% } else { %>
+    <% var pubPriIconSelection = "fas fa-eye-slash" %>
+  <% } %>
+  <i class="<%= pubPriIconSelection %>"></i>
+</div>
+<% }) %>
+<% } else { %>
+<p>No Collections to show!</p>
+<% } %>

@@ -178,6 +178,7 @@ const Entry = new mongoose.model("entry", entrySchema);
 const groupingSchema = new mongoose.Schema({
   groupingName: String,
   groupingImageFile: String,
+  userDesignatedImage: Boolean,
   _user: {
     type: ObjectId,
     ref: "aurealiusUser"
@@ -320,9 +321,13 @@ app.get("/Everyone", function(req, res) {
 
                   let uniqueGroupings = [...new Set(foundUserFollow._groupings.map(item => item.groupingName))];
 
+                  let uniqueGroupings2 = [...new Set(foundUserFollow._groupings)];
+
+                  // console.log(foundEntries._groupings);
+
                   res.render("everyone", {
                     entries: foundEntries,
-                    groupings: uniqueGroupings,
+                    groupings: uniqueGroupings2,
                     userData: userInfo,
                     userFollowing: foundUserFollow._following,
                     userFollowers: foundUserFollow._followers
@@ -335,6 +340,45 @@ app.get("/Everyone", function(req, res) {
         }
       }
     });
+});
+
+app.post("/newEntryGroupingOptions", function(req, res) {
+
+  let userId = req.user._id;
+  let viewStatusData = req.body.viewStatusData
+
+  let privacyQueryParameter = new Object();
+  privacyQueryParameter._user = mongoose.Types.ObjectId(userId);
+
+  if(viewStatusData === "public") {
+    privacyQueryParameter.viewStatus = "public";
+  }
+
+  console.log(privacyQueryParameter);
+
+  if (req.isAuthenticated()) {
+
+    Grouping.find(
+      privacyQueryParameter
+    ).sort({
+      updatedAt: -1
+    })
+    .exec(function(err, foundGroupings){
+
+      if(err) {
+        console.log(err);
+      } else {
+
+        res.render("partials/newEntryCollections", {
+          groupings: foundGroupings
+        })
+
+      }
+
+    });
+
+  }
+
 });
 
 app.get("/Yours", function(req, res) {
@@ -523,36 +567,13 @@ app.post("/userEntriesPublic", function(req, res) {
   if (req.isAuthenticated()) {
 
     let profileName =  req.body.profileName;
-    console.log(profileName);
+    // console.log(profileName);
     let requestingUser = req.user;
-    console.log(requestingUser);
+    // console.log(requestingUser);
 
     AurealiusUser.findOne({
       profileName: profileName
     })
-      // .populate({
-      //   path: "_entries",
-      //   match: {
-      //     reportStatus: "Open",
-      //     viewStatus: "public",
-      //   },
-      //   options: {
-      //     populate: {
-      //       path: "_user",
-      //       model: "aurealiusUser"
-      //     },
-      //     populate: {
-      //       path: "_grouping",
-      //       match: {
-      //         viewStatus: "public",
-      //       },
-      //       model: "grouping"
-      //     },
-      //     // limit: 10,
-      //     sort: {createdAt: -1},
-      // },
-      //   model: "entry"
-      // })
     .populate({
       path: "_entries",
       match: {
@@ -563,10 +584,6 @@ app.post("/userEntriesPublic", function(req, res) {
         path: "_grouping",
         match: {
           viewStatus: "public",
-        },
-        populate: {
-          path: "_user",
-          model: "aurealiusUser"
         },
         model: "grouping"
       },
@@ -580,7 +597,9 @@ app.post("/userEntriesPublic", function(req, res) {
         console.log(err);
       } else {
 
-        console.log(foundUser._entries);
+        // console.log(foundUser._entries[0]);
+        // console.log(foundUser._entries[1]);
+        // console.log(foundUser._entries[2]);
 
         res.render("partials/userEntriesPublic", {
           userData: foundUser,
@@ -1487,14 +1506,18 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
   }
 
+  const userCollectionPrivacy = req.body.groupingViewStatus;
+  console.log(userCollectionPrivacy);
+
+  const collectionPageGrouping = req.body.groupingName;
+  console.log(collectionPageGrouping);
+
+  const userCollectionChoice = req.body.grouping;
+  console.log(userCollectionChoice);
+
   function collectionAllocator() {
 
-    const collectionPageGrouping = req.body.groupingName;
-    console.log(collectionPageGrouping);
-
-    const userCollectionChoice = req.body.grouping;
-
-    if (userCollectionChoice === "" && collectionPageGrouping == null) {
+    if (userCollectionChoice === "" && collectionPageGrouping === "") {
       let today = new Date();
       let dd = String(today.getDate());
       let mm = String(today.getMonth());
@@ -1538,6 +1561,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
   });
 
   newEntry.save();
+  console.log("New entry successfully saved.");
 
   AurealiusUser.update({
     _id: currentUser
@@ -1563,9 +1587,10 @@ app.post("/upload", upload.single("file"), function(req, res) {
             const newGrouping = new Grouping({
               groupingName: collectionAllocator(),
               groupingImageFile: fileExists(),
+              userDesignatedImage: false,
               _user: mongoose.Types.ObjectId(currentUser),
               _entries: [mongoose.Types.ObjectId(newEntry._id)],
-              viewStatus: statusAssignment()
+              viewStatus: userCollectionPrivacy
             });
 
             newGrouping.save();
@@ -1606,15 +1631,32 @@ app.post("/upload", upload.single("file"), function(req, res) {
                 groupingName: collectionAllocator(),
                 _user: mongoose.Types.ObjectId(currentUser),
               },{
-                $set: {
-                  groupingImageFile: fileExists()
-                },
                 $push: {
                   _entries: mongoose.Types.ObjectId(newEntry._id)
                 }
               }, function(err, updatedGrouping){
                 console.log("New entry added to existing Grouping.");
-                console.log("Grouping image successfully updated.");
+
+                console.log(updatedGrouping.userDesignatedImage);
+                console.log(updatedGrouping._id);
+
+
+                if(updatedGrouping.userDesignatedImage === false || updatedGrouping.userDesignatedImage === null ) {
+
+                  Grouping.findOneAndUpdate({
+                    _id: updatedGrouping._id,
+                  },{
+                    $set: {
+                      groupingImageFile: fileExists()
+                    }
+                  }, function(err, success){
+                    if (err) {
+                    } else {
+                      console.log("Grouping image successfully updated.");
+                    }
+                  });
+
+                }
 
                 Entry.update({
                   _id: newEntry._id
@@ -1664,6 +1706,8 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
   });
 
+  // res.render()
+
   res.redirect("back");
 
 });
@@ -1698,7 +1742,6 @@ app.post("/userImageUpload", upload.single("file"), function(req, res) {
 app.post("/changeCltImage", upload.single("file"), function(req, res) {
 
   let groupingId = req.body.groupingId;
-  // console.log(groupingId);
 
   function cltFileExists() {
     if (typeof req.file === "undefined") {
@@ -1710,18 +1753,20 @@ app.post("/changeCltImage", upload.single("file"), function(req, res) {
     }
   }
 
-  Grouping.updateOne({
+  Grouping.findOneAndUpdate({
     _id: groupingId
-  }, {groupingImageFile: cltFileExists()}, function(err, success) {
+  }, {
+    $set: {
+      groupingImageFile: cltFileExists(),
+      userDesignatedImage: true,
+    }
+  }, function(err, success) {
     if (err) {
       console.log(err)
     } else {
       console.log("Succesfully updated groupingImage.")
     }
   });
-
-  // res.status(200);
-  // res.end(cltFileExists());
 
   res.redirect("back");
 
@@ -2132,8 +2177,8 @@ app.post("/updateCltPrivacy", function(req, res) {
         _id: collectionId
       })
       .populate({
-        path: "_user",
-        model: "aurealiusUser"
+        path: "_entries",
+        model: "entry"
       })
       .exec(function(err, foundCollection) {
         if (err) {
@@ -2152,6 +2197,27 @@ app.post("/updateCltPrivacy", function(req, res) {
               if (err) {
                 console.log(err);
               } else {
+
+                if(viewStatus === "private") {
+                  console.log(foundCollection._entries);
+
+                  let collectionEntryIds = [...new Set(foundCollection._entries.map(item => item._id))];
+
+                  Entry.updateMany({
+                    _id: collectionEntryIds
+                  }, {
+                    $set: {
+                        viewStatus: viewStatus
+                    }
+                  }, function(err, success) {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log("Successfully changed all entries to private viewStatus.")
+                  }
+                  });
+                }
+
                 console.log("Successfully updated collection privacy.");
                 res.status(200);
                 res.end();

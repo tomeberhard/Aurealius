@@ -46,6 +46,13 @@ switch (navPage) {
     break;
 }
 
+//-------------------bootstrap-select Picker Init --------------------------//
+// $(document).ready(function(){
+//   $(".my-select").selectpicker();
+// });
+
+
+
 //-------------------follower/following collapse placement------------------//
 
 if ($(window).width() < 500 ) {
@@ -236,7 +243,36 @@ $(document).on("click", ".submitEditBtn", function(event) {
   });
 });
 
-//----------------------User collection pop-up field controls----------------//
+//-------------------Collection Privacy Selector Simulator------------------------------//
+
+$(document).on("click", ".cltPrivacySelection", function(event) {
+
+  $("#activeCltPrivacy").empty();
+
+  let privacyChoiceCode = $(this).html().replace(/darkGrayColor/g, "darkgrayFont");
+  // console.log(privacyChoiceCode);
+
+  $("#activeCltPrivacy").append(privacyChoiceCode);
+
+});
+
+//-------------------Collection Form Selector Simulator------------------------------//
+
+$(document).on("click",".optionEmulator", function() {
+
+  let cltId = $(this).attr("id");
+
+  $(".cltSelectorEmulator").find(".selectedOption").removeClass("selectedOption");
+
+  setTimeout(function() {
+    $("#" + cltId).addClass("selectedOption");
+  }, 50);
+
+});
+
+
+//----------------------User collection pop-up field controls-----------------//
+
 $("#collectionTextArea").on("keyup", function() {
 
   let textInput = $("#collectionTextArea").val();
@@ -244,26 +280,119 @@ $("#collectionTextArea").on("keyup", function() {
   $("#collectionTextArea").attr("name", "grouping");
 
   if (textInput != "") {
-    $("#collectionSelector").prop("disabled", true);
+    $("#emulatorDisabler").addClass("disableCustom");
+    $(".cltSelectorEmulator").find(".selectedOption").removeClass("selectedOption");
   } else {
-    $("#collectionSelector").prop("disabled", false);
+    $("#emulatorDisabler").removeClass("disableCustom");
   }
 
 });
 
-$("#collectionSelector").on("change", function() {
+//--------------------------collection privacy limiter---------------------------------//
 
-  let selectionMade = $("#collectionSelector :selected").text();
+$(document).on("click", ".entry-form-submitBtn", function(event) {
 
-  console.log(selectionMade);
-
-  if (selectionMade) {
-    $("#collectionTextArea").attr("name", "");
+  if($(".toggle").hasClass("off")) {
+    // console.log("triggered!")
+    $("#cltPrivacySelector").addClass("disableCustom");
   } else {
-    $("#collectionTextArea").attr("name", "grouping");
+    $("#cltPrivacySelector").removeClass("disableCustom");
   }
 
+  let entryViewStatus = determineEntryViewStatus();
+
+  // console.log(entryViewStatus);
+
+  let data = JSON.stringify({
+    viewStatusData: entryViewStatus
+  });
+
+  $.ajax({
+    url: "/newEntryGroupingOptions",
+    type: "POST",
+    data: data,
+    contentType: "application/json"
+  })
+  .done(function(results){
+
+    $("#collectionSelector").append(results);
+
+  })
+  .fail(function(err){
+    console.log(err);
+  });
+
 });
+
+function determineEntryViewStatus() {
+
+  let entryViewStatus;
+
+  if($(".toggle").hasClass("off")) {
+    entryViewStatus = "public";
+  } else {
+    entryViewStatus = "private";
+  }
+
+  return entryViewStatus
+}
+
+
+//--------------------------close collection Modal----------------------------//
+
+$(document).on("click", ".newEntryCloseBtn", function(event) {
+
+  $("#collectionSelector").empty();
+
+});
+
+//--------------------------upload entry ajax---------------------------------//
+// NEED TO GET THIS WORKING
+$(document).on("click", ".newEntrySubmitBtn", function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  let form = $("#newEntryForm")[0];
+  let formData = new FormData(form);
+
+  // let groupingFieldData = $("#collectionTextArea").val();
+  // console.log(groupingFieldData);
+
+  let groupingViewStatus = $("#cltPrivacySelector").find(".privacySelectionGroup").attr("value");
+  console.log(groupingViewStatus);
+
+  let existingGroupingFieldData = $("#collectionSelector").find(".selectedOption").find("p").text();
+  console.log(existingGroupingFieldData);
+
+  formData.append("groupingViewStatus", groupingViewStatus);
+  formData.append("groupingName", existingGroupingFieldData);
+
+  $.ajax({
+    type: "POST",
+    enctype: 'multipart/form-data',
+    url: "/upload",
+    data: formData,
+    processData: false,
+    contentType: false
+  })
+  .done(function(response){
+    console.log("Successfully called newEntry ajax");
+
+    $("#renderedEntryContainer").empty();
+    // $("#renderedEntryContainer").append(response);
+
+    $("#collectionModal").modal("hide");
+    $("body").removeClass("modal-open");
+    $("body").removeAttr("style");
+    $(".modal-backdrop").remove();
+
+  })
+  .fail(function(err) {
+    console.log(err);
+  });
+
+});
+
 
 //--------------------------user page rendered entries------------------------//
 

@@ -47,6 +47,11 @@ input {
   font-family: 'IM Fell Great Primer', serif;
 }
 
+/* select {
+  font-family: "Font Awesome", sans-serif;
+  font-weight: 900;
+} */
+
 button:focus {
 outline: 0;
 box-shadow: none;
@@ -103,6 +108,7 @@ color: darkgray;
 .bodyFont {
   font-family: 'IM Fell Great Primer', serif;
 }
+
 
 .collectionLink:hover {
   color: #fff;
@@ -760,6 +766,58 @@ width: 50%;
 .form-control {
   font-size: 1.2rem;
   font-family: 'IM Fell Great Primer', serif;
+}
+
+.cltSelectorEmulator {
+  display: block;
+  width: 100%;
+  max-height: 100px;
+  padding: .375rem .75rem;
+  font-family: 'IM Fell Great Primer', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  overflow: auto;
+}
+
+.cltSelectorEmulator:focus {
+border: 1px solid #ced4da;
+box-shadow: 0 0 0 0.2rem rgb(	81, 227, 212,.25)
+}
+
+.cltSelectorEmulator:hover {
+cursor: pointer;
+}
+
+.optionEmulator {
+  border-radius: .25rem;
+}
+
+.optionEmulator:hover {
+  background-color: darkgray;
+}
+
+.altCltOption {
+  background-color: #F3F9FB;
+}
+
+.selectedOption {
+  color: #fff;
+  background-color: #474f85;
+}
+
+.selectedOption p {
+  color: #fff;
+}
+
+.disableCustom {
+  background-color: darkgray;
+  opacity: 50%;
+  pointer-events: none;
 }
 
 .form-control:focus {
@@ -1766,7 +1824,7 @@ h5.followTxt {
 
 
 .collectionBioImagePrvwBorder {
-  width: 15%;
+  width: 5%;
   /* border-radius: .25rem;
   overflow: hidden; */
 }
