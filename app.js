@@ -70,8 +70,12 @@ const conn = mongoose.createConnection(mongoURI, {
   useFindAndModify: false
 });
 
-mongoose.connect(mongoURI, {useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true,  useFindAndModify: false }
-);
+mongoose.connect(mongoURI, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+});
 
 
 // mongoose.connect(, {
@@ -155,7 +159,7 @@ const LaunchContactUsForm = new mongoose.model("launchContactUsForm", launchCont
 const entrySchema = new mongoose.Schema({
   imageFile: String,
   caption: String,
-  _grouping:  {
+  _grouping: {
     type: ObjectId,
     ref: "grouping"
   },
@@ -350,32 +354,32 @@ app.post("/newEntryGroupingOptions", function(req, res) {
   let privacyQueryParameter = new Object();
   privacyQueryParameter._user = mongoose.Types.ObjectId(userId);
 
-  if(viewStatusData === "public") {
+  if (viewStatusData === "public") {
     privacyQueryParameter.viewStatus = "public";
   }
 
-  console.log(privacyQueryParameter);
+  // console.log(privacyQueryParameter);
 
   if (req.isAuthenticated()) {
 
     Grouping.find(
-      privacyQueryParameter
-    ).sort({
-      updatedAt: -1
-    })
-    .exec(function(err, foundGroupings){
+        privacyQueryParameter
+      ).sort({
+        updatedAt: -1
+      })
+      .exec(function(err, foundGroupings) {
 
-      if(err) {
-        console.log(err);
-      } else {
+        if (err) {
+          console.log(err);
+        } else {
 
-        res.render("partials/newEntryCollections", {
-          groupings: foundGroupings
-        })
+          res.render("partials/newEntryCollections", {
+            groupings: foundGroupings
+          })
 
-      }
+        }
 
-    });
+      });
 
   }
 
@@ -389,40 +393,40 @@ app.get("/Yours", function(req, res) {
     let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
     AurealiusUser.findOne({
-      _id: userInfo._id
-    })
-    .populate({
-      path: "_following",
-      model: "aurealiusUser"
-    })
-    .populate({
-      path: "_groupings",
-      model: "grouping"
-    })
-    .populate({
-      path: "_followers",
-      model: "aurealiusUser"
-    })
-    .populate({
-      path: "_entries",
-      model: "entry"
-    })
-    .exec(function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
+        _id: userInfo._id
+      })
+      .populate({
+        path: "_following",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_groupings",
+        model: "grouping"
+      })
+      .populate({
+        path: "_followers",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_entries",
+        model: "entry"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
 
-        let uniqueGroupings = [...new Set(foundUser._groupings.map(item => item.groupingName))];
+          let uniqueGroupings = [...new Set(foundUser._groupings.map(item => item.groupingName))];
 
-        res.render("yourGratitude", {
-          userData: userInfo,
-          groupings: uniqueGroupings,
-          userFollowing: foundUser._following,
-          userFollowers: foundUser._followers
-        });
+          res.render("yourGratitude", {
+            userData: userInfo,
+            groupings: uniqueGroupings,
+            userFollowing: foundUser._following,
+            userFollowers: foundUser._followers
+          });
 
-      }
-    });
+        }
+      });
   }
 
 });
@@ -435,48 +439,48 @@ app.get("/user/:publicUserName", function(req, res) {
     let requestingUser = req.user;
 
     AurealiusUser.findOne({
-      profileName: userName
-    })
-    .populate({
-      path: "_following",
-      model: "aurealiusUser"
-    })
-    .populate({
-      path: "_groupings",
-      match: {
-        viewStatus: "public"
-      },
-      model: "grouping"
-    })
-    .populate({
-      path: "_followers",
-      model: "aurealiusUser"
-    })
-    .populate({
-      path: "_entries",
-      match: {
-        reportStatus: "Open",
-        viewStatus: "public"
-      },
-      model: "entry"
-    })
-    .exec(function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
+        profileName: userName
+      })
+      .populate({
+        path: "_following",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_groupings",
+        match: {
+          viewStatus: "public"
+        },
+        model: "grouping"
+      })
+      .populate({
+        path: "_followers",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_entries",
+        match: {
+          reportStatus: "Open",
+          viewStatus: "public"
+        },
+        model: "entry"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
 
-        let uniqueGroupings = [...new Set(foundUser._groupings.map(item => item.groupingName))];
+          let uniqueGroupings = [...new Set(foundUser._groupings.map(item => item.groupingName))];
 
-        res.render("theirGratitude", {
-          userData: foundUser,
-          requestingUser: requestingUser,
-          groupings: uniqueGroupings,
-          userFollowing: foundUser._following,
-          userFollowers: foundUser._followers
-        });
+          res.render("theirGratitude", {
+            userData: foundUser,
+            requestingUser: requestingUser,
+            groupings: uniqueGroupings,
+            userFollowing: foundUser._following,
+            userFollowers: foundUser._followers
+          });
 
-      }
-    });
+        }
+      });
   }
 
 });
@@ -489,38 +493,42 @@ app.get("/userEntries", function(req, res) {
     let followerArray = JSON.stringify([...new Set(userInfo._followers.map(item => item._id))]);
 
     AurealiusUser.findOne({
-      _id: userInfo._id
-    })
-    .populate({
-      path: "_entries",
-      match: { reportStatus: "Open"},
-      options: {
-        // populate: {
-        //   path: "_user",
-        //   model: "aurealiusUser"
-        // },
-        populate: {
-          path: "_grouping",
-          model: "grouping"
+        _id: userInfo._id
+      })
+      .populate({
+        path: "_entries",
+        match: {
+          reportStatus: "Open"
         },
-        limit: 10,
-        sort: {createdAt: -1},
-    },
-      model: "entry"
-    })
-    .exec(function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
+        options: {
+          // populate: {
+          //   path: "_user",
+          //   model: "aurealiusUser"
+          // },
+          populate: {
+            path: "_grouping",
+            model: "grouping"
+          },
+          limit: 10,
+          sort: {
+            createdAt: -1
+          },
+        },
+        model: "entry"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
 
-        // console.log(foundUser._entries[0]._user);
+          // console.log(foundUser._entries[0]._user);
 
-        res.render("partials/userEntries", {
-          userData: userInfo,
-          entries: foundUser._entries
-        });
-      }
-    });
+          res.render("partials/userEntries", {
+            userData: userInfo,
+            entries: foundUser._entries
+          });
+        }
+      });
   }
 
 });
@@ -529,35 +537,37 @@ app.post("/userPageCollectionsPublic", function(req, res) {
 
   if (req.isAuthenticated()) {
 
-    let profileName =  req.body.profileName;
+    let profileName = req.body.profileName;
 
     AurealiusUser.findOne({
-      profileName: profileName
-    })
-    .populate({
-      path: "_groupings",
-      match: {
-        viewStatus: "public"
-      },
-      options: {
-        // limit: 10,
-        sort: {createdAt: -1},
-    },
-      model: "grouping"
-    })
-    .exec(function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
+        profileName: profileName
+      })
+      .populate({
+        path: "_groupings",
+        match: {
+          viewStatus: "public"
+        },
+        options: {
+          // limit: 10,
+          sort: {
+            createdAt: -1
+          },
+        },
+        model: "grouping"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
 
-        // console.log(foundUser._groupings);
+          // console.log(foundUser._groupings);
 
-        res.render("partials/userPageCollectionsPublic", {
-          userData: foundUser,
-          groupings: foundUser._groupings
-        });
-      }
-    });
+          res.render("partials/userPageCollectionsPublic", {
+            userData: foundUser,
+            groupings: foundUser._groupings
+          });
+        }
+      });
   }
 
 });
@@ -566,48 +576,50 @@ app.post("/userEntriesPublic", function(req, res) {
 
   if (req.isAuthenticated()) {
 
-    let profileName =  req.body.profileName;
+    let profileName = req.body.profileName;
     // console.log(profileName);
     let requestingUser = req.user;
     // console.log(requestingUser);
 
     AurealiusUser.findOne({
-      profileName: profileName
-    })
-    .populate({
-      path: "_entries",
-      match: {
-        reportStatus: "Open",
-        viewStatus: "public",
-      },
-      populate: {
-        path: "_grouping",
+        profileName: profileName
+      })
+      .populate({
+        path: "_entries",
         match: {
+          reportStatus: "Open",
           viewStatus: "public",
         },
-        model: "grouping"
-      },
-      options: {
-        sort: {createdAt: -1},
-    },
-      model: "entry"
-    })
-    .exec(function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
+        populate: {
+          path: "_grouping",
+          match: {
+            viewStatus: "public",
+          },
+          model: "grouping"
+        },
+        options: {
+          sort: {
+            createdAt: -1
+          },
+        },
+        model: "entry"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
 
-        // console.log(foundUser._entries[0]);
-        // console.log(foundUser._entries[1]);
-        // console.log(foundUser._entries[2]);
+          // console.log(foundUser._entries[0]);
+          // console.log(foundUser._entries[1]);
+          // console.log(foundUser._entries[2]);
 
-        res.render("partials/userEntriesPublic", {
-          userData: foundUser,
-          reqUserData: requestingUser,
-          entries: foundUser._entries
-        });
-      }
-    });
+          res.render("partials/userEntriesPublic", {
+            userData: foundUser,
+            reqUserData: requestingUser,
+            entries: foundUser._entries
+          });
+        }
+      });
   }
 
 });
@@ -616,54 +628,56 @@ app.post("/favoriteEntriesPublic", function(req, res) {
 
   if (req.isAuthenticated()) {
 
-    let profileName =  req.body.profileName;
+    let profileName = req.body.profileName;
     let requestingUser = req.user;
 
     AurealiusUser.findOne({
-      profileName: profileName
-    })
-    .populate({
-      path: "_following",
-      model: "aurealiusUser"
-    })
-    .populate({
-      path: "_favorites",
-      options: {
-        populate: {
-          path: "_user",
-          model: "aurealiusUser"
+        profileName: profileName
+      })
+      .populate({
+        path: "_following",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_favorites",
+        options: {
+          populate: {
+            path: "_user",
+            model: "aurealiusUser"
+          },
+          limit: 10,
+          sort: {
+            createdAt: -1
+          },
         },
-        limit: 10,
-        sort: {createdAt: -1},
-      },
-      match: {
-        reportStatus: "Open",
-        viewStatus: "public"
-      },
-      model: "entry"
-    })
-    .exec(function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
+        match: {
+          reportStatus: "Open",
+          viewStatus: "public"
+        },
+        model: "entry"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
 
-        let filteredFavs = foundUser._favorites.filter(function(result){
+          let filteredFavs = foundUser._favorites.filter(function(result) {
 
-          if (result.viewStatus === "private" && JSON.stringify(result._user._id) !== JSON.stringify(foundUser._id)) {
-          return false
-          }
-          return true
+            if (result.viewStatus === "private" && JSON.stringify(result._user._id) !== JSON.stringify(foundUser._id)) {
+              return false
+            }
+            return true
 
-        });
+          });
 
-        res.render("partials/favoriteEntriesPublic", {
-          userData: foundUser,
-          reqUserData: requestingUser,
-          entries: filteredFavs,
-          userFollowing: requestingUser._following,
-        });
-      }
-    });
+          res.render("partials/favoriteEntriesPublic", {
+            userData: foundUser,
+            reqUserData: requestingUser,
+            entries: filteredFavs,
+            userFollowing: requestingUser._following,
+          });
+        }
+      });
   }
 
 });
@@ -676,13 +690,13 @@ app.post("/followingEntriesPublic", function(req, res) {
     let requestingUser = req.user;
 
     AurealiusUser.findOne({
-        profileName: profileName
-      },function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
+      profileName: profileName
+    }, function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
 
-          Entry.find({
+        Entry.find({
             viewStatus: "public",
             reportStatus: "Open",
             _user: {
@@ -702,18 +716,18 @@ app.post("/followingEntriesPublic", function(req, res) {
               console.log(err);
             } else {
 
-            res.status(200);
-            res.render("partials/followingEntriesPublic", {
-              userData: foundUser,
-              reqUserData: requestingUser,
-              entries: foundEntries,
-              userFollowing: requestingUser._following,
-            });
+              res.status(200);
+              res.render("partials/followingEntriesPublic", {
+                userData: foundUser,
+                reqUserData: requestingUser,
+                entries: foundEntries,
+                userFollowing: requestingUser._following,
+              });
             }
           });
-        }
-      });
-    }
+      }
+    });
+  }
 
 });
 
@@ -724,48 +738,50 @@ app.get("/favoriteEntries", function(req, res) {
     let userInfo = req.user;
 
     AurealiusUser.findOne({
-      _id: userInfo._id
-    })
-    .populate({
-      path: "_following",
-      model: "aurealiusUser"
-    })
-    .populate({
-      path: "_favorites",
-      options: {
-        populate: {
-          path: "_user",
-          model: "aurealiusUser"
+        _id: userInfo._id
+      })
+      .populate({
+        path: "_following",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_favorites",
+        options: {
+          populate: {
+            path: "_user",
+            model: "aurealiusUser"
+          },
+          limit: 10,
+          sort: {
+            createdAt: -1
+          },
         },
-        limit: 10,
-        sort: {createdAt: -1},
-      },
-      match: {
-        reportStatus: "Open"
-      },
-      model: "entry"
-    })
-    .exec(function(err, foundUser) {
-      if (err) {
-        console.log(err);
-      } else {
+        match: {
+          reportStatus: "Open"
+        },
+        model: "entry"
+      })
+      .exec(function(err, foundUser) {
+        if (err) {
+          console.log(err);
+        } else {
 
-        let filteredFavs = foundUser._favorites.filter(function(result){
+          let filteredFavs = foundUser._favorites.filter(function(result) {
 
-          if (result.viewStatus === "private" && JSON.stringify(result._user._id) !== JSON.stringify(foundUser._id)) {
-          return false
-          }
-          return true
+            if (result.viewStatus === "private" && JSON.stringify(result._user._id) !== JSON.stringify(foundUser._id)) {
+              return false
+            }
+            return true
 
-        });
+          });
 
-        res.render("partials/favoriteEntries", {
-          userData: userInfo,
-          entries: filteredFavs,
-          userFollowing: foundUser._following,
-        });
-      }
-    });
+          res.render("partials/favoriteEntries", {
+            userData: userInfo,
+            entries: filteredFavs,
+            userFollowing: foundUser._following,
+          });
+        }
+      });
   }
 
 });
@@ -777,13 +793,13 @@ app.get("/followingEntries", function(req, res) {
     let userInfo = req.user;
 
     AurealiusUser.findOne({
-        _id: userInfo._id
-      },function(err, foundUser) {
-        if (err) {
-          console.log(err);
-        } else {
+      _id: userInfo._id
+    }, function(err, foundUser) {
+      if (err) {
+        console.log(err);
+      } else {
 
-          Entry.find({
+        Entry.find({
             viewStatus: "public",
             reportStatus: "Open",
             _user: {
@@ -803,17 +819,17 @@ app.get("/followingEntries", function(req, res) {
               console.log(err);
             } else {
 
-            res.status(200);
-            res.render("partials/followingEntries", {
-              userData: userInfo,
-              entries: foundEntries,
-              userFollowing: foundUser._following,
-            });
+              res.status(200);
+              res.render("partials/followingEntries", {
+                userData: userInfo,
+                entries: foundEntries,
+                userFollowing: foundUser._following,
+              });
             }
           });
-        }
-      });
-    }
+      }
+    });
+  }
 
 });
 
@@ -944,29 +960,33 @@ app.get("/favCollections", function(req, res) {
   if (req.isAuthenticated()) {
 
     AurealiusUser.findOne({
-      _id: req.user._id
-    })
-    .populate({
-      path: "_groupingFavorites",
-      options: {sort: {updatedAt: -1}},
-      model: "grouping"
-    })
-    .exec(function(err, foundUser) {
+        _id: req.user._id
+      })
+      .populate({
+        path: "_groupingFavorites",
+        options: {
+          sort: {
+            updatedAt: -1
+          }
+        },
+        model: "grouping"
+      })
+      .exec(function(err, foundUser) {
 
-      if (err) {
-        console.log(err);
-      } else {
+        if (err) {
+          console.log(err);
+        } else {
 
-        let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
+          let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
 
-        res.render("partials/favCollectionTiles", {
-          userData: foundUser,
-          favGroupings: uniqueFavs,
-          groupings: foundUser._groupingFavorites
-        });
+          res.render("partials/favCollectionTiles", {
+            userData: foundUser,
+            favGroupings: uniqueFavs,
+            groupings: foundUser._groupingFavorites
+          });
 
-      }
-    });
+        }
+      });
   }
 
 });
@@ -976,44 +996,48 @@ app.get("/unfavCollections", function(req, res) {
   if (req.isAuthenticated()) {
 
     AurealiusUser.findOne({
-      _id: req.user._id
-    })
-    .populate({
-      path: "_groupingFavorites",
-      model: "grouping"
-    })
-    .exec(function(err, foundUser) {
-
-      Grouping.find({
-        _user: mongoose.Types.ObjectId(foundUser._id)
+        _id: req.user._id
       })
       .populate({
-        path: "_user",
-        model: "aurealiusUser"
+        path: "_groupingFavorites",
+        model: "grouping"
       })
-      .populate({
-        path: "_entries",
-        options: {sort: {createdAt: -1}},
-        model: "entry"
-      })
-      .sort({
-        updatedAt: -1
-      })
-      .exec(function(err, foundGroupings) {
-        if (err) {
-          console.log(err);
-        } else {
+      .exec(function(err, foundUser) {
 
-          let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
+        Grouping.find({
+            _user: mongoose.Types.ObjectId(foundUser._id)
+          })
+          .populate({
+            path: "_user",
+            model: "aurealiusUser"
+          })
+          .populate({
+            path: "_entries",
+            options: {
+              sort: {
+                createdAt: -1
+              }
+            },
+            model: "entry"
+          })
+          .sort({
+            updatedAt: -1
+          })
+          .exec(function(err, foundGroupings) {
+            if (err) {
+              console.log(err);
+            } else {
 
-          res.render("partials/unfavCollectionTiles", {
-            userData: foundUser,
-            favGroupings: uniqueFavs,
-            groupings: foundGroupings
+              let uniqueFavs = [...new Set(foundUser._groupingFavorites.map(item => item.groupingName))];
+
+              res.render("partials/unfavCollectionTiles", {
+                userData: foundUser,
+                favGroupings: uniqueFavs,
+                groupings: foundGroupings
+              });
+            }
           });
-        }
       });
-    });
   }
 
 });
@@ -1029,46 +1053,46 @@ app.get("/user/:user/Collections", function(req, res) {
     }).exec(function(err, foundUser) {
 
       AurealiusUser.findOne({
-        profileName: userProfileName
-      })
-      .populate({
-        path: "_groupingFavorites",
-        options: {
-          match: {
-            viewStatus: "public"
-          }
-        },
-        model: "grouping"
-      })
-      .exec(function(err, targetUser) {
-
-        let favCollectionIds = [...new Set(targetUser._groupingFavorites.map(item => item._id))];
-
-        Grouping.find({
-          _user: mongoose.Types.ObjectId(targetUser._id),
-          viewStatus: "public",
-          _id: {
-            $nin: favCollectionIds
-          }
+          profileName: userProfileName
         })
         .populate({
-          path: "_user",
-          model: "aurealiusUser"
+          path: "_groupingFavorites",
+          options: {
+            match: {
+              viewStatus: "public"
+            }
+          },
+          model: "grouping"
         })
-        .exec(function(err, foundGroupings) {
-          if (err) {
-            console.log(err);
-          } else {
+        .exec(function(err, targetUser) {
 
-            res.render("collectionsPublic", {
-              userData: foundUser,
-              targetData: targetUser,
-              favGroupings: targetUser._groupingFavorites,
-              groupings: foundGroupings
+          let favCollectionIds = [...new Set(targetUser._groupingFavorites.map(item => item._id))];
+
+          Grouping.find({
+              _user: mongoose.Types.ObjectId(targetUser._id),
+              viewStatus: "public",
+              _id: {
+                $nin: favCollectionIds
+              }
+            })
+            .populate({
+              path: "_user",
+              model: "aurealiusUser"
+            })
+            .exec(function(err, foundGroupings) {
+              if (err) {
+                console.log(err);
+              } else {
+
+                res.render("collectionsPublic", {
+                  userData: foundUser,
+                  targetData: targetUser,
+                  favGroupings: targetUser._groupingFavorites,
+                  groupings: foundGroupings
+                });
+              }
             });
-          }
         });
-      });
     });
   }
 
@@ -1084,55 +1108,57 @@ app.get("/user/:user/Collections/:grouping", function(req, res) {
   if (req.isAuthenticated()) {
 
     AurealiusUser.findOne({
-      _id: req.user._id
-    })
-    .exec(function(err, foundUser) {
-
-      AurealiusUser.findOne({
-        profileName: userProfileName
+        _id: req.user._id
       })
-      .exec(function(err, targetUser) {
+      .exec(function(err, foundUser) {
 
-        Grouping.findOne({
-          groupingName: grouping,
-          _user: mongoose.Types.ObjectId(targetUser._id),
-          viewStatus: "public",
-        })
-        .populate({
-          path: "_entries",
-          options: {
-              populate: {
-                path: "_user",
-                model: "aurealiusUser"
-              },
-            sort: {createdAt: -1},
-          },
-          match: {
-            viewStatus: "public",
-            reportStatus: "Open"
-          },
-          model: "entry"
-        })
-        .exec(function(err, foundGrouping) {
+        AurealiusUser.findOne({
+            profileName: userProfileName
+          })
+          .exec(function(err, targetUser) {
 
-          // console.log(foundGrouping._entries);
+            Grouping.findOne({
+                groupingName: grouping,
+                _user: mongoose.Types.ObjectId(targetUser._id),
+                viewStatus: "public",
+              })
+              .populate({
+                path: "_entries",
+                options: {
+                  populate: {
+                    path: "_user",
+                    model: "aurealiusUser"
+                  },
+                  sort: {
+                    createdAt: -1
+                  },
+                },
+                match: {
+                  viewStatus: "public",
+                  reportStatus: "Open"
+                },
+                model: "entry"
+              })
+              .exec(function(err, foundGrouping) {
 
-          if (err) {
-            console.log(err);
-          } else {
+                // console.log(foundGrouping._entries);
 
-            res.render("userCollectionPublic", {
-              userData: foundUser,
-              targetData: targetUser,
-              groupingInfo: foundGrouping,
-              entries: foundGrouping._entries
-            });
-          }
-        });
+                if (err) {
+                  console.log(err);
+                } else {
+
+                  res.render("userCollectionPublic", {
+                    userData: foundUser,
+                    targetData: targetUser,
+                    groupingInfo: foundGrouping,
+                    entries: foundGrouping._entries
+                  });
+                }
+              });
+          });
+
+
       });
-
-
-    });
 
   }
 
@@ -1147,39 +1173,41 @@ app.get("/Collections/:grouping", function(req, res) {
   if (req.isAuthenticated()) {
 
     Grouping.findOne({
-      groupingName: grouping,
-      _user: mongoose.Types.ObjectId(userInfo._id),
-    })
-    .populate({
-      path: "_entries",
-      options: {
+        groupingName: grouping,
+        _user: mongoose.Types.ObjectId(userInfo._id),
+      })
+      .populate({
+        path: "_entries",
+        options: {
           populate: {
             path: "_user",
             model: "aurealiusUser"
           },
-        limit: 10,
-        sort: {createdAt: -1},
-      },
-      match: {
-        reportStatus: "Open"
-      },
-      model: "entry"
-    })
-    .exec(function(err, foundGrouping) {
+          limit: 10,
+          sort: {
+            createdAt: -1
+          },
+        },
+        match: {
+          reportStatus: "Open"
+        },
+        model: "entry"
+      })
+      .exec(function(err, foundGrouping) {
 
-      if(err) {
-        console.log(err);
-      } else {
+        if (err) {
+          console.log(err);
+        } else {
 
-        // console.log(foundGrouping._entries);
-        res.render("userCollection", {
-          groupingInfo: foundGrouping,
-          entries: foundGrouping._entries,
-          userData: userInfo
-        });
+          // console.log(foundGrouping._entries);
+          res.render("userCollection", {
+            groupingInfo: foundGrouping,
+            entries: foundGrouping._entries,
+            userData: userInfo
+          });
 
-      }
-    });
+        }
+      });
 
   }
 
@@ -1303,7 +1331,7 @@ app.get("/logout", function(req, res) {
 
 //------------------------POST Requests--------------------------------///
 
-app.post("/launchPage", function(req, res){
+app.post("/launchPage", function(req, res) {
 
   const newlaunchContact = req.body.email;
   console.log(newlaunchContact);
@@ -1314,7 +1342,7 @@ app.post("/launchPage", function(req, res){
     if (err) {
       console.log(err);
     } else {
-      if(foundEmail) {
+      if (foundEmail) {
         console.log("Submitted email is already on file!")
 
         res.status(200);
@@ -1325,18 +1353,18 @@ app.post("/launchPage", function(req, res){
 
       } else {
 
-          const launchContact = new LaunchContact({
-            email: newlaunchContact
-          });
+        const launchContact = new LaunchContact({
+          email: newlaunchContact
+        });
 
-          launchContact.save();
-          console.log("Launch page email successfully saved!")
+        launchContact.save();
+        console.log("Launch page email successfully saved!")
 
-          res.status(200);
-          res.json({
-            message: "Thanks for your interest in Aurealius! We'll let you know when we're fully up and running!"
-          });
-          res.end();
+        res.status(200);
+        res.json({
+          message: "Thanks for your interest in Aurealius! We'll let you know when we're fully up and running!"
+        });
+        res.end();
 
       }
     }
@@ -1345,7 +1373,7 @@ app.post("/launchPage", function(req, res){
 
 });
 
-app.post("/launchContactUs", function(req, res){
+app.post("/launchContactUs", function(req, res) {
 
   const launchContactUsInquiry = req.body.data;
   console.log(launchContactUsInquiry);
@@ -1376,7 +1404,7 @@ app.post("/developerAccess", function(req, res) {
   let accessKeyField = req.body.developerAccessKey;
   console.log(accessKeyField);
 
-  if(accessKeyField === "isaweneskanter") {
+  if (accessKeyField === "isaweneskanter") {
     res.render("login");
 
   } else {
@@ -1426,7 +1454,7 @@ app.post("/changePassword", function(req, res) {
 
   if (req.isAuthenticated()) {
 
-  AurealiusUser.findOne({
+    AurealiusUser.findOne({
       _id: req.user.id
     }, function(err, user) {
       if (err) {
@@ -1488,13 +1516,17 @@ app.post("/login", passport.authenticate("local", {
   }
 }));
 
-app.post("/goToregister", function(req,res){
+app.post("/goToregister", function(req, res) {
 
   res.render("register");
 
 });
 
 app.post("/upload", upload.single("file"), function(req, res) {
+
+  // const requestingURL = req.header('Referer');
+  // const requestingURLExtension = requestingURL.split("/").pop();
+  // console.log(requestingURLExtension);
 
   function fileExists() {
     if (typeof req.file === "undefined") {
@@ -1505,6 +1537,8 @@ app.post("/upload", upload.single("file"), function(req, res) {
       return fileName
     }
   }
+
+  const fileExistResult = fileExists();
 
   const userCollectionPrivacy = req.body.groupingViewStatus;
   console.log(userCollectionPrivacy);
@@ -1530,7 +1564,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
       today = month[mm] + " " + dd + ", " + yyyy;
       return today;
     } else {
-      if(collectionPageGrouping == null) {
+      if (collectionPageGrouping === "") {
         return userCollectionChoice;
       } else {
         return collectionPageGrouping;
@@ -1538,8 +1572,11 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
   }
 
+  const allocatedCollection = collectionAllocator();
+  console.log(allocatedCollection);
+
   const currentUser = req.user.id;
-  const currentUserProfile = req.user.profileName;
+  // const currentUserProfile = req.user.profileName;
 
   function statusAssignment() {
     const pubPri = req.body.status;
@@ -1552,163 +1589,195 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
   }
 
+  const entryStatusAssigned = statusAssignment();
+
   const newEntry = new Entry({
-    imageFile: fileExists(),
+    imageFile: fileExistResult,
     caption: req.body.caption,
     _user: mongoose.Types.ObjectId(currentUser),
-    viewStatus: statusAssignment(),
+    viewStatus: entryStatusAssigned,
     reportStatus: "Open",
   });
 
-  newEntry.save();
-  console.log("New entry successfully saved.");
-
-  AurealiusUser.update({
-    _id: currentUser
-  }, {
-    $push: {
-      _entries: mongoose.Types.ObjectId(newEntry._id)
-    }
-  }, function(err, success) {
+  newEntry.save(function(err, entry) {
     if (err) {
       console.log(err);
     } else {
-      Grouping.find({
-        _user: mongoose.Types.ObjectId(currentUser)
-      }).exec(function(err, foundGroupings) {
+      // console.log(entry);
+      console.log("New entry successfully saved.");
+
+      AurealiusUser.update({
+        _id: currentUser
+      }, {
+        $push: {
+          _entries: mongoose.Types.ObjectId(entry._id)
+        }
+      }, function(err, success) {
         if (err) {
           console.log(err);
         } else {
-
-          let uniqueGroupings = [...new Set(foundGroupings.map(item => item.groupingName))];
-
-          if(!uniqueGroupings.includes(collectionAllocator())) {
-
-            const newGrouping = new Grouping({
-              groupingName: collectionAllocator(),
-              groupingImageFile: fileExists(),
-              userDesignatedImage: false,
-              _user: mongoose.Types.ObjectId(currentUser),
-              _entries: [mongoose.Types.ObjectId(newEntry._id)],
-              viewStatus: userCollectionPrivacy
-            });
-
-            newGrouping.save();
-            console.log("New grouping successfully added to Grouping Collection.");
-
-            AurealiusUser.update({
-              _id: currentUser
-            }, {
-              $push: {
-                _groupings: mongoose.Types.ObjectId(newGrouping._id)
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully added grouping to aurealiusUsers.");
-              }
-            });
-
-            Entry.update({
-              _id: newEntry._id
-            }, {
-              $push: {
-                _grouping: mongoose.Types.ObjectId(newGrouping._id)
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully added groupId to entry.");
-              }
-            });
-
-          } else {
-            if (fileExists() != "NOTHING TO SEE HERE") {
-
-              Grouping.findOneAndUpdate({
-                groupingName: collectionAllocator(),
-                _user: mongoose.Types.ObjectId(currentUser),
-              },{
-                $push: {
-                  _entries: mongoose.Types.ObjectId(newEntry._id)
-                }
-              }, function(err, updatedGrouping){
-                console.log("New entry added to existing Grouping.");
-
-                console.log(updatedGrouping.userDesignatedImage);
-                console.log(updatedGrouping._id);
-
-
-                if(updatedGrouping.userDesignatedImage === false || updatedGrouping.userDesignatedImage === null ) {
-
-                  Grouping.findOneAndUpdate({
-                    _id: updatedGrouping._id,
-                  },{
-                    $set: {
-                      groupingImageFile: fileExists()
-                    }
-                  }, function(err, success){
-                    if (err) {
-                    } else {
-                      console.log("Grouping image successfully updated.");
-                    }
-                  });
-
-                }
-
-                Entry.update({
-                  _id: newEntry._id
-                }, {
-                  $push: {
-                    _grouping: mongoose.Types.ObjectId(updatedGrouping._id)
-                  }
-                }, function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully added groupId to entry.");
-                  }
-                });
-              });
-
+          Grouping.find({
+            _user: mongoose.Types.ObjectId(currentUser)
+          }).exec(function(err, foundGroupings) {
+            if (err) {
+              console.log(err);
             } else {
 
-              Grouping.findOneAndUpdate({
-                groupingName: collectionAllocator(),
-                _user: mongoose.Types.ObjectId(currentUser),
-              },{
-                $push: {
-                  _entries: mongoose.Types.ObjectId(newEntry._id)
-                }
-              }, function(err, updatedGrouping){
-                console.log("New entry added to existing Grouping.");
+              // console.log(foundGroupings);
 
-                Entry.update({
-                  _id: newEntry._id
-                }, {
-                  $push: {
-                    _grouping: mongoose.Types.ObjectId(updatedGrouping._id)
-                  }
-                }, function(err, success) {
+              let uniqueGroupings = [...new Set(foundGroupings.map(item => item.groupingName))];
+
+              // console.log(uniqueGroupings);
+
+              if (!uniqueGroupings.includes(allocatedCollection)) {
+
+                const newGrouping = new Grouping({
+                  groupingName: allocatedCollection,
+                  groupingImageFile: fileExistResult,
+                  userDesignatedImage: false,
+                  _user: mongoose.Types.ObjectId(currentUser),
+                  _entries: [mongoose.Types.ObjectId(newEntry._id)],
+                  viewStatus: userCollectionPrivacy
+                });
+
+                newGrouping.save(function(err, brandNewGroup) {
                   if (err) {
                     console.log(err);
                   } else {
-                    console.log("Successfully added groupId to entry.");
+                    console.log("New grouping successfully added to Grouping Collection.");
+
+                    AurealiusUser.update({
+                      _id: currentUser
+                    }, {
+                      $push: {
+                        _groupings: mongoose.Types.ObjectId(brandNewGroup._id)
+                      }
+                    }, function(err, success) {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log("Successfully added grouping to aurealiusUsers.");
+                        Entry.update({
+                          _id: newEntry._id
+                        }, {
+                          $push: {
+                            _grouping: mongoose.Types.ObjectId(brandNewGroup._id)
+                          }
+                        }, function(err, success) {
+                          if (err) {
+                            console.log(err);
+                          } else {
+                            console.log("Successfully added groupId to entry.");
+                          }
+                        });
+                      }
+                    });
                   }
                 });
-              });
+
+              } else {
+
+                if (fileExists() != "NOTHING TO SEE HERE") {
+
+                  Grouping.findOneAndUpdate({
+                    groupingName: allocatedCollection,
+                    _user: mongoose.Types.ObjectId(currentUser),
+                  }, {
+                    $push: {
+                      _entries: mongoose.Types.ObjectId(newEntry._id)
+                    }
+                  }, function(err, updatedGrouping) {
+                    console.log("New entry added to existing Grouping.");
+
+                    // console.log(updatedGrouping.userDesignatedImage);
+                    // console.log(updatedGrouping._id);
+
+                    if (updatedGrouping.userDesignatedImage === false || updatedGrouping.userDesignatedImage === null) {
+
+                      Grouping.findOneAndUpdate({
+                        _id: updatedGrouping._id,
+                      }, {
+                        $set: {
+                          groupingImageFile: fileExistResult
+                        }
+                      }, function(err, success) {
+                        if (err) {} else {
+                          console.log("Grouping image successfully updated.");
+
+                          Entry.update({
+                            _id: newEntry._id
+                          }, {
+                            $push: {
+                              _grouping: mongoose.Types.ObjectId(updatedGrouping._id)
+                            }
+                          }, function(err, success) {
+                            if (err) {
+                              console.log(err);
+                            } else {
+                              console.log("Successfully added groupId to entry.");
+                            }
+                          });
+                        }
+                      });
+
+                    }
+
+                  });
+
+                } else {
+
+                  Grouping.findOneAndUpdate({
+                    groupingName: allocatedCollection,
+                    _user: mongoose.Types.ObjectId(currentUser),
+                  }, {
+                    $push: {
+                      _entries: mongoose.Types.ObjectId(entry._id)
+                    }
+                  }, function(err, updatedGrouping) {
+                    console.log("New entry added to existing Grouping.");
+
+                    Entry.update({
+                      _id: newEntry._id
+                    }, {
+                      $push: {
+                        _grouping: mongoose.Types.ObjectId(updatedGrouping._id)
+                      }
+                    }, function(err, success) {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log("Successfully added groupId to entry.");
+                      }
+                    });
+                  });
+                }
+              }
             }
-          }
+          });
         }
       });
+
     }
+    res.redirect("back");
   });
 
-  // res.render()
 
-  res.redirect("back");
+  // let uploadResJsonData = new Object();
+  //
+  // uploadResJsonData.entries = newEntry;
+  // uploadResJsonData.userData = req.user;
+  // uploadResJsonData.userFollowing = req.user._following;
+  // uploadResJsonData.userFollowers = req.user._followers;
+  //
+  // console.log(uploadResJsonData);
+  //
+  // res.json({
+  //   entries: req.user._entries[0],
+  //   userData: req.user,
+  //   userFollowing: req.user._following,
+  //   userFollowers: req.user._followers
+  // });
+  // res.end();
 
 });
 
@@ -1726,7 +1795,9 @@ app.post("/userImageUpload", upload.single("file"), function(req, res) {
 
   AurealiusUser.updateOne({
     _id: req.user.id
-  }, {bioImageFile: userFileExists()}, function(err, success) {
+  }, {
+    bioImageFile: userFileExists()
+  }, function(err, success) {
     if (err) {
       console.log(err)
     } else {
@@ -1781,15 +1852,15 @@ app.post("/collectionNameUpdate", function(req, res) {
     _id: collectionId,
   }, function(err, foundGrouping) {
 
-    if(JSON.stringify(foundGrouping._user) === JSON.stringify(req.user.id)) {
+    if (JSON.stringify(foundGrouping._user) === JSON.stringify(req.user.id)) {
 
       Grouping.updateOne({
         _id: collectionId,
-      },{
+      }, {
         $set: {
-          groupingName:  newCltName
+          groupingName: newCltName
         }
-      },{
+      }, {
         new: true
       }, function(err, success) {
         if (err) {
@@ -1823,9 +1894,9 @@ app.post("/userEMSttings", function(req, res) {
     _id: req.user.id
   }, {
     $set: {
-      reminderSettings:  emailSettingsDataObj
+      reminderSettings: emailSettingsDataObj
     }
-  },{
+  }, {
     new: true
   }, function(err, success) {
     if (err) {
@@ -1845,7 +1916,9 @@ app.post("/userSettingsUpload", function(req, res) {
 
   if (uploadFieldOjb.hasOwnProperty("email")) {
 
-    AurealiusUser.findOne({ email: uploadFieldOjb.email}, function(err, foundUser) {
+    AurealiusUser.findOne({
+      email: uploadFieldOjb.email
+    }, function(err, foundUser) {
 
       if (foundUser) {
         res.end("Uh Oh! It looks like that email is already taken. Please try another.");
@@ -2118,46 +2191,48 @@ app.post("/updateEPrivacy", function(req, res) {
   let viewStatus = req.body.viewStatus;
   // console.log(viewStatus);
 
-  AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
-    if(err) {
+  AurealiusUser.findOne({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
       console.log(err);
     } else {
       Entry.findOne({
-        _id: entryId
-      })
-      .populate({
-        path: "_user",
-        model: "aurealiusUser"
-      })
-      .exec(function(err, foundEntry) {
-        if (err) {
-          console.log(err);
-        } else {
-
-          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user._id)) {
-
-            Entry.updateOne({
-              _id: entryId,
-            }, {
-              $set: {
-                viewStatus: viewStatus
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log("Successfully updated entry privacy.");
-                res.status(200);
-                res.end();
-              }
-            });
-
+          _id: entryId
+        })
+        .populate({
+          path: "_user",
+          model: "aurealiusUser"
+        })
+        .exec(function(err, foundEntry) {
+          if (err) {
+            console.log(err);
           } else {
-            res.status(200);
-            res.end("Invalid User!");
+
+            if (JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user._id)) {
+
+              Entry.updateOne({
+                _id: entryId,
+              }, {
+                $set: {
+                  viewStatus: viewStatus
+                }
+              }, function(err, success) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Successfully updated entry privacy.");
+                  res.status(200);
+                  res.end();
+                }
+              });
+
+            } else {
+              res.status(200);
+              res.end("Invalid User!");
+            }
           }
-        }
-      });
+        });
     }
 
   });
@@ -2169,67 +2244,69 @@ app.post("/updateCltPrivacy", function(req, res) {
   let collectionId = req.body.collectionId;
   let viewStatus = req.body.viewStatus;
 
-  AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
-    if(err) {
+  AurealiusUser.findOne({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
       console.log(err);
     } else {
       Grouping.findOne({
-        _id: collectionId
-      })
-      .populate({
-        path: "_entries",
-        model: "entry"
-      })
-      .exec(function(err, foundCollection) {
-        if (err) {
-          console.log(err);
-        } else {
-
-          if(JSON.stringify(foundUser._id) === JSON.stringify(foundCollection._user._id)) {
-
-            Grouping.updateOne({
-              _id: collectionId,
-            }, {
-              $set: {
-                viewStatus: viewStatus
-              }
-            }, function(err, success) {
-              if (err) {
-                console.log(err);
-              } else {
-
-                if(viewStatus === "private") {
-                  console.log(foundCollection._entries);
-
-                  let collectionEntryIds = [...new Set(foundCollection._entries.map(item => item._id))];
-
-                  Entry.updateMany({
-                    _id: collectionEntryIds
-                  }, {
-                    $set: {
-                        viewStatus: viewStatus
-                    }
-                  }, function(err, success) {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    console.log("Successfully changed all entries to private viewStatus.")
-                  }
-                  });
-                }
-
-                console.log("Successfully updated collection privacy.");
-                res.status(200);
-                res.end();
-              }
-            });
-
+          _id: collectionId
+        })
+        .populate({
+          path: "_entries",
+          model: "entry"
+        })
+        .exec(function(err, foundCollection) {
+          if (err) {
+            console.log(err);
           } else {
-            res.status(200);
-            res.end("Invalid User!");
+
+            if (JSON.stringify(foundUser._id) === JSON.stringify(foundCollection._user._id)) {
+
+              Grouping.updateOne({
+                _id: collectionId,
+              }, {
+                $set: {
+                  viewStatus: viewStatus
+                }
+              }, function(err, success) {
+                if (err) {
+                  console.log(err);
+                } else {
+
+                  if (viewStatus === "private") {
+                    console.log(foundCollection._entries);
+
+                    let collectionEntryIds = [...new Set(foundCollection._entries.map(item => item._id))];
+
+                    Entry.updateMany({
+                      _id: collectionEntryIds
+                    }, {
+                      $set: {
+                        viewStatus: viewStatus
+                      }
+                    }, function(err, success) {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        console.log("Successfully changed all entries to private viewStatus.")
+                      }
+                    });
+                  }
+
+                  console.log("Successfully updated collection privacy.");
+                  res.status(200);
+                  res.end();
+                }
+              });
+
+            } else {
+              res.status(200);
+              res.end("Invalid User!");
+            }
           }
-        }
-      });
+        });
     }
 
   });
@@ -2238,16 +2315,20 @@ app.post("/updateCltPrivacy", function(req, res) {
 
 app.post("/update", function(req, res) {
 
-  AurealiusUser.findOne({_id: req.user.id}, function(err, foundUser){
-    if(err) {
+  AurealiusUser.findOne({
+    _id: req.user.id
+  }, function(err, foundUser) {
+    if (err) {
       console.log(err);
     } else {
-      Entry.findOne({_id: req.body._id}, function(err, foundEntry) {
+      Entry.findOne({
+        _id: req.body._id
+      }, function(err, foundEntry) {
         if (err) {
           console.log(err);
         } else {
 
-          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user._id)) {
+          if (JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user._id)) {
 
             Entry.updateOne({
               _id: req.body._id,
@@ -2504,17 +2585,19 @@ app.post("/delete", function(req, res) {
 
   AurealiusUser.findOne({
     _id: req.user.id
-  }, function(err, foundUser){
-    if(err) {
+  }, function(err, foundUser) {
+    if (err) {
       console.log(err);
     } else {
 
-      Entry.findOne({_id: deleteBtnEntryId}, function(err, foundEntry) {
+      Entry.findOne({
+        _id: deleteBtnEntryId
+      }, function(err, foundEntry) {
         if (err) {
           console.log(err);
         } else {
 
-          if(JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user)) {
+          if (JSON.stringify(foundUser._id) === JSON.stringify(foundEntry._user)) {
 
             AurealiusUser.findOneAndUpdate({
               _id: req.user.id
@@ -2538,14 +2621,14 @@ app.post("/delete", function(req, res) {
 
                   // gfs.remove({
                   gfs.find({
-                    filename: deleteBtnimageFile
-                  })
-                  .toArray(function(err, files) {
+                      filename: deleteBtnimageFile
+                    })
+                    .toArray(function(err, files) {
 
-                    if (!files || files.length === 0) {
-                      return res.status(404).json({
-                        err: "No Files Exist."
-                      });
+                      if (!files || files.length === 0) {
+                        return res.status(404).json({
+                          err: "No Files Exist."
+                        });
 
                       } else {
                         console.log(files);
@@ -2561,9 +2644,9 @@ app.post("/delete", function(req, res) {
                       }
                     });
 
-                  };
-                });
+                };
               });
+            });
 
           } else {
             res.status(200);
@@ -2584,128 +2667,128 @@ app.post("/deleteCollection", function(req, res) {
   if (req.isAuthenticated()) {
 
     Grouping.findOne({
-      _id: collectionId,
-    })
-    .populate({
-      path: "_entries",
-      model: "entry"
-    }).exec(function(err, foundGrouping) {
+        _id: collectionId,
+      })
+      .populate({
+        path: "_entries",
+        model: "entry"
+      }).exec(function(err, foundGrouping) {
 
-      if(JSON.stringify(foundGrouping._user) === JSON.stringify(req.user.id)) {
+        if (JSON.stringify(foundGrouping._user) === JSON.stringify(req.user.id)) {
 
-        groupingEntriesObjArray = [];
+          groupingEntriesObjArray = [];
 
-        let groupingEntryIds = [...new Set(foundGrouping._entries.map(item => item._id))];
-        let groupingImageFileArray = [...new Set(foundGrouping._entries.map(item => item.imageFile))];
+          let groupingEntryIds = [...new Set(foundGrouping._entries.map(item => item._id))];
+          let groupingImageFileArray = [...new Set(foundGrouping._entries.map(item => item.imageFile))];
 
-        console.log(groupingEntryIds);
-        console.log(groupingImageFileArray);
+          console.log(groupingEntryIds);
+          console.log(groupingImageFileArray);
 
 
-        groupingEntryIds.forEach(function(entryId) {
+          groupingEntryIds.forEach(function(entryId) {
 
-          let newObjId = mongoose.Types.ObjectId(entryId);
+            let newObjId = mongoose.Types.ObjectId(entryId);
 
-          groupingEntriesObjArray.push(newObjId);
+            groupingEntriesObjArray.push(newObjId);
 
-        });
+          });
 
-        // console.log(foundGrouping._entries);
-        // console.log(groupingEntriesObjArray);
+          // console.log(foundGrouping._entries);
+          // console.log(groupingEntriesObjArray);
 
-        if(!groupingImageFileArray.includes(foundGrouping.groupingImageFile)) {
-          groupingImageFileArray.push(foundGrouping.groupingImageFile);
-        }
-
-        // console.log(groupingImageFileArray);
-
-        AurealiusUser.findOneAndUpdate({
-          _id: req.user.id
-        }, {
-          $pull: {
-            _groupings: mongoose.Types.ObjectId(foundGrouping._id),
-            _groupingFavorites: mongoose.Types.ObjectId(foundGrouping._id),
-          },
-          $pullAll: {
-            _entries: groupingEntriesObjArray
+          if (!groupingImageFileArray.includes(foundGrouping.groupingImageFile)) {
+            groupingImageFileArray.push(foundGrouping.groupingImageFile);
           }
-        }, function(err, updatedUser){
 
-          console.log(groupingEntriesObjArray);
+          // console.log(groupingImageFileArray);
 
-          console.log("Succesfully updated users entries and Grouping.");
+          AurealiusUser.findOneAndUpdate({
+            _id: req.user.id
+          }, {
+            $pull: {
+              _groupings: mongoose.Types.ObjectId(foundGrouping._id),
+              _groupingFavorites: mongoose.Types.ObjectId(foundGrouping._id),
+            },
+            $pullAll: {
+              _entries: groupingEntriesObjArray
+            }
+          }, function(err, updatedUser) {
 
-          Grouping.deleteOne({
-            _id: collectionId,
-          }, function(err, success) {
-            if (err) {
-              console.log(err)
-            } else {
-              console.log("Succesfully deleted Grouping.");
+            console.log(groupingEntriesObjArray);
 
-              Entry.deleteMany({
-                _grouping: mongoose.Types.ObjectId(collectionId)
-              }, function(err, success){
-                console.log("Succesfully deleted all entries from grouping.");
-                // console.log(foundGrouping.groupingImageFile);
+            console.log("Succesfully updated users entries and Grouping.");
 
-                // gfs.remove({
-                groupingImageFileArray.forEach(function(imageFile){
+            Grouping.deleteOne({
+              _id: collectionId,
+            }, function(err, success) {
+              if (err) {
+                console.log(err)
+              } else {
+                console.log("Succesfully deleted Grouping.");
 
-                  console.log(imageFile);
+                Entry.deleteMany({
+                  _grouping: mongoose.Types.ObjectId(collectionId)
+                }, function(err, success) {
+                  console.log("Succesfully deleted all entries from grouping.");
+                  // console.log(foundGrouping.groupingImageFile);
 
-                  gfs.find({
-                    filename: imageFile
-                  }).toArray(function(err, fileIds){
+                  // gfs.remove({
+                  groupingImageFileArray.forEach(function(imageFile) {
 
-                    if (!fileIds || fileIds.length === 0) {
-                      return res.status(404).json({
-                        err: "No Files Exist."
-                      });
-                    } else {
+                    console.log(imageFile);
 
-                    gfs.delete(new mongoose.Types.ObjectId(fileIds[0]._id), function(err, success) {
-                      if (err) {
-                        console.log(err);
+                    gfs.find({
+                      filename: imageFile
+                    }).toArray(function(err, fileIds) {
+
+                      if (!fileIds || fileIds.length === 0) {
+                        return res.status(404).json({
+                          err: "No Files Exist."
+                        });
                       } else {
-                        console.log("Successfully removed " + imageFile + " from uploads directory.");
-                        // res.redirect("back");
-                      }
 
-                      });
-                    }
+                        gfs.delete(new mongoose.Types.ObjectId(fileIds[0]._id), function(err, success) {
+                          if (err) {
+                            console.log(err);
+                          } else {
+                            console.log("Successfully removed " + imageFile + " from uploads directory.");
+                            // res.redirect("back");
+                          }
+
+                        });
+                      }
+                    });
+
                   });
 
+                  res.redirect("back");
+
+                  // gfs.delete({
+                  //   filename: foundGrouping.groupingImageFile,
+                  //   // filename: groupingImageFileArray,
+                  //   root: "uploads"
+                  // }, function(err, success) {
+                  //   if (err) {
+                  //     console.log(err);
+                  //   } else {
+                  //     console.log("Successfully removed groupingImageFile from uploads directory.");
+                  //     res.redirect("back");
+                  //   }
+                  // });
                 });
-
-                res.redirect("back");
-
-                // gfs.delete({
-                //   filename: foundGrouping.groupingImageFile,
-                //   // filename: groupingImageFileArray,
-                //   root: "uploads"
-                // }, function(err, success) {
-                //   if (err) {
-                //     console.log(err);
-                //   } else {
-                //     console.log("Successfully removed groupingImageFile from uploads directory.");
-                //     res.redirect("back");
-                //   }
-                // });
-              });
-            }
+              }
+            });
           });
-        });
 
-      } else {
+        } else {
 
-      console.log("Invalid user request.");
-      res.status(200);
-      res.end("Invalid user!");
+          console.log("Invalid user request.");
+          res.status(200);
+          res.end("Invalid user!");
 
-      }
+        }
 
-    });
+      });
 
   }
 

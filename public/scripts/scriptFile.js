@@ -347,7 +347,7 @@ $(document).on("click", ".newEntryCloseBtn", function(event) {
 });
 
 //--------------------------upload entry ajax---------------------------------//
-// NEED TO GET THIS WORKING
+
 $(document).on("click", ".newEntrySubmitBtn", function(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -359,10 +359,10 @@ $(document).on("click", ".newEntrySubmitBtn", function(event) {
   // console.log(groupingFieldData);
 
   let groupingViewStatus = $("#cltPrivacySelector").find(".privacySelectionGroup").attr("value");
-  console.log(groupingViewStatus);
+  // console.log(groupingViewStatus);
 
   let existingGroupingFieldData = $("#collectionSelector").find(".selectedOption").find("p").text();
-  console.log(existingGroupingFieldData);
+  // console.log(existingGroupingFieldData);
 
   formData.append("groupingViewStatus", groupingViewStatus);
   formData.append("groupingName", existingGroupingFieldData);
@@ -375,16 +375,18 @@ $(document).on("click", ".newEntrySubmitBtn", function(event) {
     processData: false,
     contentType: false
   })
-  .done(function(response){
+  .done(function(){
     console.log("Successfully called newEntry ajax");
 
-    $("#renderedEntryContainer").empty();
+    // $("#renderedEntryContainer").empty();
     // $("#renderedEntryContainer").append(response);
 
     $("#collectionModal").modal("hide");
     $("body").removeClass("modal-open");
     $("body").removeAttr("style");
     $(".modal-backdrop").remove();
+
+    location.reload();
 
   })
   .fail(function(err) {
