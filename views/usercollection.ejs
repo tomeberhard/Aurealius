@@ -10,7 +10,14 @@
             <div class="card card-body pb-1">
 
               <form action="/changeCltImage" method="POST" id="cltImageForm" enctype="multipart/form-data">
-                <div class="collectionImg orientation" id="cltImage" image="/image/<%= groupingInfo.groupingImageFile %>"></div>
+
+                <% if(groupingInfo.groupingImageFile === "NOTHING TO SEE HERE") { %>
+                <% var collectionImage = "/assets/defaultusericon.png" %>
+                <% } else { %>
+                <% var collectionImage = "/image/" + groupingInfo.groupingImageFile %>
+                <% } %>
+
+                <div class="collectionImg orientation" id="cltImage" image="<%= collectionImage %>"></div>
                 <div class="cltImagePreview orientation m-auto d-none" id="imagePreview" image=""></div>
 
                 <% var cltImgCollapseExpandID = "aUCllctImg" + groupingInfo._id %>

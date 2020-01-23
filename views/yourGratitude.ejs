@@ -99,62 +99,9 @@
     </div>
 
     <div class="col-md-8">
-      <div class="entryContainer entryFormCard">
-        <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="entrySubmit.disabled = true; return true">
-          <div class="form-group entry-form">
-            <textarea class="form-control cushion expandTA" rows="2" name="caption" placeholder="What are you grateful for right now?"></textarea>
-            <div class="upldToggleContainer expandable d-none">
 
-              <label class="btn fileBtn" for="my-file-selector">
-                <input id="my-file-selector" type="file" name="file" class="" style="display:none" onchange="$('#upload-file-info').html(this.files[0].name)">
-                Add Image
-              </label>
-              <div class='inline label label-info' id="upload-file-info"></div>
-              <div class="toggleCotainer">
-                <input type="checkbox" data-toggle="toggle" data-on="Private" data-off="Public" data-onstyle="danger" data-offstyle="success" name="status" data-width="100" value="private">
-              </div>
-            </div>
-          </div>
-          <button type="button" class="btn btn-primary entry-form-submitBtn btn-block expandable d-none" data-toggle="modal" data-target="#collectionModal">
-            Submit
-          </button>
+      <%- include('partials/newEntry') %>
 
-          <div class="modal" id="collectionModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Choose Your Collection</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <div class="form-group">
-                    <label for="collectionSelector">Choose Collection</label>
-                    <input class="form-control collectionInputChoice" name="grouping" id="collectionTextArea" placeholder="Add New Collection"></input>
-                    <select multiple class="form-control collectionInputChoice" id="collectionSelector" name="grouping">
-                      <% if(groupings){ %>
-                      <% groupings.forEach(function(userCollectionName) { %>
-                      <option>
-                        <%= userCollectionName %>
-                      </option>
-                      <% }) %>
-                      <% } else { %>
-                      <p>No Collections to show!</p>
-                      <% } %>
-                    </select>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <input type="submit" value="Save" class="btn btn-primary btn-block" name="entrySubmit" />
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </form>
-      </div>
       <hr />
 
       <div class="container">

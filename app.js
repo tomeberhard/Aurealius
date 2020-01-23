@@ -501,10 +501,6 @@ app.get("/userEntries", function(req, res) {
           reportStatus: "Open"
         },
         options: {
-          // populate: {
-          //   path: "_user",
-          //   model: "aurealiusUser"
-          // },
           populate: {
             path: "_grouping",
             model: "grouping"
@@ -521,7 +517,7 @@ app.get("/userEntries", function(req, res) {
           console.log(err);
         } else {
 
-          // console.log(foundUser._entries[0]._user);
+          // console.log(foundUser._entries);
 
           res.render("partials/userEntries", {
             userData: userInfo,
@@ -1508,13 +1504,31 @@ app.post("/", function(req, res) {
 });
 
 app.post("/login", passport.authenticate("local", {
-  successRedirect: "/Everyone",
   failureRedirect: "/login",
   failureFlash: {
     type: "error",
     message: "Uh oh! Invalid username or password. Please try again."
   }
-}));
+}), function(req, res) {
+
+    let userSessions = req.user.sessions;
+    let updatedUserSessions = ++userSessions;
+
+    AurealiusUser.updateOne({
+      _id: req.user.id
+    }, {
+      sessions: updatedUserSessions
+    }, function(err, succss) {
+      if(err) {
+        console.log(err);
+      } else {
+
+        console.log("Successfully updated user session count.");
+        res.redirect("/Everyone");
+      }
+    });
+
+});
 
 app.post("/goToregister", function(req, res) {
 

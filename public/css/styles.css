@@ -1125,10 +1125,6 @@ label.btn {
   }
 }
 
-.cardWImg {
-  /* background-color: #fafcfd; */
-}
-
 .captionContainer {
   font-size: 1.35rem;
   font-family: 'IM Fell Great Primer', serif;
@@ -2002,10 +1998,6 @@ i p .pubPriUserBtn:hover  {
 .dropdown-menu:hover {
   cursor: pointer;
 }
-
-/* .userEntriesImg {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  } */
 
 @media screen and (max-width: 900px) {
 

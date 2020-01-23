@@ -11,6 +11,8 @@ jQuery(function() {
     imageClassList.includes("collectionBioImagePrvw") ||
     imageClassList.includes("favCollectionImg")) {
 
+    // if(imageClassList.includes("aspect1x1")) {
+
 			loadImage(
 				div.attr("image"),
 				function(img) {

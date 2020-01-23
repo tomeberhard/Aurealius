@@ -484,7 +484,7 @@ let data = JSON.stringify({
     console.log("successfully called ajax");
     updateUserEntriesPublic(result);
     jQuery(function() {
-      jQuery(".userEntriesPublicImg.orientation").each(function() {
+      jQuery(".everyOneImg.orientation").each(function() {
         var div = $(this);
         loadImage(
           div.attr("image"),
@@ -561,9 +561,24 @@ $(document).on("click",".userBtnBar", function(event) {
 
 let routeChoice = $(this).val();
 console.log(routeChoice);
+
+
+function imgClassSelector() {
+
+  if (routeChoice.includes("user")) {
+    let imgClass = "userEntriesImg";
+    return imgClass;
+  } else {
+    let imgClass = "everyOneImg";
+    return imgClass;
+  };
+}
+
+let imgClass = imgClassSelector();
+
 let renderContainerChoice = routeChoice.substring(1,routeChoice.length);
 console.log(renderContainerChoice);
-let imgClass = renderContainerChoice + "Img";
+// let imgClass = renderContainerCshoice + "Img";
 console.log(imgClass);
 
 
@@ -846,7 +861,7 @@ $(document).on("click", "#submitLContactBtn", function(event) {
 
 //-----------------------------delete Entry AJAX----------------------------------//
 
-$(document).on("click", "#deleteButton", function(event) {
+$(document).on("click", ".deleteButton", function(event) {
   event.preventDefault();
   event.stopPropagation();
 

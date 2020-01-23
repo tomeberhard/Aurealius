@@ -79,24 +79,8 @@
 
                   <div class="followLinkContainer collapse" id="followerLinklist">
 
-                    <% if(userFollowers.length > 0){ %>
-                    <% userFollowers.forEach(function(followingUsers) {%>
-
-                    <div class="btn btn-primary followLinkBox">
-                      <% if(followingUsers.bioImageFile === "/assets/defaultusericon.png") { %>
-                      <% var userImage = followingUsers.bioImageFile %>
-                      <% } else { %>
-                      <% var userImage = "/image/" + followingUsers.bioImageFile %>
-                      <% } %>
-                      <div class="followingPrvw orientation" image="<%= userImage %>"></div>
-                      <h5 class="followTxt">
-                        <%= followingUsers.profileName %>
-                      </h5>
-                    </div>
-                    <% }) %>
-                    <% } else { %>
-                    <p class="noFollowTxt">No Followers</p>
-                    <% } %>
+                    <%- include('partials/followerPanel') %>
+                    
                   </div>
                   <div class="expndFollowContainer nonMobileExpd">
                     <button class="expndCrdBtn" type="button" data-toggle="collapse" data-target="#followerLinklist" aria-expanded="false" aria-controls="followerLinklist">
