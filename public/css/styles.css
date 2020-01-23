@@ -190,38 +190,20 @@ color: darkgray;
 /*---------------------------- header & footer------------------------------ */
 
 .headerSpacing {
-  margin-top: 25px;
-  /* z-index: 2; */
+  padding-top: 100px;
 }
 
 .header {
-  /* position: fixed; */
-  /* height: 75px; */
-  /* width: 100%; */
-  /* top: 0; */
+  width: 100%;
+  top: 0;
   background-color: #474f85;
   background-image: url("https://www.transparenttextures.com/patterns/45-degree-fabric-dark.png");
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
-  /* z-index: 1; */
   font-family: 'Sansita', sans-serif;
 }
 
 .headerLinks {
   line-height: 59px;
-  /* position: absolute; */
-  /* bottom: 0; */
-}
-
-.lftLinks {
-  /* height: 100%; */
-  /* line-height: 59px; */
-  /* left: 5%; */
-}
-
-.rghtLinks {
-  /* height: 100%; */
-  /* line-height: 59px; */
-  /* right: 5%; */
 }
 
 nav ul {
