@@ -327,8 +327,6 @@ app.get("/Everyone", function(req, res) {
 
                   let uniqueGroupings2 = [...new Set(foundUserFollow._groupings)];
 
-                  // console.log(foundEntries._groupings);
-
                   res.render("everyone", {
                     entries: foundEntries,
                     groupings: uniqueGroupings2,
@@ -357,8 +355,6 @@ app.post("/newEntryGroupingOptions", function(req, res) {
   if (viewStatusData === "public") {
     privacyQueryParameter.viewStatus = "public";
   }
-
-  // console.log(privacyQueryParameter);
 
   if (req.isAuthenticated()) {
 
