@@ -400,15 +400,28 @@ app.post("/searchResults", function(req, res) {
   let searchResultData = req.body.data;
   console.log(searchResultData);
 
+  let searchQuery = new RegExp(searchResultData, "i")
+
   if (req.isAuthenticated()) {
 
     if(searchResultData != "") {
 
-      AurealiusUser.find({
-        $text: {
-          $search : searchResultData
+      AurealiusUser.find().or([{
+          "profileName": {
+            $regex: searchQuery,
+          }
+        },
+          {
+            "firstName": {
+              $regex: searchQuery,
+          }
+        },
+        {
+          "lastName": {
+            $regex: searchQuery,
         }
-      }).exec(function(err, foundUsers) {
+      }
+    ]).exec(function(err, foundUsers) {
 
         // console.log(foundUsers);
 
