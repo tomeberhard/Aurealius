@@ -1,0 +1,80 @@
+
+<% var userCount = 0 %>
+
+<% if(users.length > 0){ %>
+
+<div>
+  <h5 class="bodyFont">Users</h5>
+</div>
+
+<% users.forEach(function(user) { %>
+  <% userCount++ %>
+  <% if (userCount % 2 != 0) { %>
+    <% var showAlternateClass = "" %>
+  <% } else { %>
+    <% var showAlternateClass = "altCltOption" %>
+  <% } %>
+
+<div class="d-flex pl-2 pr-2 justify-content-between align-items-center optionEmulator <%= showAlternateClass %>" id="cltOpt<%= user._id %>">
+  <a href="/user/<%= user.profileName %>">
+    <p class="m-0"><%= user.profileName %> - <%= user.firstName %> <%= user.lastName %></p>
+  </a>
+</div>
+<% }) %>
+<% } else { %>
+<p>No users found...</p>
+<% } %>
+
+<% var entryCount = 0 %>
+
+<% if(entries.length > 0){ %>
+
+<div>
+  <h5 class="bodyFont">Entries</h5>
+</div>
+
+<% entries.forEach(function(entry) { %>
+  <% entryCount++ %>
+  <% if (entryCount % 2 != 0) { %>
+    <% var showAlternateClass = "" %>
+  <% } else { %>
+    <% var showAlternateClass = "altCltOption" %>
+  <% } %>
+
+<div class="d-flex pl-2 pr-2 justify-content-between align-items-center optionEmulator <%= showAlternateClass %>" id="cltOpt<%= entry._id %>">
+  <a href="/user/entries/<%= entry._id %>">
+    <p class="m-0"><%= entry._user.profileName %> - <%= entry._user.firstName %> <%= entry._user.lastName %></p>
+    <p><%= entry.caption %></p>
+  </a>
+</div>
+<% }) %>
+<% } else { %>
+<p>No entries found...</p>
+<% } %>
+
+<% var groupingCount = 0 %>
+
+<% if(groupings.length > 0){ %>
+
+<div>
+  <h5 class="bodyFont">Collections</h5>
+</div>
+
+<% groupings.forEach(function(grouping) { %>
+  <% groupingCount++ %>
+  <% if (groupingCount % 2 != 0) { %>
+    <% var showAlternateClass = "" %>
+  <% } else { %>
+    <% var showAlternateClass = "altCltOption" %>
+  <% } %>
+
+<div class="d-flex pl-2 pr-2 justify-content-between align-items-center optionEmulator <%= showAlternateClass %>" id="cltOpt<%= grouping._id %>">
+  <a href="/user/Collections/<%= grouping.groupingName %>">
+    <p class="m-0"><%= grouping._user.profileName %> - <%= grouping._user.firstName %> <%= grouping._user.lastName %></p>
+    <p><%= grouping.groupingName %></p>
+  </a>
+</div>
+<% }) %>
+<% } else { %>
+<p>No Collections found...</p>
+<% } %>

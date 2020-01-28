@@ -177,6 +177,10 @@ const entrySchema = new mongoose.Schema({
   timestamps: true
 });
 
+entrySchema.index({
+  caption: "text"
+});
+
 const Entry = new mongoose.model("entry", entrySchema);
 
 const groupingSchema = new mongoose.Schema({
@@ -194,6 +198,10 @@ const groupingSchema = new mongoose.Schema({
   viewStatus: String
 }, {
   timestamps: true
+});
+
+groupingSchema.index({
+  groupingName: "text",
 });
 
 const Grouping = new mongoose.model("grouping", groupingSchema);
@@ -235,6 +243,12 @@ const userSchema = new mongoose.Schema({
   reminderSettings: Object,
 }, {
   timestamps: true
+});
+
+userSchema.index({
+  profileName: "text",
+  firstName: "text",
+  lastName: "text"
 });
 
 userSchema.plugin(passportLocalMongoose, {
@@ -380,6 +394,72 @@ app.post("/newEntryGroupingOptions", function(req, res) {
   }
 
 });
+
+app.post("/searchResults", function(req, res) {
+
+  let searchResultData = req.body.data;
+  console.log(searchResultData);
+
+  if (req.isAuthenticated()) {
+
+    if(searchResultData != "") {
+
+      AurealiusUser.find({
+        $text: {
+          $search : searchResultData
+        }
+      }).exec(function(err, foundUsers) {
+
+        // console.log(foundUsers);
+
+          if (err) {
+            console.log(err);
+          } else {
+
+            Entry.find({
+              $text: {
+                $search : searchResultData
+              },
+              viewStatus: "public",
+            })
+             .populate({
+               path: "_user",
+               model: "aurealiusUser"
+             }).exec(function(err, foundEntries) {
+
+                if (err) {
+                  console.log(err);
+                } else {
+
+                Grouping.find({
+                  $text: {
+                    $search : searchResultData
+                  },
+                  viewStatus: "public",
+                }).populate({
+                   path: "_user",
+                   model: "aurealiusUser"
+                 }).exec(function(err, foundGroupings) {
+
+                    if (err) {
+                      console.log(err);
+                    } else {
+
+                      res.render("partials/searchResults", {
+                        users: foundUsers,
+                        entries: foundEntries,
+                        groupings: foundGroupings
+                      });
+                    }
+                  });
+                }
+              });
+            }
+        });
+    }
+  }
+});
+
 
 app.get("/Yours", function(req, res) {
 

@@ -2,6 +2,18 @@
 
 <div class="container headerSpacing">
   <div class="row">
+    <div class="col-12">
+      <div class="collapse mb-3 w-100 searchBar" id="searchBar">
+        <div class="card card-body">
+          <form autocomplete="off">
+            <div class="form-group mb-0">
+              <input type="text" id="searchInput" class="form-control" placeholder="Search Aurealius"/>
+            </div>
+          </form>
+          <div class="mt-2"   id="searchResultsRenderContainer"></div>
+        </div>
+      </div>
+    </div>
 
     <div class="col-md-3 center-block">
 
@@ -9,7 +21,7 @@
 
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-9">
 
       <%- include('partials/newEntry') %>
 

@@ -46,10 +46,53 @@ switch (navPage) {
     break;
 }
 
-//-------------------bootstrap-select Picker Init --------------------------//
-// $(document).ready(function(){
-//   $(".my-select").selectpicker();
-// });
+//-------------------searchbar ---------------------------------------------//
+
+let timeout;
+
+function sendRequestToServer(searchTerm) {
+  clearTimeout(timeout);
+  timeout = setTimeout(function() {
+    // if(searchTerm != "") {
+    // $("#searchResultsRenderContainer").html("<div><p>" + searchTerm + "</p></div>");
+
+    $("#searchResultsRenderContainer").empty();
+
+    let data = JSON.stringify({
+      data: searchTerm
+    });
+
+    $.ajax({
+      url: "/searchResults",
+      type: "POST",
+      data: data,
+      contentType: "application/json"
+    })
+    .done(function(results) {
+
+      $("#searchResultsRenderContainer").append(results);
+
+    })
+    .fail(function(err) {
+      console.log(err)
+    });
+
+
+  // } else {
+    // $("#searchResultsRenderContainer").empty();
+  // }
+
+  }, 300);
+}
+
+$("#searchInput").on("input", function() {
+
+  let searchTerm = $("#searchInput").val();
+
+  sendRequestToServer(searchTerm);
+
+});
+
 
 
 
