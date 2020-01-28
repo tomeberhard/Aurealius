@@ -1,6 +1,13 @@
 <%- include('partials/headerLoggedIn') %>
 
 <div class="container headerSpacing">
+  <div class="row">
+    <div class="col-12">
+
+      <%- include('partials/search') %>
+
+    </div>
+  </div>
   <div class="row" id="favCollectionsRenderingContainer">
 
     <% if(favGroupings.length > 0){ %>
