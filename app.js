@@ -95,12 +95,6 @@ mongoose.connect(mongoURI, {
 //--------------------Init GridFs--------------------------------------//
 let gfs;
 
-// //--------------------Init Stream--------------------------------------//
-// conn.once("open", function() {
-//   gfs = Grid(conn.db, mongoose.mongo);
-//   gfs.collection("uploads");
-// });
-
 conn.once("open", () => {
   // init stream
   gfs = new mongoose.mongo.GridFSBucket(conn.db, {
@@ -205,6 +199,31 @@ groupingSchema.index({
 });
 
 const Grouping = new mongoose.model("grouping", groupingSchema);
+
+const hashGroupingSchema = new mongoose.Schema({
+  groupingName: String,
+  groupingImageFile: String,
+  foundingUser: {
+    type: ObjectId,
+    ref: "aurealiusUser"
+  },
+  _users: [{
+    type: ObjectId,
+    ref: "aurealiusUser"
+  }],
+  _entries: [{
+    type: ObjectId,
+    ref: "entry"
+  }],
+}, {
+  timestamps: true
+});
+
+hashGroupingSchema.index({
+  groupingName: "text",
+});
+
+const Hashgrouping = new mongoose.model("hashGrouping", hashGroupingSchema);
 
 const userSchema = new mongoose.Schema({
   // userName: String,
@@ -360,7 +379,7 @@ app.get("/Everyone", function(req, res) {
 
 app.post("/newEntryGroupingOptions", function(req, res) {
 
-  let userId = req.user._id;
+  let userId = req.user.id;
   let viewStatusData = req.body.viewStatusData
 
   let privacyQueryParameter = new Object();
@@ -423,52 +442,50 @@ app.post("/searchResults", function(req, res) {
       }
     ]).exec(function(err, foundUsers) {
 
-        // console.log(foundUsers);
+        if (err) {
+          console.log(err);
+        } else {
 
-          if (err) {
-            console.log(err);
-          } else {
+          Entry.find({
+            $text: {
+              $search : searchResultData
+            },
+            viewStatus: "public",
+          })
+           .populate({
+             path: "_user",
+             model: "aurealiusUser"
+           }).exec(function(err, foundEntries) {
 
-            Entry.find({
-              $text: {
-                $search : searchResultData
-              },
-              viewStatus: "public",
-            })
-             .populate({
-               path: "_user",
-               model: "aurealiusUser"
-             }).exec(function(err, foundEntries) {
+              if (err) {
+                console.log(err);
+              } else {
 
-                if (err) {
-                  console.log(err);
-                } else {
+              Grouping.find({
+                $text: {
+                  $search : searchResultData
+                },
+                viewStatus: "public",
+              }).populate({
+                 path: "_user",
+                 model: "aurealiusUser"
+               }).exec(function(err, foundGroupings) {
 
-                Grouping.find({
-                  $text: {
-                    $search : searchResultData
-                  },
-                  viewStatus: "public",
-                }).populate({
-                   path: "_user",
-                   model: "aurealiusUser"
-                 }).exec(function(err, foundGroupings) {
+                  if (err) {
+                    console.log(err);
+                  } else {
 
-                    if (err) {
-                      console.log(err);
-                    } else {
-
-                      res.render("partials/searchResults", {
-                        users: foundUsers,
-                        entries: foundEntries,
-                        groupings: foundGroupings
-                      });
-                    }
-                  });
-                }
-              });
-            }
-        });
+                    res.render("partials/searchResults", {
+                      users: foundUsers,
+                      entries: foundEntries,
+                      groupings: foundGroupings
+                    });
+                  }
+                });
+              }
+            });
+          }
+      });
     }
   }
 });
@@ -1183,6 +1200,77 @@ app.get("/user/:user/Collections", function(req, res) {
 
 });
 
+app.get("/Collections/:hashGrouping", function(req, res) {
+
+  // let userProfileName = req.params.user;
+
+  let hashGrouping = "#" + req.params.hashGrouping;
+  // console.log(hashGrouping);
+
+  // if (req.isAuthenticated()) {
+
+    AurealiusUser.findOne({
+        _id: req.user._id
+      })
+      .populate({
+        path: "_following",
+        model: "aurealiusUser"
+      })
+      .populate({
+        path: "_followers",
+        model: "aurealiusUser"
+      })
+      .exec(function(err, foundUser) {
+
+        // console.log(foundUser);
+
+        Hashgrouping.findOne({
+            groupingName: hashGrouping,
+          })
+          .populate({
+            path: "_entries",
+            options: {
+              populate: {
+                path: "_user",
+                model: "aurealiusUser"
+              },
+              sort: {
+                updatedAt: -1
+              },
+            },
+            match: {
+              viewStatus: "public",
+              reportStatus: "Open"
+            },
+            model: "entry"
+          })
+          .exec(function(err, foundHashGrouping) {
+
+            // console.log(foundHashGrouping);
+            // console.log(foundHashGrouping._entries);
+
+            if (err) {
+              console.log(err);
+            } else {
+
+              res.render("hashCollection", {
+                userData: foundUser,
+                userFollowing: foundUser._following,
+                userFollowers: foundUser._followers,
+                groupingInfo: foundHashGrouping,
+                entries: foundHashGrouping._entries
+              });
+            }
+          });
+
+
+
+      });
+
+  // }
+
+});
+
 app.get("/user/:user/Collections/:grouping", function(req, res) {
 
   let userProfileName = req.params.user;
@@ -1360,8 +1448,7 @@ app.get("/files", function(req, res) {
 
 app.get("/image/:filename", (req, res) => {
 
-  const file = gfs
-    .find({
+  const file = gfs.find({
       filename: req.params.filename
     })
     .toArray((err, files) => {
@@ -1679,6 +1766,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
   console.log(allocatedCollection);
 
   const currentUser = req.user.id;
+  let entryCaption = req.body.caption;
   // const currentUserProfile = req.user.profileName;
 
   function statusAssignment() {
@@ -1696,7 +1784,7 @@ app.post("/upload", upload.single("file"), function(req, res) {
 
   const newEntry = new Entry({
     imageFile: fileExistResult,
-    caption: req.body.caption,
+    caption: entryCaption,
     _user: mongoose.Types.ObjectId(currentUser),
     viewStatus: entryStatusAssigned,
     reportStatus: "Open",
@@ -1706,8 +1794,84 @@ app.post("/upload", upload.single("file"), function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      // console.log(entry);
+
       console.log("New entry successfully saved.");
+
+      let hashTerm;
+
+      if(entryCaption.includes("#")){
+        let hashTermPlace = entryCaption.indexOf("#");
+        console.log(hashTermPlace);
+        let nextSpace = entryCaption.indexOf(" ", hashTermPlace);
+        console.log(nextSpace);
+
+        function getHashTerm(entryCaption, hashTermPlace, nextSpace) {
+
+          if(nextSpace < 1) {
+            let hashTerm = entryCaption.substring(hashTermPlace,entryCaption.length);
+            return hashTerm
+          } else {
+            let hashTerm = entryCaption.substring(hashTermPlace,nextSpace);
+            return hashTerm
+          }
+        };
+
+        hashTerm = getHashTerm(entryCaption, hashTermPlace, nextSpace);
+
+        console.log(hashTerm);
+
+        Hashgrouping.find({
+          groupingName: hashTerm,
+        }, function(err, foundHashGrouping) {
+
+          console.log(foundHashGrouping);
+          console.log(foundHashGrouping.length);
+
+          if (err) {
+            console.log(err);
+          } else {
+
+            if(foundHashGrouping.length > 0) {
+
+              Hashgrouping.update({
+                _id: foundHashGrouping[0]._id
+              },{
+                $push: {
+                  _entries: mongoose.Types.ObjectId(newEntry._id),
+                  _users: mongoose.Types.ObjectId(currentUser)
+                }
+              }, function(err, successs) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Successfully added entry and user to hashGroup " + foundHashGrouping[0].groupingName + ".");
+                }
+              });
+
+            } else {
+
+              const newHashGrouping = new Hashgrouping({
+                groupingName: hashTerm,
+                groupingImageFile: newEntry.imageFile,
+                foundingUser: mongoose.Types.ObjectId(currentUser),
+                _users: mongoose.Types.ObjectId(currentUser),
+                _entries: mongoose.Types.ObjectId(newEntry._id),
+              });
+
+              newHashGrouping.save(function(err, success) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log("Successfully saved new hashGrouping " + newHashGrouping.groupingName + " including groupingImage")
+                }
+              });
+
+            }
+          }
+
+        });
+
+      }
 
       AurealiusUser.update({
         _id: currentUser
@@ -1863,24 +2027,6 @@ app.post("/upload", upload.single("file"), function(req, res) {
     }
     res.redirect("back");
   });
-
-
-  // let uploadResJsonData = new Object();
-  //
-  // uploadResJsonData.entries = newEntry;
-  // uploadResJsonData.userData = req.user;
-  // uploadResJsonData.userFollowing = req.user._following;
-  // uploadResJsonData.userFollowers = req.user._followers;
-  //
-  // console.log(uploadResJsonData);
-  //
-  // res.json({
-  //   entries: req.user._entries[0],
-  //   userData: req.user,
-  //   userFollowing: req.user._following,
-  //   userFollowers: req.user._followers
-  // });
-  // res.end();
 
 });
 
@@ -2051,7 +2197,7 @@ app.post("/userSettingsUpload", function(req, res) {
       } else {
         console.log("Succesfully updated user settings.");
         res.status(200);
-        res.end()
+        res.end();
       }
     });
   }
@@ -2866,18 +3012,6 @@ app.post("/deleteCollection", function(req, res) {
 
                   res.redirect("back");
 
-                  // gfs.delete({
-                  //   filename: foundGrouping.groupingImageFile,
-                  //   // filename: groupingImageFileArray,
-                  //   root: "uploads"
-                  // }, function(err, success) {
-                  //   if (err) {
-                  //     console.log(err);
-                  //   } else {
-                  //     console.log("Successfully removed groupingImageFile from uploads directory.");
-                  //     res.redirect("back");
-                  //   }
-                  // });
                 });
               }
             });

@@ -1,0 +1,61 @@
+
+<%- include('partials/headerLoggedIn') %>
+
+<div class="container headerSpacing">
+
+  <div class="row">
+
+    <div class="col-8 m-auto">
+
+      <%- include('partials/search') %>
+
+    </div>
+
+    <div class="col-md-8 m-auto">
+      <div class="container">
+        <div class="row">
+          <div class="col-4 m-auto mobileCltImagePadding">
+            <div class="card card-body">
+
+              <% if(groupingInfo.groupingImageFile === "NOTHING TO SEE HERE") { %>
+              <% var collectionImage = "/assets/defaultusericon.png" %>
+              <% } else { %>
+              <% var collectionImage = "/image/" + groupingInfo.groupingImageFile %>
+              <% } %>
+
+              <div class="collectionImg orientation" id="cltImage" image="<%= collectionImage %>"></div>
+            </div>
+          </div>
+          <div class="col-8 m-auto mobileCltCardPadding">
+            <div class="card card-body">
+            <div class="row">
+              <div class="col-12">
+                <h2 class="text-center"><%= groupingInfo.groupingName %></h2>
+              </div>
+            </div>
+              <div class="row">
+                <div class="col-3 p-0 m-0 d-flex align-items-center justify-content-center">
+
+                </div>
+                <div class="col-9 d-flex m-auto">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      <%_ entries.forEach(function(entry) { _%>
+
+        <%- include('partials/everyoneEntryCard', {userData: userData, userFollowing: userFollowing,
+          userFollowers: userFollowers, groupingInfo:groupingInfo, entry: entry} ) %>
+
+      <%_ }) _%>
+
+  </div>
+</div>
+
+<%- include('partials/footer') %>
