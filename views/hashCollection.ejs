@@ -17,10 +17,10 @@
           <div class="col-4 m-auto mobileCltImagePadding">
             <div class="card card-body">
 
-              <% if(groupingInfo.groupingImageFile === "NOTHING TO SEE HERE") { %>
+              <% if(entries[0].imageFile === "NOTHING TO SEE HERE") { %>
               <% var collectionImage = "/assets/defaultusericon.png" %>
               <% } else { %>
-              <% var collectionImage = "/image/" + groupingInfo.groupingImageFile %>
+              <% var collectionImage = "/image/" + entries[0].imageFile %>
               <% } %>
 
               <div class="collectionImg orientation" id="cltImage" image="<%= collectionImage %>"></div>
@@ -30,7 +30,7 @@
             <div class="card card-body">
             <div class="row">
               <div class="col-12">
-                <h2 class="text-center"><%= groupingInfo.groupingName %></h2>
+                <h2 class="text-center"><%= groupingInfo %></h2>
               </div>
             </div>
               <div class="row">

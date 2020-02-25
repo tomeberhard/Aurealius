@@ -1200,6 +1200,78 @@ app.get("/user/:user/Collections", function(req, res) {
 
 });
 
+// app.get("/Collections/:hashGrouping", function(req, res) {
+//
+//   // let userProfileName = req.params.user;
+//
+//   let hashGrouping = "#" + req.params.hashGrouping;
+//   // console.log(hashGrouping);
+//
+//   // if (req.isAuthenticated()) {
+//
+//     AurealiusUser.findOne({
+//         _id: req.user._id
+//       })
+//       .populate({
+//         path: "_following",
+//         model: "aurealiusUser"
+//       })
+//       .populate({
+//         path: "_followers",
+//         model: "aurealiusUser"
+//       })
+//       .exec(function(err, foundUser) {
+//
+//         // console.log(foundUser);
+//
+//         Hashgrouping.findOne({
+//             groupingName: hashGrouping,
+//           })
+//           .populate({
+//             path: "_entries",
+//             options: {
+//               populate: {
+//                 path: "_user",
+//                 model: "aurealiusUser"
+//               },
+//               sort: {
+//                 updatedAt: -1
+//               },
+//             },
+//             match: {
+//               viewStatus: "public",
+//               reportStatus: "Open"
+//             },
+//             model: "entry"
+//           })
+//           .exec(function(err, foundHashGrouping) {
+//
+//             // console.log(foundHashGrouping);
+//             // console.log(foundHashGrouping._entries);
+//
+//             if (err) {
+//               console.log(err);
+//             } else {
+//
+//               res.render("hashCollection", {
+//                 userData: foundUser,
+//                 userFollowing: foundUser._following,
+//                 userFollowers: foundUser._followers,
+//                 groupingInfo: foundHashGrouping,
+//                 entries: foundHashGrouping._entries
+//               });
+//             }
+//           });
+//
+//
+//
+//       });
+//
+//   // }
+//
+// });
+
+
 app.get("/Collections/:hashGrouping", function(req, res) {
 
   // let userProfileName = req.params.user;
@@ -1222,32 +1294,24 @@ app.get("/Collections/:hashGrouping", function(req, res) {
       })
       .exec(function(err, foundUser) {
 
-        // console.log(foundUser);
+        // console.log(foundUser)
+        let searchQuery = new RegExp(hashGrouping, "i");
 
-        Hashgrouping.findOne({
-            groupingName: hashGrouping,
+        Entry.find({
+            caption: {
+              $regex: searchQuery
+            },
+            viewStatus: "public",
+            reportStatus: "Open"
           })
           .populate({
-            path: "_entries",
-            options: {
-              populate: {
-                path: "_user",
-                model: "aurealiusUser"
-              },
-              sort: {
-                updatedAt: -1
-              },
-            },
-            match: {
-              viewStatus: "public",
-              reportStatus: "Open"
-            },
-            model: "entry"
+            path: "_user",
+            model: "aurealiusUser",
           })
-          .exec(function(err, foundHashGrouping) {
-
-            // console.log(foundHashGrouping);
-            // console.log(foundHashGrouping._entries);
+          .sort({
+            updatedAt: -1
+          })
+          .exec(function(err, foundHashEntries) {
 
             if (err) {
               console.log(err);
@@ -1257,8 +1321,8 @@ app.get("/Collections/:hashGrouping", function(req, res) {
                 userData: foundUser,
                 userFollowing: foundUser._following,
                 userFollowers: foundUser._followers,
-                groupingInfo: foundHashGrouping,
-                entries: foundHashGrouping._entries
+                groupingInfo: hashGrouping,
+                entries: foundHashEntries
               });
             }
           });
@@ -1270,6 +1334,7 @@ app.get("/Collections/:hashGrouping", function(req, res) {
   // }
 
 });
+
 
 app.get("/user/:user/Collections/:grouping", function(req, res) {
 
@@ -1797,81 +1862,81 @@ app.post("/upload", upload.single("file"), function(req, res) {
 
       console.log("New entry successfully saved.");
 
-      let hashTerm;
-
-      if(entryCaption.includes("#")){
-        let hashTermPlace = entryCaption.indexOf("#");
-        console.log(hashTermPlace);
-        let nextSpace = entryCaption.indexOf(" ", hashTermPlace);
-        console.log(nextSpace);
-
-        function getHashTerm(entryCaption, hashTermPlace, nextSpace) {
-
-          if(nextSpace < 1) {
-            let hashTerm = entryCaption.substring(hashTermPlace,entryCaption.length);
-            return hashTerm
-          } else {
-            let hashTerm = entryCaption.substring(hashTermPlace,nextSpace);
-            return hashTerm
-          }
-        };
-
-        hashTerm = getHashTerm(entryCaption, hashTermPlace, nextSpace);
-
-        console.log(hashTerm);
-
-        Hashgrouping.find({
-          groupingName: hashTerm,
-        }, function(err, foundHashGrouping) {
-
-          console.log(foundHashGrouping);
-          console.log(foundHashGrouping.length);
-
-          if (err) {
-            console.log(err);
-          } else {
-
-            if(foundHashGrouping.length > 0) {
-
-              Hashgrouping.update({
-                _id: foundHashGrouping[0]._id
-              },{
-                $push: {
-                  _entries: mongoose.Types.ObjectId(newEntry._id),
-                  _users: mongoose.Types.ObjectId(currentUser)
-                }
-              }, function(err, successs) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Successfully added entry and user to hashGroup " + foundHashGrouping[0].groupingName + ".");
-                }
-              });
-
-            } else {
-
-              const newHashGrouping = new Hashgrouping({
-                groupingName: hashTerm,
-                groupingImageFile: newEntry.imageFile,
-                foundingUser: mongoose.Types.ObjectId(currentUser),
-                _users: mongoose.Types.ObjectId(currentUser),
-                _entries: mongoose.Types.ObjectId(newEntry._id),
-              });
-
-              newHashGrouping.save(function(err, success) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log("Successfully saved new hashGrouping " + newHashGrouping.groupingName + " including groupingImage")
-                }
-              });
-
-            }
-          }
-
-        });
-
-      }
+      // let hashTerm;
+      //
+      // if(entryCaption.includes("#")){
+      //   let hashTermPlace = entryCaption.indexOf("#");
+      //   console.log(hashTermPlace);
+      //   let nextSpace = entryCaption.indexOf(" ", hashTermPlace);
+      //   console.log(nextSpace);
+      //
+      //   function getHashTerm(entryCaption, hashTermPlace, nextSpace) {
+      //
+      //     if(nextSpace < 1) {
+      //       let hashTerm = entryCaption.substring(hashTermPlace,entryCaption.length);
+      //       return hashTerm
+      //     } else {
+      //       let hashTerm = entryCaption.substring(hashTermPlace,nextSpace);
+      //       return hashTerm
+      //     }
+      //   };
+      //
+      //   hashTerm = getHashTerm(entryCaption, hashTermPlace, nextSpace);
+      //
+      //   console.log(hashTerm);
+      //
+      //   Hashgrouping.find({
+      //     groupingName: hashTerm,
+      //   }, function(err, foundHashGrouping) {
+      //
+      //     console.log(foundHashGrouping);
+      //     console.log(foundHashGrouping.length);
+      //
+      //     if (err) {
+      //       console.log(err);
+      //     } else {
+      //
+      //       if(foundHashGrouping.length > 0) {
+      //
+      //         Hashgrouping.update({
+      //           _id: foundHashGrouping[0]._id
+      //         },{
+      //           $push: {
+      //             _entries: mongoose.Types.ObjectId(newEntry._id),
+      //             _users: mongoose.Types.ObjectId(currentUser)
+      //           }
+      //         }, function(err, successs) {
+      //           if (err) {
+      //             console.log(err);
+      //           } else {
+      //             console.log("Successfully added entry and user to hashGroup " + foundHashGrouping[0].groupingName + ".");
+      //           }
+      //         });
+      //
+      //       } else {
+      //
+      //         const newHashGrouping = new Hashgrouping({
+      //           groupingName: hashTerm,
+      //           groupingImageFile: newEntry.imageFile,
+      //           foundingUser: mongoose.Types.ObjectId(currentUser),
+      //           _users: mongoose.Types.ObjectId(currentUser),
+      //           _entries: mongoose.Types.ObjectId(newEntry._id),
+      //         });
+      //
+      //         newHashGrouping.save(function(err, success) {
+      //           if (err) {
+      //             console.log(err);
+      //           } else {
+      //             console.log("Successfully saved new hashGrouping " + newHashGrouping.groupingName + " including groupingImage")
+      //           }
+      //         });
+      //
+      //       }
+      //     }
+      //
+      //   });
+      //
+      // }
 
       AurealiusUser.update({
         _id: currentUser

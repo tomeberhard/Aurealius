@@ -93,8 +93,82 @@ $("#searchInput").on("input", function() {
 
 });
 
+//-------------------hashtag string to link function ------------------------//
+
+jQuery(function() {
+  $(".card-text:contains('#')").each(function() {
+
+    let entryCaption = $(this).html();
+    // console.log(entryCaption);
+
+    let hashTermPlace = entryCaption.indexOf("#");
+    let nextSpace = entryCaption.indexOf(" ", hashTermPlace);
+
+    let hashterm;
+
+    hashTerm = getHashTerm(entryCaption, hashTermPlace, nextSpace);
+    // console.log(hashTerm);
+
+    let hashCount = (hashTerm.match(/#/g) || []).length;
+
+    if(hashCount > 1) {
+
+      let revisedHashTerm = hashTerm.replace(/#/g, " #");
+      let trimedFirstHashTerm = revisedHashTerm.substr(1,revisedHashTerm.length)
+
+      let hashArray = splitString(trimedFirstHashTerm, " ");
+
+      // console.log(hashArray);
+
+      let revisedEntryCaption = entryCaption;
+
+      hashArray.forEach(function(hash){
+
+        let scrubbedHash = hash.replace(/#/g,"");
+        // console.log(scrubbedHash);
+        let hashLink = "<a href='/Collections/" + scrubbedHash + "'>" + hash + "</a>";
+        // console.log(hashLink);
+
+        revisedEntryCaption = revisedEntryCaption.replace(hash, hashLink);
+        // console.log(revisedEntryCaption);
+
+      });
+
+      $(this).html(revisedEntryCaption);
+
+    } else {
+
+      let scrubbedHash = hashTerm.replace(/#/g,"");
+      let hashLink = "<a href='/Collections/" + scrubbedHash + "'>" + hashTerm + "</a>";
+
+      // console.log(hashTerm);
+      // console.log(hashLink);
+
+      let revisedEntryCaption = entryCaption.replace(hashTerm, hashLink);
+
+      $(this).html(revisedEntryCaption);
+
+    }
+
+  });
+
+});
+
+function splitString(stringToSplit, separator) {
+  const arrayOfStrings = stringToSplit.split(separator)
+  return arrayOfStrings
+};
 
 
+function getHashTerm(entryCaption, hashTermPlace, nextSpace) {
+  if(nextSpace < 1) {
+    let hashTerm = entryCaption.substring(hashTermPlace,entryCaption.length);
+    return hashTerm
+  } else {
+    let hashTerm = entryCaption.substring(hashTermPlace,nextSpace);
+    return hashTerm
+  }
+};
 
 //-------------------follower/following collapse placement------------------//
 
