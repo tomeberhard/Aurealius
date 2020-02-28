@@ -7,13 +7,45 @@
       <%- include('partials/search') %>
 
     </div>
-  </div>
+
+  <!-- <div class="row"> -->
+    <div class="col-12">
+      <div class="mb-2 d-flex align-items-center justify-content-between publicPaperBack primaryShadow primaryBorderRadius pt-2 pb-2 pl-3 pr-3">
+        <div class="d-flex align-items-center">
+          <div class="inline collectionBioImagePrvwBorder">
+
+            <% if(targetData.bioImageFile === "/assets/defaultusericon.png") { %>
+            <% var targetUserImage = targetData.bioImageFile %>
+            <% } else { %>
+            <% var targetUserImage = "/image/" + targetData.bioImageFile %>
+            <% } %>
+
+            <div class="collectionBioImagePrvw orientation" image="<%= targetUserImage %>"></div>
+
+          </div>
+          <h3 class="inline ml-3 mb-0 darkgrayFont"><%= targetData.profileName %></h3>
+
+        </div>
+
+        <% var userCollectionsRoute = "/user/" + targetData.profileName %>
+
+        <form method="GET" action="<%= userCollectionsRoute %>">
+          <button type="submit" class="btn btn-userBackBar">
+            Back to User
+          </button>
+        </form>
+
+      </div>
+      <h2 class="mt-4 mb-4 darkgrayFont text-center">Collections</h2>
+    </div>
+
+  <!-- </div> -->
   <div class="row" id="favCollectionsRenderingContainer">
 
     <% if(favGroupings.length > 0){ %>
     <div class="col-12">
 
-      <div class="mb-4 d-flex align-items-center justify-content-between paperBack pt-2 pb-2 pl-3 pr-3">
+      <div class="mb-4 d-flex align-items-center justify-content-between publicPaperBack primaryShadow primaryBorderRadius pt-2 pb-2 pl-3 pr-3">
         <div class="d-flex align-items-center">
           <div class="inline collectionBioImagePrvwBorder">
 
@@ -57,7 +89,7 @@
     <% favGroupings.forEach(function(favGrouping) { %>
 
     <div class="col-md-3">
-      <div class="card p-3 mb-3">
+      <div class="primaryShadow primaryBorderRadius publicPaperBack p-3 mb-3">
 
         <div class="collectionBackStop">
           <% if(favGrouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
@@ -89,7 +121,7 @@
     <% groupings.forEach(function(grouping) { %>
 
     <div class="col-md-3">
-      <div class="card p-3 mb-3">
+      <div class="primaryShadow primaryBorderRadius publicPaperBack p-3 mb-3">
 
         <div class="collectionBackStop">
           <% if(grouping.groupingImageFile === "NOTHING TO SEE HERE") { %>
@@ -113,6 +145,7 @@
     <% } %>
 
   </div>
+</div>
 </div>
 
 <%- include('partials/footer') %>

@@ -1,7 +1,7 @@
 <% if(entries){ %>
 <%_ entries.forEach(function(entry) { _%>
 
-<%- include('../partials/everyoneEntryCard', {entry: entry, userData: userData, userFollowing: userFollowing}) %>
+<%- include('../partials/everyoneEntryCardPublic', {entry: entry, userData: userData, userFollowing: userFollowing}) %>
 
 <%_ }) _%>
 <% } else { %>

@@ -3,7 +3,7 @@
   <div class="container-fluid mobilePaddingReduction">
     <div class="row userBoxPadding align-items-center">
       <div class="col-md-12 align-items-center userColumnLeft">
-        <div class="profilePicContainer">
+        <div class="primaryShadow primaryBorderRadius paperBack profilePicContainer">
           <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
           <% var userImage = userData.bioImageFile %>
           <% } else { %>
@@ -13,8 +13,8 @@
         </div>
       </div>
       <div class="col-md-12 userColumnRight">
-        <div class="userInfoCard">
-          <div class="profileInfo">
+        <div class="primaryShadow primaryBorderRadius paperBack">
+          <div class="text-center">
             <h2><%= userData.profileName %></h2>
             <h4 class="inline"><%= userData.firstName %> <%= userData.lastName %>
             </h4>
@@ -33,7 +33,7 @@
     <div class="row collapse show" id="userColumnFollow">
       <div class="col-sm-12" >
         <div class="">
-          <div class="followContainer followingContainer">
+          <div class="primaryShadow primaryBorderRadius paperBack followContainer followingContainer">
             <div class="followBoxHeader">
 
               <h5 class="inline" id="followNum">
@@ -58,7 +58,7 @@
               </button>
             </div>
           </div>
-          <div class="followContainer">
+          <div class="primaryShadow primaryBorderRadius paperBack followContainer">
             <div class="followBoxHeader">
               <h5 class="inline">
                 Followers (<%= userData._followers.length %>)

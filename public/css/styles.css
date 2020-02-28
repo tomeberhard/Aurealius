@@ -109,6 +109,27 @@ color: darkgray;
   font-family: 'IM Fell Great Primer', serif;
 }
 
+.primaryShadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.primaryBorderRadius {
+  border-radius: .25rem;
+}
+
+.paperBack {
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+  /* border-radius: .25rem; */
+  background-image: url(/assets/lightpaperfibers_@2X.png);
+}
+
+.publicPaperBack {
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: .25rem; */
+  background-color: #ffffff;
+  background-image: url("https://www.transparenttextures.com/patterns/sandpaper.png");
+}
+
 
 .collectionLink:hover {
   color: #fff;
@@ -699,6 +720,19 @@ width: 50%;
   border-color: #51e3d4;
 }
 
+.btn-userBackBar {
+  color: #474f85;
+  background-color: #51e3d4;
+  border-color: #474f85;
+  width: 200px;
+}
+
+.btn-userBackBar:hover {
+  color: #fff;
+  background-color: #474f85;
+  border-color: #51e3d4;
+}
+
 .userBtnBar {
   border-width: 1px;
   border-color:darkgray;
@@ -1077,20 +1111,14 @@ label.btn {
   }
 }
 
-.paperBack {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  border-radius: .25rem;
-  background-image: url(/assets/lightpaperfibers_@2X.png);
-}
-
 .publicCollectionContainer{
   overflow: hidden;
   white-space: nowrap;
 }
 
 .card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  background-image: url(/assets/lightpaperfibers_@2X.png);
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+  /* background-image: url(/assets/lightpaperfibers_@2X.png); */
 }
 
 .card-body-2 {
@@ -1626,10 +1654,10 @@ a.userProfName {
 } */
 
 .userInfoCard {
-  background-image: url(/assets/lightpaperfibers_@2X.png);
+  /* background-image: url(/assets/lightpaperfibers_@2X.png); */
   padding: 2%;
-  border-radius: .25rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /* border-radius: .25rem; */
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
   /* margin-bottom: 1.5rem; */
 }
 
@@ -1641,7 +1669,7 @@ a.userProfName {
 
 
 .profileInfo {
-  text-align: center;
+  /* text-align: center; */
 }
 
 
@@ -1653,11 +1681,11 @@ a.userProfName {
 
 
 .profilePicContainer {
-  background-image: url(/assets/lightpaperfibers_@2X.png);
+  /* background-image: url(/assets/lightpaperfibers_@2X.png); */
   margin-bottom: 1rem;
   padding: 2%;
-  border-radius: .25rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /* border-radius: .25rem; */
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
 
 }
 
@@ -1722,11 +1750,11 @@ a.userProfName {
 
 .followContainer {
   /* background-color: #fafcfd; */
-  background-image: url(/assets/lightpaperfibers_@2X.png);
+  /* background-image: url(/assets/lightpaperfibers_@2X.png); */
   padding: 2% 2% 5% 2%;
   margin-top: 5%;
-  border-radius: .25rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /* border-radius: .25rem; */
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
   text-align: center;
 }
 
@@ -1814,7 +1842,8 @@ h5.followTxt {
 
 
 .collectionBioImagePrvwBorder {
-  width: 5%;
+  width: 15%;
+  max-width: 100px;
   /* border-radius: .25rem;
   overflow: hidden; */
 }

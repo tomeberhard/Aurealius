@@ -3,7 +3,7 @@
   <div class="container-fluid mobilePaddingReduction">
     <div class="row userBoxPadding">
       <div class="col-md-12 align-items-center userColumnLeft">
-        <div class="profilePicContainer">
+        <div class="primaryShadow primaryBorderRadius publicPaperBack profilePicContainer">
           <% if(userData.bioImageFile === "/assets/defaultusericon.png") { %>
           <% var userImage = userData.bioImageFile %>
           <% } else { %>
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="col-md-12 userColumnRight">
-        <div class="mb-2 userInfoCard text-center" id="unFollowFollowPublic">
+        <div class="mb-2 primaryShadow primaryBorderRadius publicPaperBack userInfoCard text-center" id="unFollowFollowPublic">
           <% var viewer = requestingUser._id %>
           <% var target = userData._id %>
 
@@ -28,8 +28,8 @@
             </button>
           </form>
         </div>
-        <div class="userInfoCard">
-          <div class="profileInfo">
+        <div class="primaryShadow primaryBorderRadius publicPaperBack userInfoCard">
+          <div class="text-center">
             <h2><%= userData.profileName %></h2>
             <h4 class="inline"><%= userData.firstName %> <%= userData.lastName %>
             </h4>
@@ -48,7 +48,7 @@
     <div class="row collapse show" id="userColumnFollow">
       <div class="col-sm-12" >
         <div class="">
-          <div class="followContainer followingContainer">
+          <div class="primaryShadow primaryBorderRadius publicPaperBack followContainer followingContainer">
             <div class="followBoxHeader">
 
               <h5 class="inline" id="followNum">
@@ -73,7 +73,7 @@
               </button>
             </div>
           </div>
-          <div class="followContainer">
+          <div class="primaryShadow primaryBorderRadius publicPaperBack followContainer">
             <div class="followBoxHeader">
               <h5 class="inline">
                 Followers (<%= userData._followers.length %>)
